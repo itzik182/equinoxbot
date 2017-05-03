@@ -13,9 +13,16 @@ const bot = new Bot({
   app_secret: process.env.APP_SECRET
 })
 
-bot.setGetStartedButton('GET_STARTED', () =>  {
-  console.log('hello')
+bot.on('postback', (payload) => {
+  if (payload.postback.payload === 'GET_STARTED_PAYLOAD') {
+    const senderId = payload.sender.id
+    users[senderId] = {
+      pageScopedId : senderId,
+      firstName : profile
+    }
+    
+  } 
+  
 })
-
 http.createServer(bot.middleware()).listen(3000)
 console.log('Echo bot server running at port 3000.')
