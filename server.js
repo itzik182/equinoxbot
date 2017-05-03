@@ -53,14 +53,13 @@ bot.on('message', (payload, reply) => {
         console.log(articles)
       
         _.forEach(articles, (article) => {
-          console.log('Message Sent')
           
           bot.sendMessage(senderId, 
             {
               attachment : {
                 type : 'template',
                 payload : {
-                  template_type : 'generic',
+                  template_type : 'list',
                   elements : [
                     {
                       title : 'Hello',
