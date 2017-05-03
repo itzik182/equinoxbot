@@ -54,7 +54,10 @@ bot.on('message', (payload, reply) => {
           return {
             "title" : article.title,
             "image_url" : article.urlToImage,
-            "subtitle" : article.description,
+            "subtitle" : _.truncate(
+              article.description, 
+              {length : 75, separator : '...'}
+            ),
             "default_action" : {
               "type" : "web_url",
               "url" : article.url
@@ -77,7 +80,7 @@ bot.on('message', (payload, reply) => {
               "type" : "template",
               "payload" : {
                 "template_type" : "list",
-                "elements" : elements,
+                "elements" : elements.slice(0,4),
                 "buttons" :[
                   {
                     "title" : "View More",
