@@ -51,33 +51,44 @@ bot.on('message', (payload, reply) => {
       .end((error, result) => {
         const articles = result.body.articles
         console.log(articles)
-      
-        _.forEach(articles, (article) => {
           
+          const elements = _.map(articles, (article) => {
+                    return {
+                      title : article.title,
+                      image_url : article.urlToImage,
+                      subtitle : article.description,
+                      default_action : {
+                        type : 'web_url',
+                        url : article.url,
+                        messenger_extensions : true,
+                        webview_height_ratio : 'tall',
+                        fallback_url : 'https://news.ycombinator.com/'
+                      },
+                      buttons : [
+                        {
+                          title : 'Read More',
+                          type : 'web_url',
+                          url : article.url,
+                          messenger_extensions : true,
+                          webview_height_ratio : 'tall',
+                          fallback_url : 'https://news.ycombinator.com/'
+                        }
+                      ]
+                    }
+                  })
           bot.sendMessage(senderId, 
             {
               attachment : {
                 type : 'template',
                 payload : {
                   template_type : 'list',
-                  elements : [
-                    {
-                      title : 'Hello',
-                      default_action : {
-                        type : 'web_url',
-                        url : 'https://www.google.com',
-                        messenger_extensions : true,
-                        webview_height_ratio: 'tall',
-                        fallback_url : 'https://www.google.com'
-                      }
-                    }
-                  ]
+                  elements : elements
                 }
               }
             }
          ) 
         
-        })
+
       })
   } 
 })
