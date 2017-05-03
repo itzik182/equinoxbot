@@ -16,7 +16,7 @@
     "superagent": "^3.5.2"
   },
   "engines": {
-    "node": "7.9.0"
+    "node": "7.x"
   },
   "repository": {
     "url": "https://glitch.com/edit/#!/welcome-project"
