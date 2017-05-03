@@ -17,6 +17,8 @@ const users = {}
 bot.on('postback', (payload) => {
   if (payload.postback.payload === 'GET_STARTED_PAYLOAD') {
     const senderId = payload.sender.id
+    
+    console.log(senderId)
  
     bot.getProfile(senderId, (error, profile) => {
       if (error) {
@@ -61,7 +63,14 @@ bot.on('message', (payload, reply) => {
                   template_type : 'generic',
                   elements : [
                     {
-                      title : 'Hello'
+                      title : 'Hello',
+                      default_action : {
+                        type : 'web_url',
+                        url : 'https://www.google.com',
+                        messenger_extensions : true,
+                        webview_height_ratio: 'tall',
+                        fallback_url : 'https://www.google.com'
+                      }
                     }
                   ]
                 }
