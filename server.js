@@ -88,13 +88,11 @@ bot.on('message', (payload, reply) => {
                     "url" : "https://news.ycombinator.com/"
                   }
                 ]
-                
               }
             }
           }
         )
-
-       })
+     })
    }
 })
  
