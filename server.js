@@ -57,19 +57,13 @@ bot.on('message', (payload, reply) => {
             "subtitle" : article.description,
             "default_action" : {
               "type" : "web_url",
-              "url" : article.url,
-              "messenger_extensions" : true,
-              "webview_height_ratio" : "tall",
-              "fallback_url" : article.url
+              "url" : article.url
             },
             "buttons" :[
               {
                 "title" : "Read More",
                 "type" : "web_url",
-                "url" : article.url,
-                "messenger_extensions" : true,
-                "webview_height_ratio" : "tall",
-                "fallback_url" : article.url
+                "url" : article.url
               }
             ]
           }
