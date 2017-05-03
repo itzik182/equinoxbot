@@ -45,7 +45,7 @@ bot.on('message', (payload, reply) => {
   const senderId = payload.sender.id
   const apiUrl = 'https://newsapi.org/v1/articles?source=hacker-news&sortBy=top&apiKey=52a36d98da214f98a9b9b9bfaba502a7'
   
-  if (message === 'news') {
+  if (message === 'news' || message === 'News') {
     request
       .get(apiUrl)
       .end((error, result) => {
@@ -83,7 +83,7 @@ bot.on('message', (payload, reply) => {
                 "template_type" : "list",
                 "elements" : elements,
                 "buttons" :[{
-                    "title" : "More from Hacker News",
+                    "title" : "More Hacker News",
                     "type" : "web_url",
                     "url" : "https://news.ycombinator.com/"
                 }]
