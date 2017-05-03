@@ -54,6 +54,7 @@ bot.on('message', (payload, reply) => {
           return {
             "title" : article.title,
             "image_url" : article.urlToImage,
+            //Subtitle limit is 80 characters
             "subtitle" : _.truncate(
               article.description, 
               {length : 75, separator : '...'}
@@ -92,8 +93,7 @@ bot.on('message', (payload, reply) => {
             }
           }
         )
-      
-        
+
        })
    }
 })
