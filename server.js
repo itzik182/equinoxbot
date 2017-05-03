@@ -45,50 +45,37 @@ bot.on('message', (payload, reply) => {
   const senderId = payload.sender.id
   
   if (message === 'news') {
-    console.log('Command Recieved')
     request
       .get('https://newsapi.org/v1/articles?source=hacker-news&sortBy=top&apiKey=52a36d98da214f98a9b9b9bfaba502a7')
       .end((error, result) => {
         const articles = result.body.articles
-        console.log(articles)
-          
-          const elements = _.map(articles, (article) => {
-                    return {
-                      title : article.title,
-                      image_url : article.urlToImage,
-                      subtitle : article.description,
-                      default_action : {
-                        type : 'web_url',
-                        url : article.url,
-                        messenger_extensions : true,
-                        webview_height_ratio : 'tall',
-                        fallback_url : 'https://news.ycombinator.com/'
-                      },
-                      buttons : [
+        
+        _.map((articles))
+          bot.sendMessage(senderId, 
+            {
+            "attachment": {
+              "type": "template",
+              "payload": {
+                "template_type": "generic",
+                  "elements": [
+                    {
+                    "title": "First card",
+                    "subtitle": "Element #1 of an hscroll",
+                    "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+                      "buttons": [
                         {
-                          title : 'Read More',
-                          type : 'web_url',
-                          url : article.url,
-                          messenger_extensions : true,
-                          webview_height_ratio : 'tall',
-                          fallback_url : 'https://news.ycombinator.com/'
+                          "type": "web_url",
+                          "url": "https://www.messenger.com",
+                          "title": "web url"
                         }
                       ]
                     }
-                  })
-          bot.sendMessage(senderId, 
-            {
-              attachment : {
-                type : 'template',
-                payload : {
-                  template_type : 'list',
-                  elements : elements
+                  ]
                 }
-              }
-            }
+             }
+           }
          ) 
-        
-
+      
       })
   } 
 })
