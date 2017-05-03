@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "http": "^0.0.0",
-    "messenger-bot": "^2.4.0"
+    "messenger-bot": "^2.4.0",
+    "superagent": "^3.5.2"
   },
   "engines": {
     "node": "6.10.x"

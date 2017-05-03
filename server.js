@@ -4,6 +4,7 @@
 // init project
 var Bot = require('messenger-bot')
 var http = require('http')
+var request = require('superagent')
 
 const bot = new Bot({
   token: process.env.PAGE_TOKEN,
@@ -33,6 +34,14 @@ bot.on('postback', (payload) => {
       )
       console.log(`${profile.first_name} ${profile.last_name} => users`)
    })
+  }
+})
+
+bot.on('message', (payload, reply) => {
+  const message = payload.message.text
+  
+  if (message === 'news') {
+    
   }
 })
 http.createServer(bot.middleware()).listen(3000)
