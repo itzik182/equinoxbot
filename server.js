@@ -43,16 +43,41 @@ bot.on('message', (payload, reply) => {
   const senderId = payload.sender.id
   
   if (message === 'news') {
+    console.log('Command Recieved')
     request
       .get('https://newsapi.org/v1/articles?source=hacker-news&sortBy=top&apiKey=52a36d98da214f98a9b9b9bfaba502a7')
       .end((error, result) => {
         const articles = result.body.articles
+        console.log(articles)
+      
         _.forEach(articles, (article) => {
-          bot.message(senderId, )
-        
+          console.log('Message Sent')
+          
+          bot.sendMessage(senderId, {
+            "attachment":{
+              "type":"template",
+              "payload":{
+                "template_type":"generic",
+                "elements":[
+                  {
+                    "title": article.title,
+                    "image_url": article.urlToImage,
+                    "subtitle": article.description,
+                    "default_action": {
+                      "type": "web_url",
+                      "url": article.url,
+                      "messenger_extensions": true,
+                      "webview_height_ratio": "tall",
+                      "fallback_url": "https://peterssendreceiveapp.ngrok.io/"
+                    }
+                  }
+                ]
+              }
+            }
+          })
         })
       })
-  }
+  } 
 })
 http.createServer(bot.middleware()).listen(3000)
 console.log('Echo bot server running at port 3000.')
