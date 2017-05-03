@@ -57,41 +57,43 @@ bot.on('message', (payload, reply) => {
             "subtitle" : article.description,
             "default_action" : {
               "type" : "web_url",
-              
-            }
+              "url" : article.url,
+              "messenger_extensions" : true,
+              "webview_height_ratio" : "tall",
+              "fallback_url" : article.url
+            },
+            "buttons" :[
+              {
+                "title" : "Read More",
+                "type" : "web_url",
+                "url" : article.url,
+                "messenger_extensions" : true,
+                "webview_height_ratio" : "tall",
+                "fallback_url" : article.url
+              }
+            ]
           }
         })
         
-        _.map(articles, (article) => {
-          bot.sendMessage(senderId, 
-            {
-            "attachment": {
-              "type": "template",
-              "payload": {
-                "template_type": "generic",
-                  "elements": [
-                    {
-                    "title": article.title,
-                    "subtitle": article.description,
-                    "image_url": article.urlToImage, 
-                      "buttons": [
-                        {
-                          "type": "web_url",
-                          "url": article.url,
-                          "title": 'Read More'
-                        }
-                      ]
-                    }
-                  ]
-                }
-             }
-           }
-         )
-          
-       })
+        console.log(elements)
       
-      })
-  } 
+        bot.sendMessage(senderId,
+          {
+            "attachment" : {
+              "type" : "template",
+              "payload" : {
+                "template_type" : "list",
+                "elements" : elements
+                
+              }
+            }
+          }
+        )
+      
+        
+       })
+   }
 })
+ 
 http.createServer(bot.middleware()).listen(3000)
 console.log('Echo bot server running at port 3000.')
