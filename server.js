@@ -5,6 +5,7 @@
 var Bot = require('messenger-bot')
 var http = require('http')
 var request = require('superagent')
+var _ = require('lodash')
 
 const bot = new Bot({
   token: process.env.PAGE_TOKEN,
@@ -39,9 +40,18 @@ bot.on('postback', (payload) => {
 
 bot.on('message', (payload, reply) => {
   const message = payload.message.text
+  const senderId = payload.sender.id
   
   if (message === 'news') {
-    
+    request
+      .get('https://newsapi.org/v1/articles?source=hacker-news&sortBy=top&apiKey=52a36d98da214f98a9b9b9bfaba502a7')
+      .end((error, result) => {
+        const articles = result.body.articles
+        _.forEach(articles, (article) => {
+          bot.message(senderId, )
+        
+        })
+      })
   }
 })
 http.createServer(bot.middleware()).listen(3000)
