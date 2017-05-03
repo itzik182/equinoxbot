@@ -54,8 +54,7 @@ bot.on('message', (payload, reply) => {
           console.log('Message Sent')
           
           bot.sendMessage(senderId, 
-            { message :
-            { 
+            {
               attachment : {
                 type : 'template',
                 payload : {
@@ -68,9 +67,7 @@ bot.on('message', (payload, reply) => {
                 }
               }
             }
-            }
          ) 
-            
         
         })
       })
