@@ -43,10 +43,11 @@ bot.on('postback', (payload) => {
 bot.on('message', (payload, reply) => {
   const message = payload.message.text
   const senderId = payload.sender.id
+  const apiUrl = 'https://newsapi.org/v1/articles?source=hacker-news&sortBy=top&apiKey=52a36d98da214f98a9b9b9bfaba502a7'
   
   if (message === 'news') {
     request
-      .get('https://newsapi.org/v1/articles?source=hacker-news&sortBy=top&apiKey=52a36d98da214f98a9b9b9bfaba502a7')
+      .get(apiUrl)
       .end((error, result) => {
         const articles = result.body.articles
         
@@ -81,13 +82,11 @@ bot.on('message', (payload, reply) => {
               "payload" : {
                 "template_type" : "list",
                 "elements" : elements,
-                "buttons" :[
-                  {
-                    "title" : "Read More",
+                "buttons" :[{
+                    "title" : "More from Hacker News",
                     "type" : "web_url",
                     "url" : "https://news.ycombinator.com/"
-                  }
-                ]
+                }]
               }
             }
           }
