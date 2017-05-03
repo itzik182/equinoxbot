@@ -16,13 +16,26 @@ const bot = new Bot({
 bot.on('postback', (payload) => {
   if (payload.postback.payload === 'GET_STARTED_PAYLOAD') {
     const senderId = payload.sender.id
-    users[senderId] = {
-      pageScopedId : senderId,
-      firstName : profile
-    }
     
-  } 
-  
+    bot.getProfile(senderId, (error, profile) => {
+      if (error) {
+        console.log(error)
+      }
+      
+      console.log(profile)
+      
+      users[senderId] = {
+        pageScopedId : senderId,
+        firstName : profile.first_name, 
+        lastName : profile.last_name,
+      }
+      
+      console.log(users)
+    })
+  }
 })
+
+
+
 http.createServer(bot.middleware()).listen(3000)
 console.log('Echo bot server running at port 3000.')
