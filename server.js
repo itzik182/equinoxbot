@@ -54,6 +54,7 @@ bot.on('message', (payload, reply) => {
           console.log('Message Sent')
           
           bot.sendMessage(senderId, 
+            { message :
             { 
               attachment : {
                 type : 'template',
@@ -61,20 +62,12 @@ bot.on('message', (payload, reply) => {
                   template_type : 'generic',
                   elements : [
                     {
-                      title : article.title,
-                      // image_url : article.urlToImage,
-                      // subtitle : article.description,
-                      // default_action : {
-                      //   type : 'web_url',
-                      //   url : article.url,
-                      //   messenger_extensions : true,
-                      //   webview_height_ratio : 'tall',
-                      //   fallback_url : 'https://news.ycombinator.com/'
-                      // }
+                      title : 'Hello'
                     }
                   ]
                 }
               }
+            }
             }
          ) 
             
