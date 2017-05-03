@@ -50,7 +50,19 @@ bot.on('message', (payload, reply) => {
       .end((error, result) => {
         const articles = result.body.articles
         
-        _.map((articles))
+        const elements = _.map(articles, (article) => {
+          return {
+            "title" : article.title,
+            "image_url" : article.urlToImage,
+            "subtitle" : article.description,
+            "default_action" : {
+              "type" : "web_url",
+              
+            }
+          }
+        })
+        
+        _.map(articles, (article) => {
           bot.sendMessage(senderId, 
             {
             "attachment": {
@@ -59,14 +71,14 @@ bot.on('message', (payload, reply) => {
                 "template_type": "generic",
                   "elements": [
                     {
-                    "title": "First card",
-                    "subtitle": "Element #1 of an hscroll",
-                    "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+                    "title": article.title,
+                    "subtitle": article.description,
+                    "image_url": article.urlToImage, 
                       "buttons": [
                         {
                           "type": "web_url",
-                          "url": "https://www.messenger.com",
-                          "title": "web url"
+                          "url": article.url,
+                          "title": 'Read More'
                         }
                       ]
                     }
@@ -74,7 +86,9 @@ bot.on('message', (payload, reply) => {
                 }
              }
            }
-         ) 
+         )
+          
+       })
       
       })
   } 
