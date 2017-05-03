@@ -70,9 +70,8 @@ bot.on('message', (payload, reply) => {
               }
             ]
           }
-        })
+        }).slice(0,4)
         
-        console.log(elements)
       
         bot.sendMessage(senderId,
           {
@@ -80,12 +79,12 @@ bot.on('message', (payload, reply) => {
               "type" : "template",
               "payload" : {
                 "template_type" : "list",
-                "elements" : elements.slice(0,4),
+                "elements" : elements,
                 "buttons" :[
                   {
-                    "title" : "View More",
-                    "type" : "postback",
-                    "payload": "payload"
+                    "title" : "Read More",
+                    "type" : "web_url",
+                    "url" : "https://news.ycombinator.com/"
                   }
                 ]
                 
