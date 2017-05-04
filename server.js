@@ -54,7 +54,7 @@ bot.on('message', (payload, reply) => {
         const elements = _.map(articles, (article) => {
           return {
             "title" : article.title,
-            "image_url" : article.urlToImage,
+            "image_url" : article.urlToImage || 'http://debarghyadas.com/writes/assets/hn-hn.png',
             //Subtitle limit is 80 characters
             "subtitle" : _.truncate(
               article.description, 
