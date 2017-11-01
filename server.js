@@ -44,7 +44,7 @@ bot.on('message', (payload, reply) => {
   const message = payload.message.text
   const senderId = payload.sender.id
   const apiUrl = 'https://newsapi.org/v1/articles?source=hacker-news&sortBy=top&apiKey=52a36d98da214f98a9b9b9bfaba502a7'
-  
+  console.log(message);
   if (message === 'news' || message === 'News') {
     request
       .get(apiUrl)
