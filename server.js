@@ -7,6 +7,7 @@ var http = require('http')
 var request = require('superagent')
 var _ = require('lodash')
 
+
 const bot = new Bot({
   token: process.env.PAGE_TOKEN,
   verify: process.env.VERIFY_TOKEN,
