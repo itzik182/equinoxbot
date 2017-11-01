@@ -1,30 +1,23 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
-  "name": "my-glitch-app",
-  "version": "0.0.1",
-  "description": "What am I about?",
-  "main": "server.js",
+  "name": "messenger-quick-start",
+  "version": "1.0.0",
+  "description": "An example webhook for Facebook Messenger quick start tutorial.",
+  "main": "app.js",
   "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "http": "^0.0.0",
-    "messenger-bot": "^2.4.0",
-    "lodash": "^4.17.4",
-    "superagent": "^3.5.2"
-  },
-  "engines": {
-    "node": "7.x"
+    "start": "node app.js"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/welcome-project"
+    "type": "git",
+    "url": "https://github.com/fbsamples/messenger-platform-samples.git"
   },
-  "license": "MIT",
-  "keywords": [
-    "node",
-    "glitch",
-    "express"
-  ]
+  "author": "Facebook",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "request": "^2.72.0"
+  },
+  "engines": {
+    "node": "~4.1.2"
+  }
 }
