@@ -120,21 +120,17 @@ function handlePostback(sender_psid, received_postback) {
 
 // Sends response messages via the Send API
 function callSendAPI(sender_psid, response, thread_key) {
-  // Construct the message body
-  let message = {
-    "recipient": {
-      "id": sender_psid
-    },
-    "thread_key": {
-      "id": thread_key
-    },
-    "message": response
-  }
   
   // Construct the message body
   let request_body = {
+    "to": {
+      
+    },
     "recipient": {
       "id": sender_psid
+    },
+    "recipient": {
+      "id": '100022742164286'
     },
     "thread_key": {
       "id": thread_key
