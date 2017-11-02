@@ -115,11 +115,11 @@ function handleMessage(sender_psid, received_message, thread_key) {
     //else {
     //  text = 'You sent the message: "${received_message.text}". Now send me an image111!';
     //}
-    
+    console.log("text556 - ");
     // Create the payload for a basic text message
     response = {
       "text": text,
-      "buttons": buttons,
+      //"buttons": buttons,
       "quick_replies": quick_replies
     }
   }  
@@ -230,12 +230,21 @@ app.post('/webhook', (req, res) => {
       console.log("send");
       if (entry && entry.changes && entry.changes.length > 0) {
         console.log("entry.changes: " + JSON.stringify(entry.changes[0]));
-        
-        entry.changes[0].value.message_tags.forEach(function(tag) {
+        let value = entry.changes[0].value;
+        value.message_tags.forEach(function(tag) {
           sender_psid.push({"id": tag.id});
         });
+        
+        let massages = value.message.split(' ');
+        let massage;
+        for(var i = 2; i < massages.length; i++) {
+          massage = massages[i] + " ";
+        }
+        console.log("sender2 - " + sender_psid);
+        console.log("massage - " + massage);
+        handleMessage(sender_psid, massage.trim());  
       }
-      console.log("sender2 - " + sender_psid);
+      
       //return;
       // Get the webhook event. entry.messaging is an array, but 
       // will only ever contain one event, so we get index 0
