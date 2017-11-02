@@ -28,10 +28,10 @@ function handleMessage(sender_psid, received_message, thread_key) {
   let quick_replies;
   let buttons;
   // Check if the message contains text
-  if (received_message.text) {    
-    console.log(received_message.text);
+  if (received_message) {    
+    console.log(received_message);
     
-    switch(received_message.text.toLowerCase()) {
+    switch(received_message.toLowerCase()) {
     case 'lets meet': case 'meet': case 'discuss': case 'brainstorm':
         text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
         break;
@@ -42,6 +42,9 @@ function handleMessage(sender_psid, received_message, thread_key) {
         text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
         break;
     case 'guy': case 'link to guy':
+        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
+        break;
+    case "Let's have a meeting": case 'Lets have a meeting':
         text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
         break;
     case 'buttons':
@@ -105,7 +108,7 @@ function handleMessage(sender_psid, received_message, thread_key) {
     //    text = `You sent the message: "${received_message.text}".`;
     }
     
-    if(received_message.text.includes("meet") || received_message.text.includes("discuss") || received_message.text.includes("brainstorm")){
+    if(received_message.includes("meet") || received_message.includes("discuss") || received_message.includes("brainstorm") || received_message.includes("meeting")){
       text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=171197237679607';
     }
     
@@ -115,13 +118,14 @@ function handleMessage(sender_psid, received_message, thread_key) {
     //else {
     //  text = 'You sent the message: "${received_message.text}". Now send me an image111!';
     //}
-    console.log("text556 - ");
+    console.log("text556 - " + text);
     // Create the payload for a basic text message
     response = {
       "text": text,
       //"buttons": buttons,
       "quick_replies": quick_replies
     }
+    console.log("response - " + JSON.stringify(response));
   }  
   
   // Sends the response message
@@ -210,83 +214,91 @@ app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 
 // Accepts POST requests at /webhook endpoint
 app.post('/webhook', (req, res) => {  
-//console.log(req);
+console.log('req.body - ' + JSON.stringify(req.body));
   // Parse the request body from the POST
   let body = req.body;
   let sender_psid = new Array();
   // Check the webhook event is from a Page subscription
-  if (body.object === 'page') {
+  if (body.object === 'page' || body.object === 'group') {
 
     // Iterate over each entry - there may be multiple if batched
     body.entry.forEach(function(entry) {
       
-      //for(var property in entry) {
-      //  console.log(property + "=" + entry[property]);
-        //for(var property1 in entry[property]) {
-        //  console.log(property1 + "=" + entry[property][property1]);
-        //}
-      //}
-      //console.log("entry: " + JSON.stringify(entry));
-      console.log("send");
-      if (entry && entry.changes && entry.changes.length > 0) {
-        console.log("entry.changes: " + JSON.stringify(entry.changes[0]));
-        let value = entry.changes[0].value;
-        value.message_tags.forEach(function(tag) {
-          sender_psid.push({"id": tag.id});
-        });
-        
-        let massages = value.message.split(' ');
-        let massage;
-        for(var i = 2; i < massages.length; i++) {
-          massage = massages[i] + " ";
-        }
-        console.log("sender2 - " + sender_psid);
-        console.log("massage - " + massage);
-        handleMessage(sender_psid, massage.trim());  
-      }
       
-      //return;
-      // Get the webhook event. entry.messaging is an array, but 
-      // will only ever contain one event, so we get index 0
-      if (entry && entry.messaging && entry.messaging.length > 0) {
-      
-        let webhook_event = entry.messaging[0];
-        console.log("entry.messaging: " + JSON.stringify(webhook_event));
-        // Get the sender PSID
-        console.log("sender - " + sender_psid);
-        sender_psid.push({"id": webhook_event.sender.id});
-        let thread_key;
+        console.log("send");
+        if (entry && entry.changes && entry.changes.length > 0) {
 
-        //let sender = get_sender_profile(sender_psid);
-        console.log("sender - " + sender_psid);
+          console.log("entry.changes: " + JSON.stringify(entry.changes[0]));
+          let value = entry.changes[0].value;
+          
+          if (body.object === 'group' && value.from) {
+            sender_psid.push({"id": value.from.id});
+          } else {
+            sender_psid.push({"id": value.sender_id});
+          }
+          let message = value.message;
+          if (value.message_tags) {
+            value.message_tags.forEach(function(tag) {
+              if (tag.type === "user")
+              sender_psid.push({"id": tag.id});
+            });
+            let messages = message.split(' ');
+            
+            for(var i = value.message_tags.length; i < messages.length; i++) {
+              message = messages[i] + " ";
+            }
+          }
 
-        if (webhook_event.thread && webhook_event.thread.id) {
-           thread_key = webhook_event.thread.id;
+          
+          console.log("sender2 - " + sender_psid);
+          console.log("message - " + message);
+          if (message) {
+            handleMessage(sender_psid, message.trim());  
+          }
         }
 
-        //console.log('Sender PSID: ' + sender_psid);
-        //console.log('webhook_event: ' + webhook_event);
+        //return;
+        // Get the webhook event. entry.messaging is an array, but 
+        // will only ever contain one event, so we get index 0
+        if (entry && entry.messaging && entry.messaging.length > 0) {
 
-        // Check if the event is a message or postback and
-        // pass the event to the appropriate handler function
-        //console.log(webhook_event.message.quick_reply);
-        if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
-          console.log('handleMessage: ' + webhook_event.message);
-          handleMessage(sender_psid, webhook_event.message, thread_key);        
-        } else if (webhook_event.postback) {
-          console.log('handlePostback: ' + webhook_event.postback);
-          handlePostback(sender_psid, webhook_event.postback);
-        } else if (webhook_event.message && webhook_event.message.quick_reply) {
-          console.log('handlePostback: ' + webhook_event.message);
-          handlePostback(sender_psid, webhook_event.message);
+          let webhook_event = entry.messaging[0];
+          console.log("entry.messaging: " + JSON.stringify(webhook_event));
+          // Get the sender PSID
+          console.log("sender - " + sender_psid);
+          sender_psid.push({"id": webhook_event.sender.id});
+          let thread_key;
+
+          //let sender = get_sender_profile(sender_psid);
+          console.log("sender - " + sender_psid);
+
+          if (webhook_event.thread && webhook_event.thread.id) {
+             thread_key = webhook_event.thread.id;
+          }
+
+          //console.log('Sender PSID: ' + sender_psid);
+          //console.log('webhook_event: ' + webhook_event);
+
+          // Check if the event is a message or postback and
+          // pass the event to the appropriate handler function
+          //console.log(webhook_event.message.quick_reply);
+          if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
+            console.log('handleMessage: ' + webhook_event.message);
+            handleMessage(sender_psid, webhook_event.message.text, thread_key);        
+          } else if (webhook_event.postback) {
+            console.log('handlePostback: ' + webhook_event.postback);
+            handlePostback(sender_psid, webhook_event.postback);
+          } else if (webhook_event.message && webhook_event.message.quick_reply) {
+            console.log('handlePostback: ' + webhook_event.message);
+            handlePostback(sender_psid, webhook_event.message);
+          }
         }
-      }
     });
 
     // Return a '200 OK' response to all events
     res.status(200).send('EVENT_RECEIVED');
 
-  } else {
+  }  else {
     // Return a '404 Not Found' if event is not from a page subscription
     res.sendStatus(404);
   }
