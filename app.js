@@ -26,6 +26,7 @@ function handleMessage(sender_psid, received_message, thread_key) {
   let response;
   let text;
   let quick_replies;
+  let buttons;
   // Check if the message contains text
   if (received_message.text) {    
     console.log(received_message.text);
@@ -43,14 +44,28 @@ function handleMessage(sender_psid, received_message, thread_key) {
     case 'guy': case 'link to guy':
         text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
         break;
+    case 'buttons':
+        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
+        buttons:[
+          {
+            "type":"web_url",
+            "url":"https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167",
+            "title":"Link to guy vr",
+            "webview_height_ratio": "full",
+            "messenger_extensions": true,  
+            "fallback_url": "https://petersfancyapparel.com/fallback"
+          }
+        ]
+        break;
     case '_letsa meet':
         text = 'Which virtual room?';
         quick_replies = [
             {
+              //"type": "postback",
               "content_type":"text",
               "title":"Itzik",
               //"image_url":"http://example.com/img/red.png",
-              "payload":"lets meet itzik room"
+              "payload":"yes"
             },
               {
               "content_type":"text",
@@ -104,6 +119,7 @@ function handleMessage(sender_psid, received_message, thread_key) {
     // Create the payload for a basic text message
     response = {
       "text": text,
+      "buttons": buttons,
       "quick_replies": quick_replies
     }
   }  
@@ -114,43 +130,51 @@ function handleMessage(sender_psid, received_message, thread_key) {
 
 // Handles messaging_postbacks events
 function handlePostback(sender_psid, received_postback) {
-  console.log("payload - " + received_postback.payload);
-  handleMessage(sender_psid, received_postback.payload);
+  console.log("payload - " + received_postback.quick_reply.payload);
+  //handleMessage(sender_psid, received_postback.payload);
+  let response;
+  
+  // Get the payload for the postback
+  let payload = received_postback.quick_reply.payload;
+
+  // Set the response based on the postback payload
+  if (payload === 'yes') {
+    response = { "text": "Thanks!" }
+  } else if (payload === 'no') {
+    response = { "text": "Oops, try sending another image." }
+  }
+  // Send the message to acknowledge the postback
+  callSendAPI(sender_psid, response);
 }
 
 // Sends response messages via the Send API
 function callSendAPI(sender_psid, response, thread_key) {
-  
-  // Construct the message body
-  let request_body = {
-    "to": {
-      
-    },
-    "recipient": {
-      "id": sender_psid
-    },
-    "recipient": {
-      "id": '100022742164286'
-    },
-    "thread_key": {
-      "id": thread_key
-    },
-    "message": response
-  }
-  
-  // Send the HTTP request to the Messenger Platform
-  request({
-    "uri": "https://graph.facebook.com/v2.6/me/messages",
-    "qs": { "access_token": PAGE_ACCESS_TOKEN },
-    "method": "POST",
-    "json": request_body
-  }, (err, res, body) => {
-    if (!err) {
-      //console.log('message sent!')
-    } else {
-      //console.error("Unable to send message:" + err);
+  console.log("sender_psid11: " + JSON.stringify(sender_psid));
+  sender_psid.forEach(function(sender) {
+  //for(var sender in sender_psid) {
+    console.log(sender.id)
+    // Construct the message body
+    let request_body = {
+      "recipient": {
+        "id": sender.id
+      },
+      "message": response
     }
-  }); 
+  console.log("request_body: " + JSON.stringify(request_body));
+    // Send the HTTP request to the Messenger Platform
+    request({
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
+      "qs": { "access_token": PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": request_body
+    }, (err, res, body) => {
+      if (!err) {
+        //console.log('message sent!')
+      } else {
+        //console.error("Unable to send message:" + err);
+      }
+    }); 
+  });
   
   // Construct the message body
   let messenger_profile_request_body = {
@@ -189,7 +213,7 @@ app.post('/webhook', (req, res) => {
 //console.log(req);
   // Parse the request body from the POST
   let body = req.body;
-
+  let sender_psid = new Array();
   // Check the webhook event is from a Page subscription
   if (body.object === 'page') {
 
@@ -206,7 +230,12 @@ app.post('/webhook', (req, res) => {
       console.log("send");
       if (entry && entry.changes && entry.changes.length > 0) {
         console.log("entry.changes: " + JSON.stringify(entry.changes[0]));
+        
+        entry.changes[0].value.message_tags.forEach(function(tag) {
+          sender_psid.push({"id": tag.id});
+        });
       }
+      console.log("sender2 - " + sender_psid);
       //return;
       // Get the webhook event. entry.messaging is an array, but 
       // will only ever contain one event, so we get index 0
@@ -215,11 +244,12 @@ app.post('/webhook', (req, res) => {
         let webhook_event = entry.messaging[0];
         console.log("entry.messaging: " + JSON.stringify(webhook_event));
         // Get the sender PSID
-        let sender_psid = webhook_event.sender.id;
+        console.log("sender - " + sender_psid);
+        sender_psid.push({"id": webhook_event.sender.id});
         let thread_key;
 
         //let sender = get_sender_profile(sender_psid);
-        //console.log("sender - " + sender);
+        console.log("sender - " + sender_psid);
 
         if (webhook_event.thread && webhook_event.thread.id) {
            thread_key = webhook_event.thread.id;
@@ -230,12 +260,16 @@ app.post('/webhook', (req, res) => {
 
         // Check if the event is a message or postback and
         // pass the event to the appropriate handler function
-        if (webhook_event.message && webhook_event.message.text) {
-          //console.log('handleMessage: ' + webhook_event.message);
+        //console.log(webhook_event.message.quick_reply);
+        if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
+          console.log('handleMessage: ' + webhook_event.message);
           handleMessage(sender_psid, webhook_event.message, thread_key);        
         } else if (webhook_event.postback) {
           console.log('handlePostback: ' + webhook_event.postback);
           handlePostback(sender_psid, webhook_event.postback);
+        } else if (webhook_event.message && webhook_event.message.quick_reply) {
+          console.log('handlePostback: ' + webhook_event.message);
+          handlePostback(sender_psid, webhook_event.message);
         }
       }
     });
