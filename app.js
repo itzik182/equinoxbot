@@ -162,7 +162,8 @@ function callSendAPI(sender_psid, response, thread_key) {
       "recipient": {
         "id": sender.id
       },
-      "message": response
+      "message": response,
+      "sender_action": "typing_on"
     }
   //console.log("request_body: " + JSON.stringify(request_body));
     // Send the HTTP request to the Messenger Platform
