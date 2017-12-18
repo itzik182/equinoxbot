@@ -155,6 +155,7 @@ function handlePostback(sender_psid, received_postback) {
 function callSendAPI(sender_psid, response, thread_key) {
   console.log("sender_psid - : " + JSON.stringify(sender_psid));
   sender_psid.forEach(function(sender) {
+  displayTheTypingBubble(sender, response, thread_key);
   //for(var sender in sender_psid) {
     //console.log(sender.id)
     // Construct the message body
@@ -162,8 +163,7 @@ function callSendAPI(sender_psid, response, thread_key) {
       "recipient": {
         "id": sender.id
       },
-      "message": response,
-      "sender_action": "typing_on"
+      "message": response
     }
   //console.log("request_body: " + JSON.stringify(request_body));
     // Send the HTTP request to the Messenger Platform
@@ -207,7 +207,29 @@ function callSendAPI(sender_psid, response, thread_key) {
       //console.error("Unable to send message:" + err);
     }
   });
-  
+}
+
+function displayTheTypingBubble(sender, response, thread_key) {
+  let request_body = {
+      "recipient": {
+        "id": sender.id
+      },
+      "sender_action": "typing_on"
+    }
+  //console.log("request_body: " + JSON.stringify(request_body));
+    // Send the HTTP request to the Messenger Platform
+    request({
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
+      "qs": { "access_token": PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": request_body
+    }, (err, res, body) => {
+      if (!err) {
+        //console.log('message sent!')
+      } else {
+        //console.error("Unable to send message:" + err);
+      }
+    });
 }
 
 // Sets server port and logs message on success
@@ -266,10 +288,10 @@ console.log('req.body - ' + JSON.stringify(req.body));
           let webhook_event = entry.messaging[0];
           console.log("entry.messaging: " + JSON.stringify(webhook_event));
           // Get the sender PSID
-          console.log("entry.id - " + entry.id);
+          //console.log("entry.id - " + entry.id);
           //console.log("sender - " + sender_psid);
-          //sender_psid.push({"id": webhook_event.sender.id});
-          sender_psid.push({"id": entry.id});
+          sender_psid.push({"id": webhook_event.sender.id});
+          //sender_psid.push({"id": entry.id});
           let thread_key;
 
           //let sender = get_sender_profile(sender_psid);
