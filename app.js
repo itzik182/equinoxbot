@@ -265,8 +265,10 @@ console.log('req.body - ' + JSON.stringify(req.body));
           let webhook_event = entry.messaging[0];
           console.log("entry.messaging: " + JSON.stringify(webhook_event));
           // Get the sender PSID
+          console.log("entry.id - " + entry.id);
           //console.log("sender - " + sender_psid);
-          sender_psid.push({"id": webhook_event.sender.id});
+          //sender_psid.push({"id": webhook_event.sender.id});
+          sender_psid.push({"id": entry.id});
           let thread_key;
 
           //let sender = get_sender_profile(sender_psid);
