@@ -118,14 +118,14 @@ function handleMessage(sender_psid, received_message, thread_key) {
     //else {
     //  text = 'You sent the message: "${received_message.text}". Now send me an image111!';
     //}
-    console.log("text556 - " + text);
+    //console.log("text556 - " + text);
     // Create the payload for a basic text message
     response = {
       "text": text,
       //"buttons": buttons,
       "quick_replies": quick_replies
     }
-    console.log("response - " + JSON.stringify(response));
+    //console.log("response - " + JSON.stringify(response));
   }  
   
   // Sends the response message
