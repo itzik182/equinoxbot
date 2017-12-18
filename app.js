@@ -134,7 +134,7 @@ function handleMessage(sender_psid, received_message, thread_key) {
 
 // Handles messaging_postbacks events
 function handlePostback(sender_psid, received_postback) {
-  console.log("payload - " + received_postback.quick_reply.payload);
+  //console.log("payload - " + received_postback.quick_reply.payload);
   //handleMessage(sender_psid, received_postback.payload);
   let response;
   
@@ -153,10 +153,10 @@ function handlePostback(sender_psid, received_postback) {
 
 // Sends response messages via the Send API
 function callSendAPI(sender_psid, response, thread_key) {
-  console.log("sender_psid11: " + JSON.stringify(sender_psid));
+  console.log("sender_psid - : " + JSON.stringify(sender_psid));
   sender_psid.forEach(function(sender) {
   //for(var sender in sender_psid) {
-    console.log(sender.id)
+    //console.log(sender.id)
     // Construct the message body
     let request_body = {
       "recipient": {
@@ -164,7 +164,7 @@ function callSendAPI(sender_psid, response, thread_key) {
       },
       "message": response
     }
-  console.log("request_body: " + JSON.stringify(request_body));
+  //console.log("request_body: " + JSON.stringify(request_body));
     // Send the HTTP request to the Messenger Platform
     request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
@@ -225,7 +225,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
     body.entry.forEach(function(entry) {
       
       
-        console.log("send");
+        //console.log("send");
         if (entry && entry.changes && entry.changes.length > 0) {
 
           console.log("entry.changes: " + JSON.stringify(entry.changes[0]));
@@ -250,7 +250,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
           }
 
           
-          console.log("sender2 - " + sender_psid);
+          //console.log("sender2 - " + sender_psid);
           console.log("message - " + message);
           if (message) {
             handleMessage(sender_psid, message.trim());  
@@ -265,12 +265,12 @@ console.log('req.body - ' + JSON.stringify(req.body));
           let webhook_event = entry.messaging[0];
           console.log("entry.messaging: " + JSON.stringify(webhook_event));
           // Get the sender PSID
-          console.log("sender - " + sender_psid);
+          //console.log("sender - " + sender_psid);
           sender_psid.push({"id": webhook_event.sender.id});
           let thread_key;
 
           //let sender = get_sender_profile(sender_psid);
-          console.log("sender - " + sender_psid);
+          console.log("sender - " + JSON.stringify(sender_psid));
 
           if (webhook_event.thread && webhook_event.thread.id) {
              thread_key = webhook_event.thread.id;
@@ -283,13 +283,13 @@ console.log('req.body - ' + JSON.stringify(req.body));
           // pass the event to the appropriate handler function
           //console.log(webhook_event.message.quick_reply);
           if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
-            console.log('handleMessage: ' + webhook_event.message);
+            console.log('handleMessage: ' + JSON.stringify(webhook_event.message));
             handleMessage(sender_psid, webhook_event.message.text, thread_key);        
           } else if (webhook_event.postback) {
-            console.log('handlePostback: ' + webhook_event.postback);
+            console.log('handlePostback: ' + JSON.stringify(webhook_event.postback));
             handlePostback(sender_psid, webhook_event.postback);
           } else if (webhook_event.message && webhook_event.message.quick_reply) {
-            console.log('handlePostback: ' + webhook_event.message);
+            console.log('handlePostback: ' + JSON.stringify(webhook_event.message));
             handlePostback(sender_psid, webhook_event.message);
           }
         }
