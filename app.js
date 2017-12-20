@@ -155,7 +155,8 @@ function handlePostback(sender_psid, received_postback) {
 function callSendAPI(sender_psid, response, thread_key) {
   console.log("sender_psid - : " + JSON.stringify(sender_psid));
   sender_psid.forEach(function(sender) {
-  displayTheTypingBubble(sender, response, thread_key);
+  //displayTheTypingBubble(sender, response, thread_key);
+    
   //for(var sender in sender_psid) {
     //console.log(sender.id)
     // Construct the message body
