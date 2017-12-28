@@ -81,11 +81,12 @@ function handleMessage(recipients, received_message, thread_key) {
       console.log("equinox meeting #");
       var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
       if (substring_message.indexOf(";") !== -1 ) {
-        inviteEmails = received_message.split(" ");
+        inviteEmails = substring_message.split(";");
+        //inviteEmails = inviteEmails.split(",");
       } else {
         inviteEmails.push(substring_message);
       }
-      console.log("inviteEmails: " + inviteEmails);
+      console.log("inviteEmails: " + JSON.stringify(inviteEmails));
       if (inviteEmails.length > 0) {
         inviteEmails.forEach(function(inviteEmail) {
           graphapi({
