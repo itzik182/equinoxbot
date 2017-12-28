@@ -78,12 +78,14 @@ function handleMessage(recipients, received_message, thread_key) {
     
     var inviteEmails = [];
     if (received_message.includes("equinox meeting #")) {
-      var substring_message = received_message.substring(received_message.indexOf("#"), received_message.length);
+      console.log("equinox meeting #");
+      var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
       if (substring_message.indexOf(";") !== -1 ) {
         inviteEmails = received_message.split(" ");
       } else {
-        inviteEmails.push(received_message);
+        inviteEmails.push(substring_message);
       }
+      console.log("inviteEmails: " + inviteEmails);
       if (inviteEmails.length > 0) {
         inviteEmails.forEach(function(inviteEmail) {
           graphapi({
@@ -95,7 +97,7 @@ function handleMessage(recipients, received_message, thread_key) {
             } else { 
               if (body && body.id) {
                 console.log("body.id1116-" + body.id);
-                recipients.push(body.id);
+                recipients.push({"id": body.id });
               }
             }
           });
@@ -127,23 +129,23 @@ function handleMessage(recipients, received_message, thread_key) {
         text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         break;
     case 'link to my virtual room':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
+        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         break;
     case 'tamar': case 'link to tamar':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
+        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         break;
     case 'guy': case 'link to guy':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
+        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         break;
     case "Let's have a meeting": case 'Lets have a meeting':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
+        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         break;
     case 'buttons':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
+        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         buttons:[
           {
             "type":"web_url",
-            "url":"https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167",
+            "url":"https://avayaequinoxmeetings.com/scopia/mt/9022?ID=" + VR,
             "title":"Link to guy vr",
             "webview_height_ratio": "full",
             "messenger_extensions": true,  
@@ -185,7 +187,7 @@ function handleMessage(recipients, received_message, thread_key) {
         text = 'You are welcome';
         break;
     case 'lets meet anna room':
-        text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=661232';
+        text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=' + VR;
         break;
     case 'location':
         text = "location";
@@ -200,7 +202,7 @@ function handleMessage(recipients, received_message, thread_key) {
     }
     
     if(received_message.includes("meet") || received_message.includes("discuss") || received_message.includes("brainstorm") || received_message.includes("meeting")){
-      text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + primary_phone;
+      text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + VR;
     }
     
     //if (received_message.text === 'lets meet') {    
