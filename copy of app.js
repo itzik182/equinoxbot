@@ -9,13 +9,13 @@
  */
 
 'use strict';
-const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
+const PAGE_ACCESS_TOKEN = "DQVJ0SkQzOWRQdE03clJsSnNxT1Y5WUF2UmxmZAmdScDdGTVRBNC1nY042S0REbm1USmxNVnVHWkVPZAmhrbDVEM0tVdEpJTmRIRGMyT3dHY1p3cENhTVl0aFlQRHI5OHVoT3ZARRzZAJdkM4UWtmYjEtYkNsT3IwNmNQb0xpRFBMYkV3RVVnVnpGbFpvRWhOeTlzX3drdEZA6SllFN3FabGlTS0Ftck0tZAFpKRDV6SVA0TktuYlpPa0IybXNmMi10SmhKMUZASanZAhREhHMThRa2paOAZDZD";
 
 
 
 
 // Imports dependencies and set up http server
-const
+const 
   feed = require('feed-read'),
   request = require('request'),
   express = require('express'),
@@ -30,29 +30,9 @@ var graphapi = request.defaults({
     }
 });
 
-var graphapi2 = request.defaults({
-    baseUrl: 'https://www.facebook.com',
-    json: true,
-    auth: {
-        'bearer' : PAGE_ACCESS_TOKEN 
-    }
-});
-
-//Post into a group: itzik gmail 100022693691284, itzik avaya - 100022742164286
 //graphapi({
 //    method: 'POST',
-//    url: '/395404170913985/feed?message=This+**@[100022742164286]**+@[100022693691284]+is+a+**formatted**+*post*&formatting=MARKDOWN',
-//},function(error,response,body) {
-//    if(error) { 
-//        console.error(error);
-//    } else {
-//        console.log('Published post: ' + body.id);
-//    }
-//});
-
-//graphapi({
-//    method: 'POST',
-//    url: '/395404170913985/feed',
+//    url: '/666397623569707/feed',
 //    qs: {
 //        'message': 'Itzik111',
 //        'link': 'https:www.walla.co.il'
@@ -73,40 +53,12 @@ function handleMessage(recipients, received_message, thread_key) {
   let quick_replies;
   let buttons;
   // Check if the message contains text
-  if (received_message) {
+  if (received_message) {    
     console.log(received_message);
-    
-    var emails, email;
-    if (received_message.includes("equinox meeting #")) {
-      var substring_message = received_message.substring(received_message.indexOf("#"), received_message.length);
-      if (substring_message.indexOf(";") !== -1 ) {
-        emails = received_message.split(" ");
-      } else {
-        email = received_message;
-      }
-    }
-    
-    var primary_phone;
-    var VR;
-    graphapi({
-        method: 'GET',
-        url: '/' + recipients[0].id + '?fields=email,name,primary_phone,department',
-    },function(error,response,body) {
-      if(error) {
-          console.error(error);
-      } else {
-        VR = body.department;
-        if (body.primary_phone) {
-          primary_phone = body.primary_phone.replace('+', '');
-        }
-        console.log("body - " + JSON.stringify(body));
-        //console.log("response - " + JSON.stringify(response));
-      }
-    
     
     switch(received_message.toLowerCase()) {
     case 'lets meet': case 'meet': case 'discuss': case 'brainstorm':
-        text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+        text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
         break;
     case 'link to my virtual room':
         text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=9200167';
@@ -182,7 +134,7 @@ function handleMessage(recipients, received_message, thread_key) {
     }
     
     if(received_message.includes("meet") || received_message.includes("discuss") || received_message.includes("brainstorm") || received_message.includes("meeting")){
-      text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + primary_phone;
+      text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=171197237679607';
     }
     
     //if (received_message.text === 'lets meet') {    
@@ -198,16 +150,25 @@ function handleMessage(recipients, received_message, thread_key) {
       //"buttons": buttons,
       "quick_replies": quick_replies
     }
-    
     //console.log("response - " + JSON.stringify(response));
+  }
   
-  
-  
+  recipients.forEach(function(recipients) {
+    graphapi({
+        method: 'GET',
+        url: '/' + recipients.id + '?fields=email,name,primary_phone',
+    },function(error,response,body) {
+        if(error) {
+            console.error(error);
+        } else {
+          console.log("body - " + JSON.stringify(body));
+          console.log("response - " + JSON.stringify(response));
+        }
+    });
+  });
   
   // Sends the response message
-  callSendAPI(recipients, response, thread_key);  
-      });
-    };  
+  callSendAPI(recipients, response, thread_key);
 }
 
 // Handles messaging_postbacks events
@@ -234,26 +195,16 @@ function callSendAPI(recipients, response, thread_key) {
   console.log("recipients - : " + JSON.stringify(recipients));
   recipients.forEach(function(recipient) {
   //displayTheTypingBubble(sender, response, thread_key);
-  let request_body;
-  //for(var sender in sender_psid) {
-    console.log('thread_key: ' + thread_key);
-    // Construct the message body
-    if (thread_key && thread_key !== undefined && thread_key !== null) {
-      request_body = {
-      "recipient": {
-        "thread_key": thread_key,
-      },
-      "message": response
-      }
-    } else {
-     request_body = {
-      "recipient": {
-        "id": recipient.id,
-      },
-      "message": response
-      } 
-    }
     
+  //for(var sender in sender_psid) {
+    //console.log(sender.id)
+    // Construct the message body
+    let request_body = {
+      //"recipient": {
+        "id": recipient.id,
+      //},
+      "message": response
+    }
     console.log("request_body: " + JSON.stringify(request_body));
     // Send the HTTP request to the Messenger Platform
     request({
@@ -342,57 +293,55 @@ console.log('req.body - ' + JSON.stringify(req.body));
           entry.changes.forEach(function(change) {
             console.log("change: " + JSON.stringify(change));
             let value = change.value;
-            if (value.verb !== 'delete') {
-              if (body.object === 'group' && value.from) {
-                sender_psid.push({"id": value.from.id});
-              } else {
-                sender_psid.push({"id": value.sender_id});
-              }
-              let message = value.message;
-              if (value.message_tags) {
-                value.message_tags.forEach(function(tag) {
-                  if (tag.type === "user")
-                  sender_psid.push({"id": tag.id});
-                });
-                let messages = message.split(' ');
 
-                for(var i = value.message_tags.length; i < messages.length; i++) {
-                  message = messages[i] + " ";
-                }
+            if (body.object === 'group' && value.from) {
+              sender_psid.push({"id": value.from.id});
+            } else {
+              sender_psid.push({"id": value.sender_id});
+            }
+            let message = value.message;
+            if (value.message_tags) {
+              value.message_tags.forEach(function(tag) {
+                if (tag.type === "user")
+                sender_psid.push({"id": tag.id});
+              });
+              let messages = message.split(' ');
+
+              for(var i = value.message_tags.length; i < messages.length; i++) {
+                message = messages[i] + " ";
               }
+            }
+
+            let mention_id = (change.field === 'comments') ?
+                          value.comment_id : value.post_id;
+            
+            if(value.from.category !== 'Bot') {
+              // Comment reply with thanks stat summary
+              graphapi({
+                  url: '/' + mention_id + '/comments',
+                  method: 'POST',
+                  qs: {
+                      message: 'summary111'
+                  }
+              }, function(error,res,body) {
+                  console.log('Comment reply', mention_id);
+              });
               
-              let mention_id = (change.field === 'comments') ?
-                            value.comment_id : value.post_id;
-              
-              
-              if(value.from.category === undefined || (value.from.category !== undefined && value.from.category !== 'Bot')) {
-                // Comment reply
-                graphapi({ 
-                    url: '/' + mention_id + '/comments',
-                    method: 'POST',
-                    qs: {
-                        message: 'Thanks'
-                    }
+              if(message === 'thanks') {
+                // Like the post or comment to indicate acknowledgement
+                graphapi({
+                    url: '/' + mention_id + '/likes',
+                    method: 'POST'
                 }, function(error,res,body) {
-                    console.log('Comment reply', mention_id);
-                });
-
-                if(message.toLowerCase() === 'thanks') {
-                  // Like the post or comment to indicate acknowledgement
-                  graphapi({
-                      url: '/' + mention_id + '/likes',
-                      method: 'POST'
-                  }, function(error,res,body) {
-                      console.log('Like', mention_id);
-                  });   
-                }
+                    console.log('Like', mention_id);
+                });   
               }
+            }
 
-              //console.log("sender2 - " + sender_psid);
-              console.log("message - " + message);
-              if (message) {
-                handleMessage(sender_psid, message.trim());  
-              }
+            //console.log("sender2 - " + sender_psid);
+            console.log("message - " + message);
+            if (message) {
+              handleMessage(sender_psid, message.trim());  
             }
           });
         }
@@ -455,7 +404,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
 app.get('/webhook', (req, res) => {
   //console.log('get');
   /** UPDATE YOUR VERIFY TOKEN **/
-  const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
+  const VERIFY_TOKEN = "Avaya2011fffdfd343rer34r3ere";
   
   // Parse params from the webhook verification request
   let mode = req.query['hub.mode'];

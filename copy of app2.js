@@ -9,7 +9,7 @@
  */
 
 'use strict';
-const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
+const PAGE_ACCESS_TOKEN = "DQVJ0SkQzOWRQdE03clJsSnNxT1Y5WUF2UmxmZAmdScDdGTVRBNC1nY042S0REbm1USmxNVnVHWkVPZAmhrbDVEM0tVdEpJTmRIRGMyT3dHY1p3cENhTVl0aFlQRHI5OHVoT3ZARRzZAJdkM4UWtmYjEtYkNsT3IwNmNQb0xpRFBMYkV3RVVnVnpGbFpvRWhOeTlzX3drdEZA6SllFN3FabGlTS0Ftck0tZAFpKRDV6SVA0TktuYlpPa0IybXNmMi10SmhKMUZASanZAhREhHMThRa2paOAZDZD";
 
 
 
@@ -39,16 +39,16 @@ var graphapi2 = request.defaults({
 });
 
 //Post into a group: itzik gmail 100022693691284, itzik avaya - 100022742164286
-//graphapi({
-//    method: 'POST',
-//    url: '/395404170913985/feed?message=This+**@[100022742164286]**+@[100022693691284]+is+a+**formatted**+*post*&formatting=MARKDOWN',
-//},function(error,response,body) {
-//    if(error) { 
-//        console.error(error);
-//    } else {
-//        console.log('Published post: ' + body.id);
-//    }
-//});
+graphapi({
+    method: 'POST',
+    url: '/395404170913985/feed?message=This+**@[100022742164286]**+@[100022693691284]+is+a+**formatted**+*post*&formatting=MARKDOWN',
+},function(error,response,body) {
+    if(error) { 
+        console.error(error);
+    } else {
+        console.log('Published post: ' + body.id);
+    }
+});
 
 //graphapi({
 //    method: 'POST',
@@ -73,35 +73,24 @@ function handleMessage(recipients, received_message, thread_key) {
   let quick_replies;
   let buttons;
   // Check if the message contains text
-  if (received_message) {
+  if (received_message) {    
     console.log(received_message);
-    
-    var emails, email;
-    if (received_message.includes("equinox meeting #")) {
-      var substring_message = received_message.substring(received_message.indexOf("#"), received_message.length);
-      if (substring_message.indexOf(";") !== -1 ) {
-        emails = received_message.split(" ");
-      } else {
-        email = received_message;
-      }
-    }
-    
     var primary_phone;
     var VR;
     graphapi({
         method: 'GET',
         url: '/' + recipients[0].id + '?fields=email,name,primary_phone,department',
     },function(error,response,body) {
-      if(error) {
-          console.error(error);
-      } else {
-        VR = body.department;
-        if (body.primary_phone) {
-          primary_phone = body.primary_phone.replace('+', '');
+        if(error) {
+            console.error(error);
+        } else {
+          VR = body.department;
+          if (body.primary_phone) {
+            primary_phone = body.primary_phone.replace('+', '');
+          }
+          console.log("body - " + JSON.stringify(body));
+          //console.log("response - " + JSON.stringify(response));
         }
-        console.log("body - " + JSON.stringify(body));
-        //console.log("response - " + JSON.stringify(response));
-      }
     
     
     switch(received_message.toLowerCase()) {
@@ -455,7 +444,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
 app.get('/webhook', (req, res) => {
   //console.log('get');
   /** UPDATE YOUR VERIFY TOKEN **/
-  const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
+  const VERIFY_TOKEN = "Avaya2011fffdfd343rer34r3ere";
   
   // Parse params from the webhook verification request
   let mode = req.query['hub.mode'];

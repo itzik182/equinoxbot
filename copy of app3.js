@@ -73,35 +73,24 @@ function handleMessage(recipients, received_message, thread_key) {
   let quick_replies;
   let buttons;
   // Check if the message contains text
-  if (received_message) {
+  if (received_message) {    
     console.log(received_message);
-    
-    var emails, email;
-    if (received_message.includes("equinox meeting #")) {
-      var substring_message = received_message.substring(received_message.indexOf("#"), received_message.length);
-      if (substring_message.indexOf(";") !== -1 ) {
-        emails = received_message.split(" ");
-      } else {
-        email = received_message;
-      }
-    }
-    
     var primary_phone;
     var VR;
     graphapi({
         method: 'GET',
         url: '/' + recipients[0].id + '?fields=email,name,primary_phone,department',
     },function(error,response,body) {
-      if(error) {
-          console.error(error);
-      } else {
-        VR = body.department;
-        if (body.primary_phone) {
-          primary_phone = body.primary_phone.replace('+', '');
+        if(error) {
+            console.error(error);
+        } else {
+          VR = body.department;
+          if (body.primary_phone) {
+            primary_phone = body.primary_phone.replace('+', '');
+          }
+          console.log("body - " + JSON.stringify(body));
+          //console.log("response - " + JSON.stringify(response));
         }
-        console.log("body - " + JSON.stringify(body));
-        //console.log("response - " + JSON.stringify(response));
-      }
     
     
     switch(received_message.toLowerCase()) {
