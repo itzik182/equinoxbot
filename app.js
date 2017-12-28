@@ -76,15 +76,33 @@ function handleMessage(recipients, received_message, thread_key) {
   if (received_message) {
     console.log(received_message);
     
-    var emails, email;
+    var inviteEmails = [];
     if (received_message.includes("equinox meeting #")) {
       var substring_message = received_message.substring(received_message.indexOf("#"), received_message.length);
       if (substring_message.indexOf(";") !== -1 ) {
-        emails = received_message.split(" ");
+        inviteEmails = received_message.split(" ");
       } else {
-        email = received_message;
+        inviteEmails.push(received_message);
+      }
+      if (inviteEmails.length > 0) {
+        inviteEmails.forEach(function(inviteEmail) {
+          graphapi({
+            method: 'GET',
+            url: '/' + inviteEmail + '?fields=id',
+          },function(error,response,body) {
+            if(error) {
+              console.error(error);
+            } else { 
+              if (body && body.id) {
+                console.log("body.id1116-" + body.id);
+                recipients.push(body.id);
+              }
+            }
+          });
+        });
       }
     }
+    
     
     var primary_phone;
     var VR;
