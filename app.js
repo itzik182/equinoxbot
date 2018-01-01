@@ -68,7 +68,7 @@ var graphapi2 = request.defaults({
 
 
 function getvr (received_message) {
-  var inviteEmails = [];
+  var inviteEmails, recipients = [];
   var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
   if (substring_message.indexOf(";") !== -1) {
     inviteEmails = substring_message.split(";");
@@ -94,6 +94,7 @@ function getvr (received_message) {
       });
     });
   }
+  return recipients;
 }
 
 // Handles messages events
@@ -109,7 +110,7 @@ function handleMessage(recipients, received_message, thread_key) {
     
     if (received_message.indexOf("equinox meeting") !== -1 && received_message.includes("#") !== -1) {
       console.log("equinox meeting #");
-      
+      recipients = recipients.concat(arr2);
     } else if (received_message.indexOf("virtual room") !== -1 && received_message.includes("#") !== -1) {
       
     }
