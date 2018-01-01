@@ -66,6 +66,36 @@ var graphapi2 = request.defaults({
 //    }
 //});
 
+
+function getvr (received_message) {
+  var inviteEmails = [];
+  var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
+  if (substring_message.indexOf(";") !== -1) {
+    inviteEmails = substring_message.split(";");
+    //inviteEmails = inviteEmails.split(",");
+  } else {
+    inviteEmails.push(substring_message);
+  }
+  console.log("inviteEmails: " + JSON.stringify(inviteEmails));
+  if (inviteEmails.length > 0) {
+    inviteEmails.forEach(function(inviteEmail) {
+      graphapi({
+        method: 'GET',
+        url: '/' + inviteEmail + '?fields=id',
+      },function(error,response,body) {
+        if(error) {
+          console.error(error);
+        } else { 
+          if (body && body.id) {
+            console.log("body.id1116-" + body.id);
+            recipients.push({"id": body.id });
+          }
+        }
+      });
+    });
+  }
+}
+
 // Handles messages events
 function handleMessage(recipients, received_message, thread_key) {  
   let response;
@@ -76,34 +106,12 @@ function handleMessage(recipients, received_message, thread_key) {
   if (received_message) {
     console.log(received_message);
     
-    var inviteEmails = [];
-    if (received_message.includes("equinox meeting #") && received_message.includes("#")) {
+    
+    if (received_message.indexOf("equinox meeting") !== -1 && received_message.includes("#") !== -1) {
       console.log("equinox meeting #");
-      var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
-      if (substring_message.indexOf(";") !== -1 ) {
-        inviteEmails = substring_message.split(";");
-        //inviteEmails = inviteEmails.split(",");
-      } else {
-        inviteEmails.push(substring_message);
-      }
-      console.log("inviteEmails: " + JSON.stringify(inviteEmails));
-      if (inviteEmails.length > 0) {
-        inviteEmails.forEach(function(inviteEmail) {
-          graphapi({
-            method: 'GET',
-            url: '/' + inviteEmail + '?fields=id',
-          },function(error,response,body) {
-            if(error) {
-              console.error(error);
-            } else { 
-              if (body && body.id) {
-                console.log("body.id1116-" + body.id);
-                recipients.push({"id": body.id });
-              }
-            }
-          });
-        });
-      }
+      
+    } else if (received_message.indexOf("virtual room") !== -1 && received_message.includes("#") !== -1) {
+      
     }
     
     
