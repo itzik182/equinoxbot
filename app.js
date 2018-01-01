@@ -77,7 +77,7 @@ function handleMessage(recipients, received_message, thread_key) {
     console.log(received_message);
     
     var inviteEmails = [];
-    if (received_message.includes("equinox meeting #")) {
+    if (received_message.includes("equinox meeting #") && received_message.includes("#")) {
       console.log("equinox meeting #");
       var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
       if (substring_message.indexOf(";") !== -1 ) {
@@ -109,6 +109,7 @@ function handleMessage(recipients, received_message, thread_key) {
     
     var primary_phone;
     var VR;
+    var defaultVR = '9200167';
     graphapi({
         method: 'GET',
         url: '/' + recipients[0].id + '?fields=email,name,primary_phone,department',
@@ -116,7 +117,7 @@ function handleMessage(recipients, received_message, thread_key) {
       if(error) {
           console.error(error);
       } else {
-        VR = body.department;
+        VR = body.department ? body.department : defaultVR;
         if (body.primary_phone) {
           primary_phone = body.primary_phone.replace('+', '');
         }
