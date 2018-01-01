@@ -82,7 +82,7 @@ function getRecipients (received_message) {
     inviteEmails.forEach(function(inviteEmail) {
       graphapi({
         method: 'GET',
-        url: '/' + inviteEmail + '?fields=id',
+        url: '/' + inviteEmail + '?fields=id,email,name,primary_phone,department',
       },function(error,response,body) {
         if(error) {
           console.error(error);
@@ -94,8 +94,8 @@ function getRecipients (received_message) {
         }
       });
     });
+    return recipients;
   }
-  return recipients;
 }
 
 // Handles messages events
@@ -107,9 +107,10 @@ function handleMessage(recipients, received_message, thread_key) {
   // Check if the message contains text
   if (received_message) {
     console.log(received_message);
-    
-    if (received_message.indexOf("virtual room") !== -1 && received_message.includes("#") !== -1) {
-      var par = getRecipients(received_message)[0];
+    console.log(par);
+    if (received_message.indexOf("virtual room") !== -1 && received_message.indexOf("#") !== -1) {
+      var par = getRecipients(received_message);
+      console.log('par =' + par);
       text = 'The virtual room of' + par.name + 'is' + par.department;
       response = {
           "text": text,
@@ -117,7 +118,7 @@ function handleMessage(recipients, received_message, thread_key) {
         // Sends the response message
         callSendAPI(recipients, response, thread_key);  
     } else {
-      if (received_message.indexOf("equinox meeting") !== -1 && received_message.includes("#") !== -1) {
+      if (received_message.indexOf("equinox meeting") !== -1 && received_message.indexOf("#") !== -1) {
         console.log("equinox meeting #");
         recipients = recipients.concat(getRecipients(received_message));
       }
