@@ -107,114 +107,113 @@ function handleMessage(recipients, received_message, thread_key) {
   if (received_message) {
     console.log(received_message);
     
-    
-    if (received_message.indexOf("equinox meeting") !== -1 && received_message.includes("#") !== -1) {
-      console.log("equinox meeting #");
-      recipients = recipients.concat(arr2);
-    } else if (received_message.indexOf("virtual room") !== -1 && received_message.includes("#") !== -1) {
+    if (received_message.indexOf("virtual room") !== -1 && received_message.includes("#") !== -1) {
       
     }
-    
-    
-    var primary_phone;
-    var VR;
-    var defaultVR = '9200167';
-    graphapi({
-        method: 'GET',
-        url: '/' + recipients[0].id + '?fields=email,name,primary_phone,department',
-    },function(error,response,body) {
-      if(error) {
-          console.error(error);
-      } else {
-        VR = body.department ? body.department : defaultVR;
-        if (body.primary_phone) {
-          primary_phone = body.primary_phone.replace('+', '');
-        }
-        console.log("body - " + JSON.stringify(body));
-        //console.log("response - " + JSON.stringify(response));
+      if (received_message.indexOf("equinox meeting") !== -1 && received_message.includes("#") !== -1) {
+        console.log("equinox meeting #");
+        recipients = recipients.concat(getRecipients(received_message));
       }
-    
-    
-    switch(received_message.toLowerCase()) {
-    case 'lets meet': case 'meet': case 'discuss': case 'brainstorm':
-        text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case 'link to my virtual room':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case 'tamar': case 'link to tamar':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case 'guy': case 'link to guy':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case "Let's have a meeting": case 'Lets have a meeting':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case 'buttons':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        buttons:[
-          {
-            "type":"web_url",
-            "url":"https://avayaequinoxmeetings.com/scopia/mt/9022?ID=" + VR,
-            "title":"Link to guy vr",
-            "webview_height_ratio": "full",
-            "messenger_extensions": true,  
-            "fallback_url": "https://petersfancyapparel.com/fallback"
+
+      var primary_phone;
+      var VR;
+      var defaultVR = '9200167';
+      graphapi({
+          method: 'GET',
+          url: '/' + recipients[0].id + '?fields=email,name,primary_phone,department',
+      },function(error,response,body) {
+        if(error) {
+            console.error(error);
+        } else {
+          VR = body.department ? body.department : defaultVR;
+          if (body.primary_phone) {
+            primary_phone = body.primary_phone.replace('+', '');
           }
-        ]
-        break;
-    case '_letsa meet':
-        text = 'Which virtual room?';
-        quick_replies = [
+          console.log("body - " + JSON.stringify(body));
+          //console.log("response - " + JSON.stringify(response));
+        }
+
+
+      switch(received_message.toLowerCase()) {
+      case 'lets meet': case 'meet': case 'discuss': case 'brainstorm':
+          text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+          break;
+      case 'link to my virtual room':
+          text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+          break;
+      case 'tamar': case 'link to tamar':
+          text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+          break;
+      case 'guy': case 'link to guy':
+          text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+          break;
+      case "Let's have a meeting": case 'Lets have a meeting':
+          text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+          break;
+      case 'buttons':
+          text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+          buttons:[
             {
-              //"type": "postback",
-              "content_type":"text",
-              "title":"Itzik",
-              //"image_url":"http://example.com/img/red.png",
-              "payload":"yes"
-            },
-              {
-              "content_type":"text",
-              "title":"Ronny",
-              //"image_url":"http://example.com/img/red.png",
-              "payload":"<lets meet ronny room>"
-            },
-              {
-              "content_type":"text",
-              "title":"Anna",
-              //"image_url":"http://example.com/img/red.png",
-              "payload":"<lets meet anna room>"
+              "type":"web_url",
+              "url":"https://avayaequinoxmeetings.com/scopia/mt/9022?ID=" + VR,
+              "title":"Link to guy vr",
+              "webview_height_ratio": "full",
+              "messenger_extensions": true,  
+              "fallback_url": "https://petersfancyapparel.com/fallback"
             }
-        ]
-        break;
-    case 'hi':
-        text = 'Hello, Im EquinoxBot, How i can help you?';
-        break;
-    case 'have a nice day':
-        text = 'You as well, thank you';
-        break;
-    case 'thank you': case 'thanks':
-        text = 'You are welcome';
-        break;
-    case 'lets meet anna room':
-        text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=' + VR;
-        break;
-    case 'location':
-        text = "location";
-        quick_replies = [
-          {
-            "content_type":"location"
-          }
-        ];
-        break;
-    //default:
-    //    text = `You sent the message: "${received_message.text}".`;
-    }
-    
-    if(received_message.includes("meet") || received_message.includes("discuss") || received_message.includes("brainstorm") || received_message.includes("meeting")){
-      text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + VR;
-    }
+          ]
+          break;
+      case '_letsa meet':
+          text = 'Which virtual room?';
+          quick_replies = [
+              {
+                //"type": "postback",
+                "content_type":"text",
+                "title":"Itzik",
+                //"image_url":"http://example.com/img/red.png",
+                "payload":"yes"
+              },
+                {
+                "content_type":"text",
+                "title":"Ronny",
+                //"image_url":"http://example.com/img/red.png",
+                "payload":"<lets meet ronny room>"
+              },
+                {
+                "content_type":"text",
+                "title":"Anna",
+                //"image_url":"http://example.com/img/red.png",
+                "payload":"<lets meet anna room>"
+              }
+          ]
+          break;
+      case 'hi':
+          text = 'Hello, Im EquinoxBot, How i can help you?';
+          break;
+      case 'have a nice day':
+          text = 'You as well, thank you';
+          break;
+      case 'thank you': case 'thanks':
+          text = 'You are welcome';
+          break;
+      case 'lets meet anna room':
+          text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=' + VR;
+          break;
+      case 'location':
+          text = "location";
+          quick_replies = [
+            {
+              "content_type":"location"
+            }
+          ];
+          break;
+      //default:
+      //    text = `You sent the message: "${received_message.text}".`;
+      }
+
+      if(received_message.includes("meet") || received_message.includes("discuss") || received_message.includes("brainstorm") || received_message.includes("meeting")){
+        text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + VR;
+      }
     
     //if (received_message.text === 'lets meet') {    
     //  text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=661236';
@@ -237,8 +236,8 @@ function handleMessage(recipients, received_message, thread_key) {
   
   // Sends the response message
   callSendAPI(recipients, response, thread_key);  
-      });
-    };  
+    });
+  };  
 }
 
 // Handles messaging_postbacks events
