@@ -67,8 +67,9 @@ var graphapi2 = request.defaults({
 //});
 
 
-function getvr (received_message) {
-  var inviteEmails, recipients = [];
+function getRecipients (received_message) { 
+  var inviteEmails = [];
+  var recipients = [];
   var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
   if (substring_message.indexOf(";") !== -1) {
     inviteEmails = substring_message.split(";");
@@ -108,8 +109,14 @@ function handleMessage(recipients, received_message, thread_key) {
     console.log(received_message);
     
     if (received_message.indexOf("virtual room") !== -1 && received_message.includes("#") !== -1) {
-      
-    }
+      var par = getRecipients(received_message)[0];
+      text = 'The virtual room of' + par.name + 'is' + par.department;
+      response = {
+          "text": text,
+        }
+        // Sends the response message
+        callSendAPI(recipients, response, thread_key);  
+    } else {
       if (received_message.indexOf("equinox meeting") !== -1 && received_message.includes("#") !== -1) {
         console.log("equinox meeting #");
         recipients = recipients.concat(getRecipients(received_message));
@@ -133,110 +140,110 @@ function handleMessage(recipients, received_message, thread_key) {
           //console.log("response - " + JSON.stringify(response));
         }
 
-
-      switch(received_message.toLowerCase()) {
-      case 'lets meet': case 'meet': case 'discuss': case 'brainstorm':
-          text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-          break;
-      case 'link to my virtual room':
-          text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-          break;
-      case 'tamar': case 'link to tamar':
-          text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-          break;
-      case 'guy': case 'link to guy':
-          text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-          break;
-      case "Let's have a meeting": case 'Lets have a meeting':
-          text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-          break;
-      case 'buttons':
-          text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-          buttons:[
-            {
-              "type":"web_url",
-              "url":"https://avayaequinoxmeetings.com/scopia/mt/9022?ID=" + VR,
-              "title":"Link to guy vr",
-              "webview_height_ratio": "full",
-              "messenger_extensions": true,  
-              "fallback_url": "https://petersfancyapparel.com/fallback"
-            }
-          ]
-          break;
-      case '_letsa meet':
-          text = 'Which virtual room?';
-          quick_replies = [
+        switch(received_message.toLowerCase()) {
+        case 'lets meet': case 'meet': case 'discuss': case 'brainstorm':
+            text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+            break;
+        case 'link to my virtual room':
+            text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+            break;
+        case 'tamar': case 'link to tamar':
+            text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+            break;
+        case 'guy': case 'link to guy':
+            text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+            break;
+        case "Let's have a meeting": case 'Lets have a meeting':
+            text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+            break;
+        case 'buttons':
+            text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+            buttons:[
               {
-                //"type": "postback",
-                "content_type":"text",
-                "title":"Itzik",
-                //"image_url":"http://example.com/img/red.png",
-                "payload":"yes"
-              },
-                {
-                "content_type":"text",
-                "title":"Ronny",
-                //"image_url":"http://example.com/img/red.png",
-                "payload":"<lets meet ronny room>"
-              },
-                {
-                "content_type":"text",
-                "title":"Anna",
-                //"image_url":"http://example.com/img/red.png",
-                "payload":"<lets meet anna room>"
+                "type":"web_url",
+                "url":"https://avayaequinoxmeetings.com/scopia/mt/9022?ID=" + VR,
+                "title":"Link to guy vr",
+                "webview_height_ratio": "full",
+                "messenger_extensions": true,  
+                "fallback_url": "https://petersfancyapparel.com/fallback"
               }
-          ]
-          break;
-      case 'hi':
-          text = 'Hello, Im EquinoxBot, How i can help you?';
-          break;
-      case 'have a nice day':
-          text = 'You as well, thank you';
-          break;
-      case 'thank you': case 'thanks':
-          text = 'You are welcome';
-          break;
-      case 'lets meet anna room':
-          text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=' + VR;
-          break;
-      case 'location':
-          text = "location";
-          quick_replies = [
-            {
-              "content_type":"location"
-            }
-          ];
-          break;
-      //default:
-      //    text = `You sent the message: "${received_message.text}".`;
-      }
+            ]
+            break;
+        case '_letsa meet':
+            text = 'Which virtual room?';
+            quick_replies = [
+                {
+                  //"type": "postback",
+                  "content_type":"text",
+                  "title":"Itzik",
+                  //"image_url":"http://example.com/img/red.png",
+                  "payload":"yes"
+                },
+                  {
+                  "content_type":"text",
+                  "title":"Ronny",
+                  //"image_url":"http://example.com/img/red.png",
+                  "payload":"<lets meet ronny room>"
+                },
+                  {
+                  "content_type":"text",
+                  "title":"Anna",
+                  //"image_url":"http://example.com/img/red.png",
+                  "payload":"<lets meet anna room>"
+                }
+            ]
+            break;
+        case 'hi':
+            text = 'Hello, Im EquinoxBot, How i can help you?';
+            break;
+        case 'have a nice day':
+            text = 'You as well, thank you';
+            break;
+        case 'thank you': case 'thanks':
+            text = 'You are welcome';
+            break;
+        case 'lets meet anna room':
+            text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=' + VR;
+            break;
+        case 'location':
+            text = "location";
+            quick_replies = [
+              {
+                "content_type":"location"
+              }
+            ];
+            break;
+        //default:
+        //    text = `You sent the message: "${received_message.text}".`;
+        }
 
-      if(received_message.includes("meet") || received_message.includes("discuss") || received_message.includes("brainstorm") || received_message.includes("meeting")){
-        text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + VR;
-      }
-    
-    //if (received_message.text === 'lets meet') {    
-    //  text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=661236';
-    //}
-    //else {
-    //  text = 'You sent the message: "${received_message.text}". Now send me an image111!';
-    //}
-    //console.log("text556 - " + text);
-    // Create the payload for a basic text message
-    response = {
-      "text": text,
-      //"buttons": buttons,
-      "quick_replies": quick_replies
+        if(received_message.includes("meet") || received_message.includes("discuss") || received_message.includes("brainstorm") || received_message.includes("meeting")){
+          text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + VR;
+        }
+
+        //if (received_message.text === 'lets meet') {    
+        //  text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=661236';
+        //}
+        //else {
+        //  text = 'You sent the message: "${received_message.text}". Now send me an image111!';
+        //}
+        //console.log("text556 - " + text);
+        // Create the payload for a basic text message
+        response = {
+          "text": text,
+          //"buttons": buttons,
+          "quick_replies": quick_replies
+        }
+
+        //console.log("response - " + JSON.stringify(response));
+
+
+
+
+        // Sends the response message
+        callSendAPI(recipients, response, thread_key);  
+      });
     }
-    
-    //console.log("response - " + JSON.stringify(response));
-  
-  
-  
-  
-  // Sends the response message
-  callSendAPI(recipients, response, thread_key);  
-    });
   };  
 }
 
@@ -365,9 +372,6 @@ console.log('req.body - ' + JSON.stringify(req.body));
 
     // Iterate over each entry - there may be multiple if batched
     body.entry.forEach(function(entry) {
-      
-      
-        //console.log("send");
         if (entry && entry.changes && entry.changes.length > 0) {
           entry.changes.forEach(function(change) {
             console.log("change: " + JSON.stringify(change));
@@ -377,7 +381,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
                 sender_psid.push({"id": value.from.id});
               } else {
                 sender_psid.push({"id": value.sender_id});
-              }
+              } 
               let message = value.message;
               if (value.message_tags) {
                 value.message_tags.forEach(function(tag) {
