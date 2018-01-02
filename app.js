@@ -87,6 +87,7 @@ function getRecipients (received_message) {
         if(error) {
           console.error(error);
         } else { 
+          console.log("body.id1117-" + body.id);
           if (body && body.id) {
             console.log("body.id1116-" + body.id);
             recipients.push({"id": body.id });
@@ -95,7 +96,7 @@ function getRecipients (received_message) {
         }
       });
     });
-    return recipients;
+    //return recipients;
   }
 }
 
@@ -110,12 +111,11 @@ function handleMessage(recipients, received_message, thread_key) {
     console.log(received_message);
     console.log(par);
     if (received_message.indexOf("virtual room") !== -1 && received_message.indexOf("#") !== -1) {
-      var par = getRecipients(received_message);
-      console.log('par =' + par);
-      text = 'The virtual room of' + par.name + 'is' + par.department;
-      response = {
-          "text": text,
-        }
+      getRecipients(received_message).then(function (dd) {
+      var par = dd;
+
+      }, function() {});
+      
         // Sends the response message
         callSendAPI(recipients, response, thread_key);  
     } else {
