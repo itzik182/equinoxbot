@@ -110,8 +110,8 @@ function handleMessage(recipients, received_message, thread_key) {
   let buttons;
   // Check if the message contains text
   if (received_message) {
-    console.log(received_message);
-    console.log(par);
+    console.log('received_message- ' + received_message);
+    //console.log(par);
     if (received_message.indexOf("virtual room") !== -1 && received_message.indexOf("#") !== -1) {
       var par = getRecipients(received_message);
       console.log('par =' + par);
@@ -127,11 +127,10 @@ function handleMessage(recipients, received_message, thread_key) {
         var a = getRecipients(received_message);
         console.log("equinox meeting # a1- " + a);
         if (a !== undefined && a !== null) {
-            recipients = recipients.concat(a);
+          recipients = recipients.concat(a);
           console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
         }
-        recipients = recipients.concat(a);
-        console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
+        console.log("equinox meeting # recipients4-" + JSON.stringify(recipients));
       }
 
       var primary_phone;
