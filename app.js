@@ -67,7 +67,8 @@ var graphapi2 = request.defaults({
 //});
 
 
-function getRecipients (received_message) { 
+function getRecipients (received_message) {
+  console.log('1111111111111111111111111');
   var inviteEmails = [];
   var recipients = [];
   var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
@@ -79,10 +80,11 @@ function getRecipients (received_message) {
   }
   console.log("inviteEmails: " + JSON.stringify(inviteEmails));
   if (inviteEmails.length > 0) {
-    inviteEmails.forEach(function(inviteEmail) {
+    //inviteEmails.forEach(function(inviteEmail) {
       graphapi({
         method: 'GET',
-        url: '/' + inviteEmail + '?fields=id,email,name,primary_phone,department',
+        url: '/ihason@avaya.com?fields=id,email,name,primary_phone,department',
+        //url: '/' + inviteEmail + '?fields=id,email,name,primary_phone,department',
       },function(error,response,body) {
         if(error) {
           console.error(error);
@@ -95,7 +97,7 @@ function getRecipients (received_message) {
           }
         }
       });
-    });
+    //});
     //return recipients;
   }
 }
@@ -111,11 +113,12 @@ function handleMessage(recipients, received_message, thread_key) {
     console.log(received_message);
     console.log(par);
     if (received_message.indexOf("virtual room") !== -1 && received_message.indexOf("#") !== -1) {
-      getRecipients(received_message).then(function (dd) {
-      var par = dd;
-
-      }, function() {});
-      
+      var par = getRecipients(received_message);
+      console.log('par =' + par);
+      text = 'The virtual room of' + par.name + 'is' + par.department;
+      response = {
+          "text": text,
+        }
         // Sends the response message
         callSendAPI(recipients, response, thread_key);  
     } else {
@@ -123,6 +126,10 @@ function handleMessage(recipients, received_message, thread_key) {
         console.log("equinox meeting # recipients1-" + JSON.stringify(recipients));
         var a = getRecipients(received_message);
         console.log("equinox meeting # a1- " + a);
+        if (a !== undefined && a !== null) {
+            recipients = recipients.concat(a);
+          console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
+        }
         recipients = recipients.concat(a);
         console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
       }
