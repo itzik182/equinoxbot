@@ -86,7 +86,7 @@ function getRecipients (received_message) {
         graphapi({
           method: 'GET',
           //url: '/ihason@avaya.com?fields=id,email,name,primary_phone,department',
-          url: '/' + inviteEmail + '?fields=id,email,name,primary_phone,department',
+          url: '/' + inviteEmails[i] + '?fields=id,email,name,primary_phone,department',
         },function(error,response,body) {
           if(error) {
             console.error(error);
@@ -96,7 +96,7 @@ function getRecipients (received_message) {
             if (body && body.id) {
               console.log("body.id1116-" + body.id);
               recipients.push({"id": body.id });
-              if () {
+              if (i === inviteEmails.length) {
                 resolve(recipients);
               }
             }
