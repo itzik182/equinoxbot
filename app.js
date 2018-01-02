@@ -87,18 +87,15 @@ function getRecipients (received_message) {
         if(error) {
           console.error(error);
         } else { 
-          console.log("equinox meeting # recipients1-" + JSON.stringify(recipients));
           if (body && body.id) {
             console.log("body.id1116-" + body.id);
             recipients.push({"id": body.id });
-            console.log("inviteEmails.indexOf-" + inviteEmails.indexOf(inviteEmail));
-            if (inviteEmails.indexOf(inviteEmail) === inviteEmails.length) {
-             return recipients;   
-            }
+            return recipients;
           }
         }
       });
     });
+    return recipients;
   }
 }
 
