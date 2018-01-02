@@ -87,14 +87,18 @@ function getRecipients (received_message) {
         if(error) {
           console.error(error);
         } else { 
+          console.log("equinox meeting # recipients1-" + JSON.stringify(recipients));
           if (body && body.id) {
             console.log("body.id1116-" + body.id);
             recipients.push({"id": body.id });
+            console.log("inviteEmails.indexOf-" + inviteEmails.indexOf(inviteEmail));
+            if (inviteEmails.indexOf(inviteEmail) === inviteEmails.length) {
+             return recipients;   
+            }
           }
         }
       });
     });
-    return recipients;
   }
 }
 
@@ -119,8 +123,11 @@ function handleMessage(recipients, received_message, thread_key) {
         callSendAPI(recipients, response, thread_key);  
     } else {
       if (received_message.indexOf("equinox meeting") !== -1 && received_message.indexOf("#") !== -1) {
-        console.log("equinox meeting #");
-        recipients = recipients.concat(getRecipients(received_message));
+        console.log("equinox meeting # recipients1-" + JSON.stringify(recipients));
+        var a = getRecipients(received_message);
+        console.log("equinox meeting # a1- " + a);
+        recipients = recipients.concat(a);
+        console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
       }
 
       var primary_phone;
