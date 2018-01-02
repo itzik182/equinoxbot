@@ -82,10 +82,11 @@ function getRecipients (received_message) {
     console.log("inviteEmails: " + JSON.stringify(inviteEmails));
     if (inviteEmails.length > 0) {
       //inviteEmails.forEach(function(inviteEmail) {
+      for (var i = 0; i < inviteEmails.length; i++) { 
         graphapi({
           method: 'GET',
-          url: '/ihason@avaya.com?fields=id,email,name,primary_phone,department',
-          //url: '/' + inviteEmail + '?fields=id,email,name,primary_phone,department',
+          //url: '/ihason@avaya.com?fields=id,email,name,primary_phone,department',
+          url: '/' + inviteEmail + '?fields=id,email,name,primary_phone,department',
         },function(error,response,body) {
           if(error) {
             console.error(error);
@@ -95,13 +96,13 @@ function getRecipients (received_message) {
             if (body && body.id) {
               console.log("body.id1116-" + body.id);
               recipients.push({"id": body.id });
-              resolve(recipients);
-              //return recipients;
+              if () {
+                resolve(recipients);
+              }
             }
           }
         });
-      //});
-      //return recipients;
+      };
     }
   });
 }
@@ -248,23 +249,25 @@ function handleMessage(recipients, received_message, thread_key) {
           "text": text,
         }
         // Sends the response message
-        callSendAPI(recipients, response, thread_key);  
+      callSendAPI(recipients, response, thread_key);  
     } else if (received_message.indexOf("equinox meeting") !== -1 && received_message.indexOf("#") !== -1) {
-        console.log("equinox meeting # recipients1-" + JSON.stringify(recipients));
-        getRecipients(received_message).then(
-        function (response) {
-          console.log("Success!", response);
-          console.log("equinox meeting # a1- " + JSON.stringify(response));
-          if (response !== undefined && response !== null) {
-            console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
-            recipients = recipients.concat(response);
-            sendMessage(recipients, received_message, thread_key, text);
-          }
-          console.log("equinox meeting # recipients4-" + JSON.stringify(recipients));
-        }, function (error) {
-            console.error("Failed!", error);
-        });
-      }
+      console.log("equinox meeting # recipients1-" + JSON.stringify(recipients));
+      getRecipients(received_message).then(
+      function (response) {
+        console.log("Success!", response);
+        console.log("equinox meeting # a1- " + JSON.stringify(response));
+        if (response !== undefined && response !== null) {
+          console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
+          recipients = recipients.concat(response);
+          sendMessage(recipients, received_message, thread_key, text);
+        }
+        console.log("equinox meeting # recipients4-" + JSON.stringify(recipients));
+      }, function (error) {
+          console.error("Failed!", error);
+      });
+    } else {
+       sendMessage(recipients, received_message, thread_key, text); 
+    }
   };  
 }
 
