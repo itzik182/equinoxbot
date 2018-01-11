@@ -66,6 +66,31 @@ var graphapi2 = request.defaults({
 //    }
 //});
 
+ function doSomethingAsync(inviteEmail) {
+      return new Promise((resolve, reject) => {
+        graphapi({
+          method: 'GET',
+          //url: '/ihason@avaya.com?fields=id,email,name,primary_phone,department',
+          url: '/' + inviteEmail + '?fields=id,email,name,primary_phone,department',
+        },function(error,response,body) {
+          if(error) {
+            console.error(error);
+            reject(error);
+          } else { 
+            console.log("body.id1117-" + body.id);
+            if (body && body.id) { 
+              console.log("body.id1116-" + body.id);
+              //recipients.push({"id": body.id });
+              //if (i === inviteEmails.length) {
+                console.log("resolve");
+                resolve({"id": body.id });
+              //}
+            }
+          }
+        })
+      });
+    }
+
 
 function getRecipients (received_message) {
   let promises = [];
@@ -79,39 +104,24 @@ function getRecipients (received_message) {
       //inviteEmails = inviteEmails.split(",");
     } else {
       inviteEmails.push(substring_message);
-    }
+    } 
     console.log("inviteEmails: " + JSON.stringify(inviteEmails));
     if (inviteEmails.length > 0) {
       //inviteEmails.forEach(function(inviteEmail) {
       for (var i = 0; i < inviteEmails.length; i++) {
         console.log("for - i= " + i);
         promises.push(
-        graphapi({
-          method: 'GET',
-          //url: '/ihason@avaya.com?fields=id,email,name,primary_phone,department',
-          url: '/' + inviteEmails[i] + '?fields=id,email,name,primary_phone,department',
-        },function(error,response,body) {
-          if(error) {
-            console.error(error);
-            //reject(error);
-          } else { 
-            console.log("body.id1117-" + body.id);
-            if (body && body.id) { 
-              console.log("body.id1116-" + body.id);
-              recipients.push({"id": body.id });
-              if (i === inviteEmails.length) {
-                console.log("resolve");
-                //resolve(recipients);
-              }
-            }
-          }
-        })
-          ) 
+          recipients.push(doSomethingAsync(inviteEmails[i], recipients))
+          )  
       };
     }
    Promise.all(promises)
           .then((results) => {
-            console.log("All done", results);
+            //console.log("All done", results);
+     console.log("All done", results); 
+     return new Promise((resolve, reject) => {
+       
+     });
           })
           .catch((e) => {
               // Handle errors here
