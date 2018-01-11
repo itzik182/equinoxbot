@@ -93,11 +93,12 @@ var graphapi2 = request.defaults({
 
 
 function getRecipients (received_message) {
+  return new Promise((resolve, reject) => {
   let promises = [];
   //return new Promise(function(resolve, reject) {
     console.log('1111111111111111111111111');
     var inviteEmails = [];
-    var recipients = [];
+    var recipients = []; 
     var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
     if (substring_message.indexOf(";") !== -1) {
       inviteEmails = substring_message.split(";");
@@ -119,14 +120,12 @@ function getRecipients (received_message) {
           .then((results) => {
             //console.log("All done", results);
      console.log("All done", results); 
-     return new Promise((resolve, reject) => {
-       
-     });
+       resolve(recipients);
           })
           .catch((e) => {
               // Handle errors here
           });
-  //});
+  });
 }
 
 function sendMessage(recipients, received_message, thread_key, text) {
