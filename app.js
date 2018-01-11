@@ -97,6 +97,7 @@ function getRecipients (received_message) {
               console.log("body.id1116-" + body.id);
               recipients.push({"id": body.id });
               if (i === inviteEmails.length) {
+                console.log("resolve");
                 resolve(recipients);
               }
             }
