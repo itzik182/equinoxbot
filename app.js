@@ -68,7 +68,8 @@ var graphapi2 = request.defaults({
 
 
 function getRecipients (received_message) {
-  return new Promise(function(resolve, reject) {
+  let promises = [];
+  //return new Promise(function(resolve, reject) {
     console.log('1111111111111111111111111');
     var inviteEmails = [];
     var recipients = [];
@@ -82,7 +83,9 @@ function getRecipients (received_message) {
     console.log("inviteEmails: " + JSON.stringify(inviteEmails));
     if (inviteEmails.length > 0) {
       //inviteEmails.forEach(function(inviteEmail) {
-      for (var i = 0; i < inviteEmails.length; i++) { 
+      for (var i = 0; i < inviteEmails.length; i++) {
+        console.log("for - i= " + i);
+        promises.push(
         graphapi({
           method: 'GET',
           //url: '/ihason@avaya.com?fields=id,email,name,primary_phone,department',
@@ -90,22 +93,30 @@ function getRecipients (received_message) {
         },function(error,response,body) {
           if(error) {
             console.error(error);
-            reject(error);
+            //reject(error);
           } else { 
             console.log("body.id1117-" + body.id);
-            if (body && body.id) {
+            if (body && body.id) { 
               console.log("body.id1116-" + body.id);
               recipients.push({"id": body.id });
               if (i === inviteEmails.length) {
                 console.log("resolve");
-                resolve(recipients);
+                //resolve(recipients);
               }
             }
           }
-        });
+        })
+          ) 
       };
     }
-  });
+   Promise.all(promises)
+          .then((results) => {
+            console.log("All done", results);
+          })
+          .catch((e) => {
+              // Handle errors here
+          });
+  //});
 }
 
 function sendMessage(recipients, received_message, thread_key, text) {
