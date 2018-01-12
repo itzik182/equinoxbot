@@ -195,18 +195,20 @@ function handleMessage(recipients, received_message, thread_key) {
     
     if (received_message.indexOf("virtual room") !== -1 && received_message.indexOf("#") !== -1) {
       getRecipients(received_message).then(
-      function (recipient) {
-        console.log("Success!", recipient);
-        if (recipient && recipient.department) {
-          text = 'The virtual room of' + recipient.name + 'is' + recipient.department;
-        } else {
-          text = '';
-        }
-        response = {
-            "text": text,
+        function (response) {
+          if (response && response.length > 0) {
+            let p = response[0];
+            console.log("Success!", recipients);
+            if (recipient && recipient.department) {
+              text = 'The virtual room of ' + recipient.name + ' is' + recipient.department;
+            } else {
+              text = 'The user ' + recipient.name + ' does not have a virtual room';
+            }
+            // Sends the response message
+            callSendAPI(recipients, { "text": text }, thread_key);
+          } else {
+            console.error("error failed!");
           }
-          // Sends the response message
-        callSendAPI(recipients, response, thread_key);
       });
     } else if (received_message.indexOf("equinox meeting") !== -1 && received_message.indexOf("#") !== -1) {
       console.log("equinox meeting # recipients1-" + JSON.stringify(recipients));
