@@ -197,12 +197,12 @@ function handleMessage(recipients, received_message, thread_key) {
       getRecipients(received_message).then(
         function (response) {
           if (response && response.length > 0) {
-            let p = response[0];
-            console.log("Success!", recipients);
-            if (recipient && recipient.department) {
-              text = 'The virtual room of ' + recipient.name + ' is' + recipient.department;
+            let user = response[0];
+            console.log("Success!", response);
+            if (user && user.department) {
+              text = 'The virtual room of ' + user.name + ' is ' + user.department;
             } else {
-              text = 'The user ' + recipient.name + ' does not have a virtual room';
+              text = 'The user ' + user.name + ' does not have a virtual room';
             }
             // Sends the response message
             callSendAPI(recipients, { "text": text }, thread_key);
