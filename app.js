@@ -38,15 +38,18 @@ var graphapi2 = request.defaults({
     }
 });
 FB.setAccessToken(PAGE_ACCESS_TOKEN);
-FB.api('/', 'POST', {
-         include_headers: false,
-         batch: [
-              { method: 'GET', relative_url: 'itzik182@gmail.com?fields=id,email,name,primary_phone,department'},
-              { method: "GET", relative_url: "eyall@avaya.com?fields=id,email,name,primary_phone,department" }
-         ]
-       }, function (response) {
-                console.log("itzik123455===" + response[1].body['id']); 
-       });
+// FB.api('/', 'POST', {
+//          include_headers: false,
+//          batch: [
+//               { method: 'GET', relative_url: 'itzik182@gmail.com?fields=id,email,name,primary_phone,department'},
+//               { method: "GET", relative_url: "eyall@avaya.com?fields=id,email,name,primary_phone,department" }
+//          ]
+//        }, function (response) {
+//             var obj = JSON.parse(response[1].body);
+//             console.log("itzik123455===" + obj.email);
+//             console.log("itzik123455===" + JSON.stringify(obj)); 
+//             console.log("itzik123455===" + response[1].body); 
+//        });
 
 //Post into a group: itzik gmail 100022693691284, itzik avaya - 100022742164286
 //graphapi({
@@ -78,6 +81,8 @@ FB.api('/', 'POST', {
 
  function doSomethingAsync(inviteEmail) {
       return new Promise((resolve, reject) => {
+        
+        
         graphapi({
           method: 'POST',
           url: '/',
@@ -126,7 +131,24 @@ function getRecipients (received_message) {
     } 
     console.log("inviteEmails: " + JSON.stringify(inviteEmails));
     if (inviteEmails.length > 0) {
-      //inviteEmails.forEach(function(inviteEmail) {
+      let batch = [];
+      inviteEmails.forEach(function(inviteEmail) {
+        batch.push();
+      });
+      
+      FB.api('/', 'POST', {
+         include_headers: false,
+         batch: [
+              { method: 'GET', relative_url: 'itzik182@gmail.com?fields=id,email,name,primary_phone,department'},
+              { method: "GET", relative_url: "eyall@avaya.com?fields=id,email,name,primary_phone,department" }
+         ]
+       }, function (response) {
+            var obj = JSON.parse(response[1].body);
+            console.log("itzik123455===" + obj.email);
+            console.log("itzik123455===" + JSON.stringify(obj)); 
+            console.log("itzik123455===" + response[1].body); 
+       });
+      
       for (var i = 0; i < inviteEmails.length; i++) {
         console.log("for - i= " + i);
         promises.push(
