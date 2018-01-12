@@ -34,13 +34,11 @@ var graphapi = request.defaults({
 
 function getRecipients (received_message) {
   return new Promise((resolve, reject) => {
-    console.log('1111111111111111111111111');
     var inviteEmails = [];
     var recipients = []; 
     var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
     if (substring_message.indexOf(";") !== -1) {
       inviteEmails = substring_message.split(";");
-      //inviteEmails = inviteEmails.split(",");
     } else {
       inviteEmails.push(substring_message);
     } 
@@ -50,7 +48,7 @@ function getRecipients (received_message) {
       inviteEmails.forEach(function(inviteEmail) {
         batch.push({ method: 'GET', relative_url: inviteEmail + '?fields=id,email,name,primary_phone,department'});
       });
-      
+
       FB.api('/', 'POST', {
          include_headers: false,
          batch: batch
@@ -181,11 +179,6 @@ function sendMessage(recipients, received_message, thread_key, text) {
       "quick_replies": quick_replies
     }
 
-    //console.log("response - " + JSON.stringify(response));
-
-
-
-
     // Sends the response message
     callSendAPI(recipients, response, thread_key);  
   }); 
@@ -199,16 +192,22 @@ function handleMessage(recipients, received_message, thread_key) {
   // Check if the message contains text
   if (received_message) {
     console.log('received_message- ' + received_message);
-    //console.log(par);
+    
     if (received_message.indexOf("virtual room") !== -1 && received_message.indexOf("#") !== -1) {
-      var par = getRecipients(received_message);
-      console.log('par =' + par);
-      text = 'The virtual room of' + par.name + 'is' + par.department;
-      response = {
-          "text": text,
+      getRecipients(received_message).then(
+      function (recipient) {
+        console.log("Success!", recipient);
+        if (recipient && recipient.department) {
+          text = 'The virtual room of' + recipient.name + 'is' + recipient.department;
+        } else {
+          text = '';
         }
-        // Sends the response message
-      callSendAPI(recipients, response, thread_key);  
+        response = {
+            "text": text,
+          }
+          // Sends the response message
+        callSendAPI(recipients, response, thread_key);
+      });
     } else if (received_message.indexOf("equinox meeting") !== -1 && received_message.indexOf("#") !== -1) {
       console.log("equinox meeting # recipients1-" + JSON.stringify(recipients));
       getRecipients(received_message).then(
