@@ -133,38 +133,34 @@ function getRecipients (received_message) {
     if (inviteEmails.length > 0) {
       let batch = [];
       inviteEmails.forEach(function(inviteEmail) {
-        batch.push();
+        batch.push({ method: 'GET', relative_url: inviteEmail + '?fields=id,email,name,primary_phone,department'});
       });
       
       FB.api('/', 'POST', {
          include_headers: false,
-         batch: [
-              { method: 'GET', relative_url: 'itzik182@gmail.com?fields=id,email,name,primary_phone,department'},
-              { method: "GET", relative_url: "eyall@avaya.com?fields=id,email,name,primary_phone,department" }
-         ]
+         batch: batch
        }, function (response) {
-            var obj = JSON.parse(response[1].body);
-            console.log("itzik123455===" + obj.email);
-            console.log("itzik123455===" + JSON.stringify(obj)); 
-            console.log("itzik123455===" + response[1].body); 
+          if (response.length > 0) {
+            // var obj = JSON.parse(response[1].body);
+            //   console.log("itzik123455===" + obj.email);
+            //   console.log("itzik123455===" + JSON.stringify(obj)); 
+            //   console.log("itzik123455===" + response[1].body); 
+            response.forEach(function(recipient) {
+              recipients.push(JSON.parse(recipient.body));
+            });
+            resolve(recipients);
+          }
        });
-      
-      for (var i = 0; i < inviteEmails.length; i++) {
-        console.log("for - i= " + i);
-        promises.push(
-          recipients.push(doSomethingAsync(inviteEmails[i], recipients))
-          )  
-      };
     }
-   Promise.all(promises)
-          .then((results) => {
-            //console.log("All done", results);
-     console.log("All done", recipients); 
-       resolve(recipients);
-          })
-          .catch((e) => {
-              // Handle errors here
-          });
+     // Promise.all(promises)
+     //    .then((results) => {
+     //        //console.log("All done", results);
+     // console.log("All done", recipients); 
+     //   resolve(recipients);
+     //    })
+     //  .catch((e) => {
+     //      // Handle errors here
+     //  });
   });
 }
 
