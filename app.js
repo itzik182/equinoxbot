@@ -69,14 +69,14 @@ var graphapi2 = request.defaults({
       return new Promise((resolve, reject) => {
         graphapi({
           method: 'GET',
-          //url: '/ihason@avaya.com?fields=id,email,name,primary_phone,department',
-          url: '/' + inviteEmail + '?fields=id,email,name,primary_phone,department',
+          url: '/itzik182@gmail.com,eyall@avaya.com?fields=id,email,name,primary_phone,department',
+          //url: '/' + inviteEmail + '?fields=id,email,name,primary_phone,department',
         },function(error,response,body) {
           if(error) {
             console.error(error);
             reject(error);
           } else { 
-            console.log("body.id1117-" + body.id);
+            console.log("body.id1117-" + JSON.stringify(body));
             if (body && body.id) { 
               console.log("body.id1116-" + body.id);
               //recipients.push({"id": body.id });
