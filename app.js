@@ -38,15 +38,15 @@ var graphapi2 = request.defaults({
     }
 });
 FB.setAccessToken(PAGE_ACCESS_TOKEN);
-// FB.api('/itzik182@gmail.com?fields=id,email,name,primary_phone,department', 'GET', {
-//          //include_headers: false,
-//          // batch: [
-//          //      { method: 'GET', relative_url: 'itzik182@gmail.com?fields=id,email,name,primary_phone,department'},
-//          //      { method: "GET", relative_url: "eyall@avaya.com?fields=id,email,name,primary_phone,department" }
-//          // ]
-//        }, function (response) {
-//                 console.log("itzik123455===" + JSON.stringify(response)); 
-//        });
+FB.api('/', 'POST', {
+         include_headers: false,
+         batch: [
+              { method: 'GET', relative_url: 'itzik182@gmail.com?fields=id,email,name,primary_phone,department'},
+              { method: "GET", relative_url: "eyall@avaya.com?fields=id,email,name,primary_phone,department" }
+         ]
+       }, function (response) {
+                console.log("itzik123455===" + response[1].body['id']); 
+       });
 
 //Post into a group: itzik gmail 100022693691284, itzik avaya - 100022742164286
 //graphapi({
