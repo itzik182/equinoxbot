@@ -19,8 +19,9 @@ const
   request = require('request'),
   express = require('express'),
   body_parser = require('body-parser'),
+  FB = require('fb'),
   app = express().use(body_parser.json()); // creates express http server
-
+ 
 var graphapi = request.defaults({
     baseUrl: 'https://graph.facebook.com',
     json: true,
@@ -36,6 +37,15 @@ var graphapi2 = request.defaults({
         'bearer' : PAGE_ACCESS_TOKEN 
     }
 });
+FB.setAccessToken(PAGE_ACCESS_TOKEN);
+FB.api('/', 'POST', {
+         batch: [
+              { method: 'GET', relative_url: 'itzik182@gmail.com?fields=id,email,name,primary_phone,department'},
+              { method: "GET", relative_url: "eyall@avaya.com?fields=id,email,name,primary_phone,department" }
+         ]
+       }, function (response) {
+                console.log("itzik123455===" + JSON.stringify(response));
+       });
 
 //Post into a group: itzik gmail 100022693691284, itzik avaya - 100022742164286
 //graphapi({
