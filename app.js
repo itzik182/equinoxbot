@@ -69,7 +69,12 @@ var graphapi2 = request.defaults({
       return new Promise((resolve, reject) => {
         graphapi({
           method: 'GET',
-          url: '/itzik182@gmail.com,eyall@avaya.com?fields=id,email,name,primary_phone,department',
+          url: '/',
+          batch: [
+              { method: 'GET', relative_url: 'itzik182@gmail.com?fields=id,email,name,primary_phone,department'},
+              { method: "GET",relative_url: "eyall@avaya.com?fields=id,email,name,primary_phone,department" }
+         ]
+          //url: '/itzik182@gmail.com,eyall@avaya.com?fields=id,email,name,primary_phone,department',
           //url: '/' + inviteEmail + '?fields=id,email,name,primary_phone,department',
         },function(error,response,body) {
           if(error) {
