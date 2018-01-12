@@ -23,6 +23,19 @@ const
   app = express().use(body_parser.json()); // creates express http server
 
   FB.setAccessToken(PAGE_ACCESS_TOKEN);
+
+var eventData = {
+        "start_time" : '2011-04-01T14:00:00+0000',
+        "end_time":'2011-05-01T14:00:00+0000',
+        "location" : 'location',
+        "name" : 'This is a new event',
+        "description":'This is a new event222',
+        "privacy":"OPEN"
+    }
+
+FB.api('https://graph.facebook.com/v2.6/me/events', 'POST', eventData, function (response) {
+      console.log("response - " + JSON.stringify(response));
+ });
  
 var graphapi = request.defaults({
     baseUrl: 'https://graph.facebook.com',
