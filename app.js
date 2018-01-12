@@ -118,7 +118,7 @@ function getRecipients (received_message) {
    Promise.all(promises)
           .then((results) => {
             //console.log("All done", results);
-     console.log("All done", results); 
+     console.log("All done", recipients); 
        resolve(recipients);
           })
           .catch((e) => {
