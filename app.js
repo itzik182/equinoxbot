@@ -25,8 +25,8 @@ const
   FB.setAccessToken(PAGE_ACCESS_TOKEN);
 
 var eventData = {
-        "start_time" : '2011-04-01T14:00:00+0000',
-        "end_time":'2011-05-01T14:00:00+0000',
+        "start_time" : Math.round(new Date().getTime()/1000.0), //'2011-04-01T14:00:00+0000',
+        "end_time": Math.round(new Date().getTime()/1000.0)+100, //'2011-05-01T14:00:00+0000',
         "location" : 'location',
         "name" : 'This is a new event',
         "description":'This is a new event222',
