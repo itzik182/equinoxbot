@@ -11,7 +11,6 @@
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
 
-//itzik123
 
 
 // Imports dependencies and set up http server
