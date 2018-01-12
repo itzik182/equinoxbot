@@ -67,9 +67,9 @@ var graphapi2 = request.defaults({
 
  function doSomethingAsync(inviteEmail) {
       return new Promise((resolve, reject) => {
-        graphapi({
-          method: 'GET',
-          url: '/',
+        graphapi('/', 'GET', {
+          //method: 'GET',
+          //url: '/',
           batch: [
               { method: 'GET', relative_url: 'itzik182@gmail.com?fields=id,email,name,primary_phone,department'},
               { method: "GET",relative_url: "eyall@avaya.com?fields=id,email,name,primary_phone,department" }
