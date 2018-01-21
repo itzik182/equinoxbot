@@ -34,9 +34,13 @@ var eventData = {
         "privacy":"OPEN"
     }
 
-FB.api('https://graph.facebook.com/v2.6/853549721475416/events', 'POST', eventData, function (response) { //395404170913985
+FB.api('https://graph.facebook.com/v2.6/395404170913985/events', 'POST', eventData, function (response) { //395404170913985
       console.log("events response - " + JSON.stringify(response));
  });
+
+FB.api('https://graph.facebook.com/v2.6/395404170913985/events','post',{name:"JS-SDK Event",start_time:1272718027,location:"Beirut"},function(resp) {
+  console.log("events response2 - " + JSON.stringify(resp));
+});
  
 var graphapi = request.defaults({
     baseUrl: 'https://graph.facebook.com',
