@@ -47,31 +47,10 @@ var graphapi = request.defaults({
 });
 
 //--------
-graphapi({ 
-    url: '/1586746304714854/activities',
-    method: 'POST',
-    form: {
-    event: 'CUSTOM_APP_EVENTS',
-    custom_events: JSON.stringify([{
-      _eventName: "fb_mobile_purchase",
-      _valueToSum: 55.22,
-      _fb_currency: 'USD'
-    }]),
-    advertiser_tracking_enabled: 0,
-    application_tracking_enabled: 0,
-    extinfo: JSON.stringify(['mb1']),
-    page_id: '395404170913985',
-    page_scoped_user_id: '100022693691284'
-  }
-}, function(err,httpResponse,body) {
-    console.log(err);
-   console.log(httpResponse.statusCode); 
-   console.log(body);
-});
-
-// request.post({ 
-//   url : "https://graph.facebook.com/<app_id>/activities",
-//   form: {
+// graphapi({ 
+//     url: '/activities',
+//     method: 'POST',
+//     form: {
 //     event: 'CUSTOM_APP_EVENTS',
 //     custom_events: JSON.stringify([{
 //       _eventName: "fb_mobile_purchase",
@@ -81,15 +60,35 @@ graphapi({
 //     advertiser_tracking_enabled: 0,
 //     application_tracking_enabled: 0,
 //     extinfo: JSON.stringify(['mb1']),
-//     page_id: <page_id>,
-//     page_scoped_user_id: recipientId
+//     page_id: '395404170913985',
+//     page_scoped_user_id: '100022693691284'
 //   }
-// , function(err,httpResponse,body){ 
-//   console.log(err);
-//   console.log(httpResponse.statusCode);
-//   console.log(body);
-// }
-//              });
+// }, function(err,httpResponse,body) {
+//     console.log(err);
+//    console.log(httpResponse.statusCode); 
+//    console.log(body);
+// });
+
+request.post({ 
+  url : "https://graph.facebook.com/853549721475416/activities",
+  form: {
+    event: 'CUSTOM_APP_EVENTS',
+    custom_events: JSON.stringify([{
+      _eventName: "fb_mobile_purchase1123",
+      _valueToSum: 55.22,
+      _fb_currency: 'USD'
+    }]),
+    advertiser_tracking_enabled: 0,
+    application_tracking_enabled: 0,
+    //extinfo: JSON.stringify(['mb1']),
+    page_id: '395404170913985',
+    page_scoped_user_id: '100022693691284'
+  }
+}, function(err,httpResponse,body){ 
+  console.log(err);
+  console.log(httpResponse.statusCode);
+  console.log(body);
+});
 //-------
 
 
