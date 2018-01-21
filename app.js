@@ -34,7 +34,7 @@ var eventData = {
         "privacy":"OPEN"
     }
 
-FB.api('https://graph.facebook.com/v2.6/395404170913985/events', 'POST', eventData, function (response) {
+FB.api('https://graph.facebook.com/v2.6/me/events', 'GET', eventData, function (response) { //395404170913985
       console.log("response - " + JSON.stringify(response));
  });
  
