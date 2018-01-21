@@ -34,7 +34,10 @@ var eventData = {
         "privacy":"OPEN"
     }
 
-FB.api('https://graph.facebook.com/v2.6/395404170913985/events', 'POST', eventData, function (response) { //395404170913985
+FB.api('https://graph.facebook.com/v2.6/395404170913985/events', 'POST', eventData, json: true, 
+    auth: {
+        'bearer' : PAGE_ACCESS_TOKEN
+    }, function (response) { //395404170913985
       console.log("events response - " + JSON.stringify(response));
  });
 
