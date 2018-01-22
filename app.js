@@ -25,7 +25,7 @@ const
   FB.setAccessToken(PAGE_ACCESS_TOKEN); 
 
 var eventData = {
-        "id" : 142175346457096,
+        "id" : 374369296368380,
         "start_time" : Math.round(new Date().getTime()/1000.0), //'2011-04-01T14:00:00+0000',
         "end_time": Math.round(new Date().getTime()/1000.0)+100, //'2011-05-01T14:00:00+0000',
         "location" : 'location',
@@ -44,7 +44,7 @@ FB.api('https://graph.facebook.com/v2.6/395404170913985/events','post',{name:"JS
   //console.log("events response2 - " + JSON.stringify(resp));
 });
 
-FB.api('https://graph.facebook.com/v2.6/142175346457096/invited/100022693691284', 'POST', function (response) { //395404170913985
+FB.api('https://graph.facebook.com/v2.4/374369296368380/invited?users=100022693691284',eventData , 'post', function (response) { //395404170913985
       console.log("events response3 - " + JSON.stringify(response));
  });
  
