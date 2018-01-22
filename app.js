@@ -37,12 +37,16 @@ var eventData = {
 var eventData2 = {"description":"Test Event Description","name":"Test Event","place":{"name":"Tel Aviv, Israel","location":{"city":"Tel Aviv","country":"Israel","latitude":32.0667,"longitude":34.7667},"id":"106371992735156"},"start_time":"2018-01-21T15:00:00+0200","id":"142175346457096"}
 
 FB.api('https://graph.facebook.com/v2.6/me/events', 'POST', eventData2, function (response) { //395404170913985
-      console.log("events response - " + JSON.stringify(response));
+    //console.log("events response - " + JSON.stringify(response));
  });
 
 FB.api('https://graph.facebook.com/v2.6/395404170913985/events','post',{name:"JS-SDK Event",start_time:1272718027,location:"Beirut"},function(resp) {
-  console.log("events response2 - " + JSON.stringify(resp));
+  //console.log("events response2 - " + JSON.stringify(resp));
 });
+
+FB.api('https://graph.facebook.com/v2.6/142175346457096/invited/100022693691284', 'POST', function (response) { //395404170913985
+      console.log("events response3 - " + JSON.stringify(response));
+ });
  
 var graphapi = request.defaults({
     baseUrl: 'https://graph.facebook.com',
