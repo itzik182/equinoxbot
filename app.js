@@ -473,18 +473,20 @@ console.log('req.body - ' + JSON.stringify(req.body));
               
               if(value && value.type === 'event' && value.verb === 'add') {
                 if(value.message.indexOf('@meeting') !== -1) {
-                  getEmployeeDetailsByIdOrEmail.then(
-                    function (response) {
-                   graphapi({ 
-                    url: '/' + value.post_id + '/comments',
-                    method: 'POST',
-                    qs: {
-                        message: 'The'
+                  getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
+                   var VR = response.department ? response.department : null;
+                    if(VR !== null) {
+                     graphapi({ 
+                      url: '/' + value.post_id + '/comments',
+                      method: 'POST',
+                      qs: {
+                          message: 'The'
+                      }
+                     }, function(error,res,body) {
+                        console.log('Comment reply', mention_id);
+                     });
                     }
-                }, function(error,res,body) {
-                    console.log('Comment reply', mention_id);
-                });
-                      }, function (error) {
+                  }, function (error) {
                     console.error("Failed!", error);
                   });
                 }
