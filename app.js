@@ -470,15 +470,19 @@ console.log('req.body - ' + JSON.stringify(req.body));
                   message = messages[i] + " ";
                 }
               }
-              
+              var isEvent = false;
               if(value && value.type === 'event' && value.verb === 'add') {
+                isEvent = true;
                 if(value.message.indexOf('@meeting') !== -1) {
                   getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
                    var meetingUrl = response.department ? 
                        'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + response.department : 'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=171197237679607';
                     //if(VR !== null) {
+                    var eventId = value.attachments.data.url.substring(value.attachments.data.url.indexOf("events/") + 1, value.attachments.data.url.length);
                      graphapi({ 
-                      url: '/' + value.post_id + '/comments',
+                       url: '/' + eventId + '/feed',
+                      //url: '/' + value.post_id + '/comments',
+                      //url: '/142481733216767/feed',
                       method: 'POST',
                       qs: {
                           message: 'The meeting url is: ' + meetingUrl
@@ -521,7 +525,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
               }
               //console.log("sender2 - " + sender_psid);
               console.log("message - " + message);
-              if (message) {
+              if (message && !isEvent) {
                 handleMessage(sender_psid, message.trim());  
               }
             }
