@@ -49,11 +49,11 @@ FB.api('https://graph.facebook.com/v2.4/374369296368380/invited?users=1000226936
       //console.log("events response3 - " + JSON.stringify(response));
  });
 
-FB.api('/583221065350500?fields=description,name,owner,parent_group,place,start_time,attending,maybe,interested,noreply' , 'GET', function (response) {
+FB.api('/583221065350500?fields=description,name,owner,parent_group,place,start_time,attending,maybe,interested,noreply,comments' , 'GET', function (response) {
       console.log("events response4 - " + JSON.stringify(response)); 
  });
  
-var graphapi = request.defaults({
+var graphapi = request.defaults({ 
     baseUrl: 'https://graph.facebook.com',
     json: true, 
     auth: {
