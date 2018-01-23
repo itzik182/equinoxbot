@@ -139,6 +139,24 @@ function getRecipients (received_message) {
   });
 }
 
+function getEmployeeDetailsById(id, fields) {
+   graphapi({
+      method: 'GET',
+      url: '/' + id + '?fields=' + fields,
+  },function(error,response,body) {
+    if(error) {
+        console.error(error);
+    } else {
+      VR = body.department ? body.department : defaultVR;
+      if (body.primary_phone) {
+        primary_phone = body.primary_phone.replace('+', '');
+      }
+      console.log("body - " + JSON.stringify(body));
+      //console.log("response - " + JSON.stringify(response));
+    }
+  });
+}
+
 function sendMessage(recipients, received_message, thread_key, text) {
   let quick_replies;
   var primary_phone;
