@@ -478,17 +478,29 @@ console.log('req.body - ' + JSON.stringify(req.body));
                    var meetingUrl = response.department ? 
                        'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + response.department : 'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=171197237679607';
                     //if(VR !== null) {
-                    var eventId = value.attachments.data.url.substring(value.attachments.data.url.indexOf("events/") + 1, value.attachments.data.url.length);
-                     graphapi({ 
+                    let eventUrl = value.attachments.data[0].url;
+                    var eventId = eventUrl.substring(eventUrl.indexOf("events/") + 7, eventUrl.length -1);
+                    console.log('eventId', eventId);
+                     graphapi({
                        url: '/' + eventId + '/feed',
                       //url: '/' + value.post_id + '/comments',
                       //url: '/142481733216767/feed',
                       method: 'POST',
                       qs: {
+                          message: 'The meeting url is: ' + meetingUrl,
+                        
+                      }
+                     }, function(error,res,body) {
+                        console.log('event feed', response.department);
+                     });
+                     graphapi({
+                      url: '/' + value.post_id + '/comments',
+                      method: 'POST',
+                      qs: {
                           message: 'The meeting url is: ' + meetingUrl
                       }
                      }, function(error,res,body) {
-                        console.log('event', response.department);
+                        console.log('event comments', response.department);
                      });
                     //}
                   }, function (error) {
