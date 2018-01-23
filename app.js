@@ -456,7 +456,15 @@ console.log('req.body - ' + JSON.stringify(req.body));
               
               if(change.value && change.value.type === 'event' && change.value.verb === 'add') {
                 if(change.value && change.value.type === 'event' && change.value.verb === 'add') {
-                 
+                   graphapi({ 
+                    url: '/' + mention_id + '/comments',
+                    method: 'POST',
+                    qs: {
+                        message: 'Thanks'
+                    }
+                }, function(error,res,body) {
+                    console.log('Comment reply', mention_id);
+                });
                 }
               }
               
