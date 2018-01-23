@@ -35,6 +35,7 @@ var eventData = {
     }
 
 var eventData2 = {"description":"Test Event Description","name":"Test Event","place":{"name":"Tel Aviv, Israel","location":{"city":"Tel Aviv","country":"Israel","latitude":32.0667,"longitude":34.7667},"id":"106371992735156"},"start_time":"2018-01-21T15:00:00+0200","id":"142175346457096"}
+var eventData3 = {"id" : 583221065350500, "can_guests_invite": true}
 
 FB.api('https://graph.facebook.com/v2.6/me/events', 'POST', eventData2, function (response) { //395404170913985
     //console.log("events response - " + JSON.stringify(response));
@@ -45,7 +46,11 @@ FB.api('https://graph.facebook.com/v2.6/395404170913985/events','post',{name:"JS
 });
 
 FB.api('https://graph.facebook.com/v2.4/374369296368380/invited?users=100022693691284',eventData , 'post', function (response) { //395404170913985
-      console.log("events response3 - " + JSON.stringify(response));
+      //console.log("events response3 - " + JSON.stringify(response));
+ });
+
+FB.api('/?fields=description',eventData3 , 'GET', function (response) {
+      console.log("events response4 - " + JSON.stringify(response));
  });
  
 var graphapi = request.defaults({
