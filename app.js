@@ -478,7 +478,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
                        'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + response.department : 'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=171197237679607';
                     //if(VR !== null) {
                      graphapi({ 
-                      url: '/' + value.post_id + '/comments',
+                      url: '/' + value.post_id + '/posts',
                       method: 'POST',
                       qs: {
                           message: 'The meeting url is: ' + meetingUrl
