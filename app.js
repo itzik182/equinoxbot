@@ -440,7 +440,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
                 sender_psid.push({"id": value.from.id});
               } else {
                 sender_psid.push({"id": value.sender_id});
-              } 
+              }
               let message = value.message;
               if (value.message_tags) {
                 value.message_tags.forEach(function(tag) {
@@ -454,10 +454,14 @@ console.log('req.body - ' + JSON.stringify(req.body));
                 }
               }
               
+              if(change.value.type === 'event' && change.value.verb === '') {
+                 
+              }
+              
               let mention_id = (change.field === 'comments') ?
                             value.comment_id : value.post_id;
               
-              
+              console.log('Comment reply', mention_id);
               if(value.from.category === undefined || (value.from.category !== undefined && value.from.category !== 'Bot')) {
                 // Comment reply
                 graphapi({ 
