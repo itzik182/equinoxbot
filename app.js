@@ -475,50 +475,50 @@ console.log('req.body - ' + JSON.stringify(req.body));
                 if(value.message.indexOf('@meeting') !== -1) {
                   getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
                    var VR = response.department ? response.department : null;
-                    if(VR !== null) {
+                    //if(VR !== null) {
                      graphapi({ 
                       url: '/' + value.post_id + '/comments',
                       method: 'POST',
                       qs: {
-                          message: 'The'
+                          message: 'The meeting url is: ' + VR !== null ? 
+                        'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + VR : 'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=171197237679607'
                       }
                      }, function(error,res,body) {
-                        console.log('Comment reply', mention_id);
+                        console.log('event', VR);
                      });
-                    }
+                    //}
                   }, function (error) {
                     console.error("Failed!", error);
                   });
                 }
-              }
-              
-              let mention_id = (change.field === 'comments') ?
-                            value.comment_id : value.post_id;
-              
-              console.log('Comment reply', mention_id);
-              if(value.from.category === undefined || (value.from.category !== undefined && value.from.category !== 'Bot')) {
-                // Comment reply
-                graphapi({ 
-                    url: '/' + mention_id + '/comments',
-                    method: 'POST',
-                    qs: {
-                        message: 'Thanks'
-                    }
-                }, function(error,res,body) {
-                    console.log('Comment reply', mention_id);
-                });
+              } else {
+                let mention_id = (change.field === 'comments') ?
+                              value.comment_id : value.post_id;
 
-                if(message.toLowerCase() === 'thanks') {
-                  // Like the post or comment to indicate acknowledgement
-                  graphapi({
-                      url: '/' + mention_id + '/likes',
-                      method: 'POST'
+                console.log('Comment reply', mention_id);
+                if(value.from.category === undefined || (value.from.category !== undefined && value.from.category !== 'Bot')) {
+                  // Comment reply
+                  graphapi({ 
+                      url: '/' + mention_id + '/comments',
+                      method: 'POST',
+                      qs: {
+                          message: 'Thanks'
+                      }
                   }, function(error,res,body) {
-                      console.log('Like', mention_id);
-                  });   
+                      console.log('Comment reply', mention_id);
+                  });
+
+                  if(message.toLowerCase() === 'thanks') {
+                    // Like the post or comment to indicate acknowledgement
+                    graphapi({
+                        url: '/' + mention_id + '/likes',
+                        method: 'POST'
+                    }, function(error,res,body) {
+                        console.log('Like', mention_id);
+                    });   
+                  }
                 }
               }
-
               //console.log("sender2 - " + sender_psid);
               console.log("message - " + message);
               if (message) {
