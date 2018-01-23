@@ -454,8 +454,10 @@ console.log('req.body - ' + JSON.stringify(req.body));
                 }
               }
               
-              if(change.value.type === 'event' && change.value.verb === '') {
+              if(change.value && change.value.type === 'event' && change.value.verb === 'add') {
+                if(change.value && change.value.type === 'event' && change.value.verb === 'add') {
                  
+                }
               }
               
               let mention_id = (change.field === 'comments') ?
