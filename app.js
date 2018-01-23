@@ -488,7 +488,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
                       method: 'POST',
                       qs: {
                           message: 'The meeting url is: ' + meetingUrl,
-                        
+                          //timeline_visibility: 'starred'
                       }
                      }, function(error,res,body) {
                         console.log('event feed', response.department);
