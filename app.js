@@ -139,21 +139,20 @@ function getRecipients (received_message) {
   });
 }
 
-function getEmployeeDetailsById(id, fields) {
-   graphapi({
-      method: 'GET',
-      url: '/' + id + '?fields=' + fields,
-  },function(error,response,body) {
-    if(error) {
-        console.error(error);
-    } else {
-      VR = body.department ? body.department : defaultVR;
-      if (body.primary_phone) {
-        primary_phone = body.primary_phone.replace('+', '');
+function getEmployeeDetailsByIdOrEmail(userIdentify, fields) {
+  return new Promise((resolve, reject) => {
+     graphapi({
+        method: 'GET',
+        url: '/' + userIdentify + '?fields=' + fields,
+    },function(error,response,body) {
+      if(error) {
+        console.error("getEmployeeDetailsByIdOrEmail=> error - " + error);
+        reject(error);
+      } else {
+        resolve(body);
+        console.log("getEmployeeDetailsByIdOrEmail=> body - " + JSON.stringify(body));
       }
-      console.log("body - " + JSON.stringify(body));
-      //console.log("response - " + JSON.stringify(response));
-    }
+    });
   });
 }
 
@@ -474,6 +473,8 @@ console.log('req.body - ' + JSON.stringify(req.body));
               
               if(value && value.type === 'event' && value.verb === 'add') {
                 if(value.message.indexOf('@meeting') !== -1) {
+                  getEmployeeDetailsByIdOrEmail.then(
+                    function (response) {
                    graphapi({ 
                     url: '/' + value.post_id + '/comments',
                     method: 'POST',
@@ -483,6 +484,9 @@ console.log('req.body - ' + JSON.stringify(req.body));
                 }, function(error,res,body) {
                     console.log('Comment reply', mention_id);
                 });
+                      }, function (error) {
+                    console.error("Failed!", error);
+                  });
                 }
               }
               
