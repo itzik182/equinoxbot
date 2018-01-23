@@ -474,17 +474,17 @@ console.log('req.body - ' + JSON.stringify(req.body));
               if(value && value.type === 'event' && value.verb === 'add') {
                 if(value.message.indexOf('@meeting') !== -1) {
                   getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
-                   var VR = response.department ? response.department : null;
+                   var meetingUrl = response.department ? 
+                       'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + response.department : 'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=171197237679607';
                     //if(VR !== null) {
                      graphapi({ 
                       url: '/' + value.post_id + '/comments',
                       method: 'POST',
                       qs: {
-                          message: 'The meeting url is: ' + VR !== null ? 
-                        'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + VR : 'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=171197237679607'
+                          message: 'The meeting url is: ' + meetingUrl
                       }
                      }, function(error,res,body) {
-                        console.log('event', VR);
+                        console.log('event', response.department);
                      });
                     //}
                   }, function (error) {
