@@ -9,7 +9,7 @@
  */
 
 'use strict';
-const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
+const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN; 
 
 
 
@@ -169,6 +169,7 @@ function getTextMessageResponse(received_message, VR) {
     if(received_message.includes("meet") || received_message.includes("discuss") || received_message.includes("brainstorm") || received_message.includes("meeting")){
       text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + VR;
     }
+    return text;
 
     //if (received_message.text === 'lets meet') {    
     //  text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=661236';
@@ -191,7 +192,7 @@ function sendMessage(recipients, received_message, thread_key, text) {
       primary_phone = response.primary_phone.replace('+', '');
     }
     console.log("response - " + JSON.stringify(response));
-    
+    text = getTextMessageResponse(received_message, VR);
     var responseObj = {
       "text": text,
       //"buttons": buttons,
