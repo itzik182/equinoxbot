@@ -87,26 +87,9 @@ function getEmployeeDetailsByIdOrEmail(userIdentify, fields) {
   });
 }
 
-function sendMessage(recipients, received_message, thread_key, text) {
-  let quick_replies;
-  var primary_phone;
-  var VR;
-  var defaultVR = '9200167';
-  getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
-    
-    VR = response.department ? response.department : defaultVR;
-      if (response.primary_phone) {
-        primary_phone = response.primary_phone.replace('+', '');
-      }
-      console.log("response - " + JSON.stringify(response));
-    
-    
-      //console.log("response - " + JSON.stringify(response));
-  // graphapi({
-  //     method: 'GET',
-  //     url: '/' + recipients[0].id + '?fields=email,name,primary_phone,department',
-    
-    switch(received_message.toLowerCase()) {
+function getTextMessageResponse(received_message, VR) {
+  var text = '';
+  switch(received_message.toLowerCase()) {
     case 'lets meet': case 'meet': case 'discuss': case 'brainstorm':
         text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         break;
@@ -135,30 +118,30 @@ function sendMessage(recipients, received_message, thread_key, text) {
           }
         ]
         break;
-    case '_letsa meet':
-        text = 'Which virtual room?';
-        quick_replies = [
-            {
-              //"type": "postback",
-              "content_type":"text",
-              "title":"Itzik",
-              //"image_url":"http://example.com/img/red.png",
-              "payload":"yes"
-            },
-              {
-              "content_type":"text",
-              "title":"Ronny",
-              //"image_url":"http://example.com/img/red.png",
-              "payload":"<lets meet ronny room>"
-            },
-              {
-              "content_type":"text",
-              "title":"Anna",
-              //"image_url":"http://example.com/img/red.png",
-              "payload":"<lets meet anna room>"
-            }
-        ]
-        break;
+    // case '_letsa meet':
+    //     text = 'Which virtual room?';
+    //     quick_replies = [
+    //         {
+    //           //"type": "postback",
+    //           "content_type":"text",
+    //           "title":"Itzik",
+    //           //"image_url":"http://example.com/img/red.png",
+    //           "payload":"yes"
+    //         },
+    //           {
+    //           "content_type":"text",
+    //           "title":"Ronny",
+    //           //"image_url":"http://example.com/img/red.png",
+    //           "payload":"<lets meet ronny room>"
+    //         },
+    //           {
+    //           "content_type":"text",
+    //           "title":"Anna",
+    //           //"image_url":"http://example.com/img/red.png",
+    //           "payload":"<lets meet anna room>"
+    //         }
+    //     ]
+    //     break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
         break;
@@ -171,14 +154,14 @@ function sendMessage(recipients, received_message, thread_key, text) {
     case 'lets meet anna room':
         text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=' + VR;
         break;
-    case 'location':
-        text = "location";
-        quick_replies = [
-          {
-            "content_type":"location"
-          }
-        ];
-        break;
+    // case 'location':
+    //     text = "location";
+    //     quick_replies = [
+    //       {
+    //         "content_type":"location"
+    //       }
+    //     ];
+    //     break;
     //default:
     //    text = `You sent the message: "${received_message.text}".`;
     }
@@ -194,7 +177,21 @@ function sendMessage(recipients, received_message, thread_key, text) {
     //  text = 'You sent the message: "${received_message.text}". Now send me an image111!';
     //}
     //console.log("text556 - " + text);
-    // Create the payload for a basic text message
+    // Create the payload for a basic text message 
+}
+
+function sendMessage(recipients, received_message, thread_key, text) {
+  let quick_replies;
+  var primary_phone;
+  var VR;
+  var defaultVR = '9200167';
+  getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
+    VR = response.department ? response.department : defaultVR;
+    if (response.primary_phone) {
+      primary_phone = response.primary_phone.replace('+', '');
+    }
+    console.log("response - " + JSON.stringify(response));
+    
     var responseObj = {
       "text": text,
       //"buttons": buttons,
