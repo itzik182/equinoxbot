@@ -37,6 +37,17 @@ var graphapi = request.defaults({
     }
 });
 
+graphapi({
+        method: 'GET',
+        url: '/' + '?fields=name',
+    },function(error,response,body) {
+      if(error) {
+        console.error("getEmployeeDetailsByIdOrEmail=> error - " + error);
+      } else { 
+        console.log("getEmployeeDetailsByIdOrEmail=> body - " + JSON.stringify(body));
+      }
+    });
+
 
 function getRecipients (received_message) {
   return new Promise((resolve, reject) => {
@@ -72,7 +83,7 @@ function getRecipients (received_message) {
 
 function getEmployeeDetailsByIdOrEmail(userIdentify, fields) {
   return new Promise((resolve, reject) => {
-     graphapi({
+    graphapi({
         method: 'GET',
         url: '/' + userIdentify + '?fields=' + fields,
     },function(error,response,body) {
