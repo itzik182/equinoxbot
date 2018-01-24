@@ -99,13 +99,13 @@ function sendMessage(recipients, received_message, thread_key, text) {
         primary_phone = response.primary_phone.replace('+', '');
       }
       console.log("response - " + JSON.stringify(response));
+    
+    
       //console.log("response - " + JSON.stringify(response));
   // graphapi({
   //     method: 'GET',
   //     url: '/' + recipients[0].id + '?fields=email,name,primary_phone,department',
-  },function(error) {
-        console.error(error);
-
+    
     switch(received_message.toLowerCase()) {
     case 'lets meet': case 'meet': case 'discuss': case 'brainstorm':
         text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
@@ -195,14 +195,17 @@ function sendMessage(recipients, received_message, thread_key, text) {
     //}
     //console.log("text556 - " + text);
     // Create the payload for a basic text message
-    response = {
+    var responseObj = {
       "text": text,
       //"buttons": buttons,
       "quick_replies": quick_replies
     }
 
-    // Sends the response message
-    callSendAPI(recipients, response, thread_key);  
+    // Sends the responseObj message
+    callSendAPI(recipients, responseObj, thread_key);
+    
+  },function(error) {
+      console.error(error);
   }); 
 }
 
