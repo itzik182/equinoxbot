@@ -197,14 +197,15 @@ function handleMessage(recipients, received_message, thread_key) {
           let isRecipients = false;
           recipients.forEach(function(recipient) {
             if (!recipient.error) {
-              recipients.push(JSON.parse(recipient));
+              recipients.push(recipient);
               isRecipients = true;
             }
           });
-          if (isRecipients) {
+          if (isRecipients && recipients.length > 1) {
             var substring_message = received_message.substring(0, received_message.indexOf(" "));
             sendMessage(recipients, substring_message, thread_key, text);
           } else {
+            console.log('recipients222222 - ' + recipients);
             callSendAPI(recipients, { "text": 'This user does not exist' }, thread_key);
           }          
         }
