@@ -184,7 +184,7 @@ function handleMessage(recipients, received_message, thread_key) {
     } else if (received_message.indexOf("@invite-meeting") !== -1) {
       console.log("equinox meeting # recipients1- " + JSON.stringify(recipients));
       
-      var recipientsList = received_message.substring(received_message.indexOf("@invite-meeting "), received_message.length);
+      var recipientsList = received_message.substring(received_message.indexOf(" ") + 1, received_message.length);
       console.log("recipientsList - " + recipientsList);
       
       getRecipients(recipientsList).then(
