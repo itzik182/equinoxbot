@@ -58,17 +58,18 @@ function getRecipients (recipientsList) {
     if (recipientsList.indexOf(";") !== -1) {
       inviteEmails = recipientsList.split(";");
     } else {
-      if (recipientsList.indexOf("@") !== -1) {
-        inviteEmails.push(recipientsList);
-      } else {
+      if (recipientsList.indexOf("@") === -1) {
         recipientsList = recipientsList + '@avaya.com';
-        inviteEmails.push(recipientsList);
-      }
+      } 
+      inviteEmails.push(recipientsList);
     } 
     console.log("inviteEmails: " + JSON.stringify(inviteEmails));
     if (inviteEmails.length > 0) {
       let batch = [];
       inviteEmails.forEach(function(inviteEmail) {
+        if (inviteEmail.indexOf("@") === -1) {
+          inviteEmail = inviteEmail + '@avaya.com';
+        }
         batch.push({ method: 'GET', relative_url: inviteEmail + '?fields=id,email,name,primary_phone,department'});
       });
 
@@ -195,13 +196,13 @@ function handleMessage(recipients, received_message, thread_key) {
           console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
           //recipients = recipients.concat(response);
           let isRecipients = false;
-          recipients.forEach(function(recipient) {
+          response.forEach(function(recipient) {
             if (!recipient.error) {
               recipients.push(recipient);
               isRecipients = true;
             }
           });
-          if (isRecipients && recipients.length > 1) {
+          if (isRecipients) {
             var substring_message = received_message.substring(0, received_message.indexOf(" "));
             sendMessage(recipients, substring_message, thread_key, text);
           } else {
