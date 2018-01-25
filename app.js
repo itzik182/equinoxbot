@@ -373,7 +373,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
               var isEvent = false;
               if(value && value.type === 'event' && value.verb === 'add') {
                 isEvent = true;
-                if(value.message.indexOf('@meeting') !== -1) {
+                if(value.message.indexOf('@live-meeting') !== -1) {
                   getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
                    var meetingUrl = response.department ? 
                        'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + response.department : 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=171197237679607';
