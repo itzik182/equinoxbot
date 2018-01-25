@@ -153,7 +153,7 @@ function handleMessage(recipients, received_message, thread_key) {
   if (received_message) {
     console.log('received_message- ' + received_message);
     
-    if (received_message.indexOf("virtual room") !== -1 && received_message.indexOf("#") !== -1) {
+    if (received_message.indexOf("@where-meeting") !== -1 && received_message.indexOf("#") !== -1) {
       getRecipients(received_message).then(
         function (response) {
           if (response && response.length > 0) {
