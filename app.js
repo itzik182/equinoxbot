@@ -109,6 +109,9 @@ function getTextMessageResponse(received_message, VR) {
     case '@join-meeting': case 'link to my virtual room': case 'Lets have a meeting':
         text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         break;
+    case '@invite-meeting':
+        text = 'I suggest you meet at: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+        break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
         break;
