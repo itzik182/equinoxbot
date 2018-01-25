@@ -101,58 +101,9 @@ function getEmployeeDetailsByIdOrEmail(userIdentify, fields) {
 function getTextMessageResponse(received_message, VR) {
   var text = '';
   switch(received_message.toLowerCase()) {
-    case 'lets meet': case 'meet': case 'discuss': case 'brainstorm':
+    case '@join-meeting': case 'link to my virtual room': case 'Lets have a meeting':
         text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         break;
-    case 'link to my virtual room':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case 'tamar': case 'link to tamar':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case 'guy': case 'link to guy':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case "Let's have a meeting": case 'Lets have a meeting':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case 'buttons':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        buttons:[
-          {
-            "type":"web_url",
-            "url":"https://avayaequinoxmeetings.com/scopia/mt/9022?ID=" + VR,
-            "title":"Link to guy vr",
-            "webview_height_ratio": "full",
-            "messenger_extensions": true,  
-            "fallback_url": "https://petersfancyapparel.com/fallback"
-          }
-        ]
-        break;
-    // case '_letsa meet':
-    //     text = 'Which virtual room?';
-    //     quick_replies = [
-    //         {
-    //           //"type": "postback",
-    //           "content_type":"text",
-    //           "title":"Itzik",
-    //           //"image_url":"http://example.com/img/red.png",
-    //           "payload":"yes"
-    //         },
-    //           {
-    //           "content_type":"text",
-    //           "title":"Ronny",
-    //           //"image_url":"http://example.com/img/red.png",
-    //           "payload":"<lets meet ronny room>"
-    //         },
-    //           {
-    //           "content_type":"text",
-    //           "title":"Anna",
-    //           //"image_url":"http://example.com/img/red.png",
-    //           "payload":"<lets meet anna room>"
-    //         }
-    //     ]
-    //     break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
         break;
@@ -162,34 +113,9 @@ function getTextMessageResponse(received_message, VR) {
     case 'thank you': case 'thanks':
         text = 'You are welcome';
         break;
-    case 'lets meet anna room':
-        text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=' + VR;
-        break;
-    // case 'location':
-    //     text = "location";
-    //     quick_replies = [
-    //       {
-    //         "content_type":"location"
-    //       }
-    //     ];
-    //     break;
-    //default:
-    //    text = `You sent the message: "${received_message.text}".`;
     }
-
-    if(received_message.includes("meet") || received_message.includes("discuss") || received_message.includes("brainstorm") || received_message.includes("meeting")){
-      text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + VR;
-    }
+  
     return text;
-
-    //if (received_message.text === 'lets meet') {    
-    //  text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=661236';
-    //}
-    //else {
-    //  text = 'You sent the message: "${received_message.text}". Now send me an image111!';
-    //}
-    //console.log("text556 - " + text);
-    // Create the payload for a basic text message 
 }
 
 function sendMessage(recipients, received_message, thread_key, text) {
@@ -234,7 +160,7 @@ function handleMessage(recipients, received_message, thread_key) {
             let user = response[0];
             console.log("Success!", response);
             if (user && user.department) {
-              text = 'The virtual room of ' + user.name + ' is https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + user.department;
+              text = 'The virtual room of ' + user.name + ' is https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + user.department;
             } else {
               text = 'The user ' + user.name + ' does not have a virtual room';
             }
@@ -418,7 +344,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
                 if(value.message.indexOf('@meeting') !== -1) {
                   getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
                    var meetingUrl = response.department ? 
-                       'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + response.department : 'https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=171197237679607';
+                       'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + response.department : 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=171197237679607';
                     //if(VR !== null) {
                     let eventUrl = value.attachments.data[0].url;
                     var eventId = eventUrl.substring(eventUrl.indexOf("events/") + 7, eventUrl.length -1);
