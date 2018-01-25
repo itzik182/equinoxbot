@@ -164,9 +164,12 @@ function handleMessage(recipients, received_message, thread_key) {
   // Check if the message contains text
   if (received_message) {
     console.log('handleMessage - received_message- ' + received_message);
-    
-    if (received_message.indexOf("@where-meeting") !== -1 && received_message.indexOf("#") !== -1) {
-      getRecipients(received_message).then(
+    var recipientsList;
+    if (received_message.indexOf("@where-meeting") !== -1) {
+      recipientsList = received_message.substring(received_message.indexOf(" ") + 1, received_message.length);
+      console.log("recipientsList - " + recipientsList);
+      
+      getRecipients(recipientsList).then(
         function (response) {
           if (response && response.length > 0) {
             let user = response[0];
@@ -185,7 +188,7 @@ function handleMessage(recipients, received_message, thread_key) {
     } else if (received_message.indexOf("@invite-meeting") !== -1) {
       console.log("equinox meeting # recipients1- " + JSON.stringify(recipients));
       
-      var recipientsList = received_message.substring(received_message.indexOf(" ") + 1, received_message.length);
+      recipientsList = received_message.substring(received_message.indexOf(" ") + 1, received_message.length);
       console.log("recipientsList - " + recipientsList);
       
       getRecipients(recipientsList).then(
