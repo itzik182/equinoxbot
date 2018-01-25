@@ -193,9 +193,20 @@ function handleMessage(recipients, received_message, thread_key) {
         console.log("equinox meeting # a1- " + JSON.stringify(response));
         if (response !== undefined && response !== null) {
           console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
-          recipients = recipients.concat(response);
-          var substring_message = received_message.substring(0, received_message.indexOf(" "));
-          sendMessage(recipients, substring_message, thread_key, text);
+          //recipients = recipients.concat(response);
+          let isRecipients = false;
+          recipients.forEach(function(recipient) {
+            if (!recipient.error) {
+              recipients.push(JSON.parse(recipient));
+              isRecipients = true;
+            }
+          });
+          if (isRecipients) {
+            var substring_message = received_message.substring(0, received_message.indexOf(" "));
+            sendMessage(recipients, substring_message, thread_key, text);
+          } else {
+            callSendAPI(recipients, { "text": 'This user does not exist' }, thread_key);
+          }          
         }
         console.log("equinox meeting # recipients4-" + JSON.stringify(recipients));
       }, function (error) {
