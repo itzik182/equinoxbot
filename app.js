@@ -49,19 +49,20 @@ graphapi({
     });
 
 
-function getRecipients (received_message) {
+function getRecipients (recipientsList) {
+  console.log("getRecipients - recipientsList: " + recipientsList);
   return new Promise((resolve, reject) => {
     var inviteEmails = [];
     var recipients = []; 
-    var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
-    if (substring_message.indexOf(";") !== -1) {
-      inviteEmails = substring_message.split(";");
+    
+    if (recipientsList.indexOf(";") !== -1) {
+      inviteEmails = recipientsList.split(";");
     } else {
-      if (substring_message.indexOf("@") !== -1) {
-        inviteEmails.push(substring_message);
+      if (recipientsList.indexOf("@") !== -1) {
+        inviteEmails.push(recipientsList);
       } else {
-        substring_message = substring_message + '@avaya.com';
-        inviteEmails.push(substring_message);
+        recipientsList = recipientsList + '@avaya.com';
+        inviteEmails.push(recipientsList);
       }
     } 
     console.log("inviteEmails: " + JSON.stringify(inviteEmails));
@@ -180,9 +181,13 @@ function handleMessage(recipients, received_message, thread_key) {
             console.error("error failed!");
           }
       });
-    } else if (received_message.indexOf("@invite-meeting") !== -1 && received_message.indexOf("#") !== -1) {
-      console.log("equinox meeting # recipients1-" + JSON.stringify(recipients));
-      getRecipients(received_message).then(
+    } else if (received_message.indexOf("@invite-meeting") !== -1) {
+      console.log("equinox meeting # recipients1- " + JSON.stringify(recipients));
+      
+      var recipientsList = received_message.substring(received_message.indexOf("@invite-meeting "), received_message.length);
+      console.log("recipientsList - " + recipientsList);
+      
+      getRecipients(recipientsList).then(
       function (response) {
         console.log("Success!", response);
         console.log("equinox meeting # a1- " + JSON.stringify(response));
