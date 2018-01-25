@@ -187,7 +187,8 @@ function handleMessage(recipients, received_message, thread_key) {
         if (response !== undefined && response !== null) {
           console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
           recipients = recipients.concat(response);
-          sendMessage(recipients, received_message, thread_key, text);
+          var substring_message = received_message.substring(0, received_message.indexOf("#") + 1);
+          sendMessage(recipients, substring_message, thread_key, text);
         }
         console.log("equinox meeting # recipients4-" + JSON.stringify(recipients));
       }, function (error) {
