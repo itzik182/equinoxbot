@@ -103,14 +103,21 @@ function getEmployeeDetailsByIdOrEmail(userIdentify, fields) {
   });
 }
 
-function getTextMessageResponse(received_message, VR) {
+function getTextMessageResponse(received_message, user) {
+  let primary_phone;
+  let VR = user.department ? user.department : '9200167';
+  
+    if (user.primary_phone) {
+      primary_phone = user.primary_phone.replace('+', '');
+    }
+  
   var text = '';
   switch(received_message.toLowerCase()) {
     case '@join-meeting': case 'link to my virtual room': case 'Lets have a meeting':
         text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         break;
     case '@invite-meeting':
-        text = 'I suggest you meet at: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+        text = user.name + ' suggest you meet at: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
         break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
@@ -127,17 +134,12 @@ function getTextMessageResponse(received_message, VR) {
 }
 
 function sendMessage(recipients, received_message, thread_key, text) {
+  console.log('sendMessage - received_message- ' + received_message);
   let quick_replies;
-  var primary_phone;
-  var VR;
-  var defaultVR = '9200167';
+  
   getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
-    VR = response.department ? response.department : defaultVR;
-    if (response.primary_phone) {
-      primary_phone = response.primary_phone.replace('+', '');
-    }
     console.log("response - " + JSON.stringify(response));
-    text = getTextMessageResponse(received_message, VR);
+    text = getTextMessageResponse(received_message, response);
     var responseObj = {
       "text": text,
       //"buttons": buttons,
@@ -159,7 +161,7 @@ function handleMessage(recipients, received_message, thread_key) {
   let buttons;
   // Check if the message contains text
   if (received_message) {
-    console.log('received_message- ' + received_message);
+    console.log('handleMessage - received_message- ' + received_message);
     
     if (received_message.indexOf("@where-meeting") !== -1 && received_message.indexOf("#") !== -1) {
       getRecipients(received_message).then(
@@ -187,7 +189,7 @@ function handleMessage(recipients, received_message, thread_key) {
         if (response !== undefined && response !== null) {
           console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
           recipients = recipients.concat(response);
-          var substring_message = received_message.substring(0, received_message.indexOf("#") + 1);
+          var substring_message = received_message.substring(0, received_message.indexOf(" "));
           sendMessage(recipients, substring_message, thread_key, text);
         }
         console.log("equinox meeting # recipients4-" + JSON.stringify(recipients));
