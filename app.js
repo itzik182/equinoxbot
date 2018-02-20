@@ -115,10 +115,10 @@ function getTextMessageResponse(received_message, user) {
   
   var text = '';
   switch(received_message.toLowerCase()) {
-    case '@join-meeting': case 'link to my virtual room': case 'Lets have a meeting':
+    case '@join': case 'link to my virtual room': case 'Lets have a meeting':
         text = 'May I suggest you enter your virtual room: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         break;
-    case '@invite-meeting':
+    case '@invite':
         text = user.name + ' suggest you meet at: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         break;
     case 'hi':
@@ -165,7 +165,7 @@ function handleMessage(recipients, received_message, thread_key) {
   if (received_message) {
     console.log('handleMessage - received_message- ' + received_message);
     var recipientsList;
-    if (received_message.indexOf("@where-meeting") !== -1) {
+    if (received_message.indexOf("@where") !== -1) {
       recipientsList = received_message.substring(received_message.indexOf(" ") + 1, received_message.length);
       console.log("recipientsList - " + recipientsList);
       
@@ -185,7 +185,7 @@ function handleMessage(recipients, received_message, thread_key) {
             console.error("error failed!");
           }
       });
-    } else if (received_message.indexOf("@invite-meeting") !== -1) {
+    } else if (received_message.indexOf("@invite") !== -1) {
       console.log("equinox meeting # recipients1- " + JSON.stringify(recipients));
       
       recipientsList = received_message.substring(received_message.indexOf(" ") + 1, received_message.length);
@@ -382,7 +382,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
               var isEvent = false;
               if(value && value.type === 'event' && value.verb === 'add') {
                 isEvent = true;
-                if(value.message.indexOf('@live-meeting') !== -1) {
+                if(value.message.indexOf('@live') !== -1) {
                   getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
                    var meetingUrl = response.department ? 
                        'https://meetings.avaya.com/portal/tenants/9022/?ID=' + response.department : 'https://meetings.avaya.com/portal/tenants/9022/?ID=90397237679607';
