@@ -358,7 +358,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
             let message = value.message;
             
             if (body.object === 'user' && message === '@join') {
-               sender_psid.push({"id": value.to.});
+               sender_psid.push({"id": value.to.data.id});
             } else if (body.object === 'user' && message !== '@join') {
               return;
             }
