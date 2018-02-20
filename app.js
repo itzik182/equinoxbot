@@ -50,7 +50,7 @@ graphapi({
 
 graphapi({
         method: 'GET',
-        url: '/v2.6/me/friends',
+        url: '/v2.6/395404170913985',
     },function(error,response,body) {
       if(error) {
         console.error("friends=> error - " + error); 
