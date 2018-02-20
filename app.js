@@ -357,8 +357,10 @@ console.log('req.body - ' + JSON.stringify(req.body));
             let value = change.value;
             let message = value.message;
             
-            if (body.object === 'user' && message !== '@join') {
-             return;
+            if (body.object === 'user' && message === '@join') {
+               sender_psid.push({"id": value.to.});
+            } else if (body.object === 'user' && message !== '@join') {
+              return;
             }
             
             if (value.verb !== 'delete') {
