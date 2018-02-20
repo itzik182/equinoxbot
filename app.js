@@ -116,10 +116,10 @@ function getTextMessageResponse(received_message, user) {
   var text = '';
   switch(received_message.toLowerCase()) {
     case '@join-meeting': case 'link to my virtual room': case 'Lets have a meeting':
-        text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+        text = 'May I suggest you enter your virtual room: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         break;
     case '@invite-meeting':
-        text = user.name + ' suggest you meet at: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+        text = user.name + ' suggest you meet at: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
@@ -175,7 +175,7 @@ function handleMessage(recipients, received_message, thread_key) {
             let user = response[0];
             console.log("Success!", response);
             if (user && user.department) {
-              text = 'The virtual room of ' + user.name + ' is https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + user.department;
+              text = 'The virtual room of ' + user.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
             } else {
               text = 'The user ' + user.name + ' does not have a virtual room';
             }
@@ -376,7 +376,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
                 if(value.message.indexOf('@live-meeting') !== -1) {
                   getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
                    var meetingUrl = response.department ? 
-                       'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + response.department : 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=171197237679607';
+                       'https://meetings.avaya.com/portal/tenants/9022/?ID=' + response.department : 'https://meetings.avaya.com/portal/tenants/9022/?ID=90397237679607';
                     //if(VR !== null) {
                     let eventUrl = value.attachments.data[0].url;
                     var eventId = eventUrl.substring(eventUrl.indexOf("events/") + 7, eventUrl.length -1);
