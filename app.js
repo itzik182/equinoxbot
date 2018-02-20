@@ -37,27 +37,27 @@ var graphapi = request.defaults({
     }
 });
 
-graphapi({
-        method: 'GET',
-        url: '/' + '?fields=name',
-    },function(error,response,body) {
-      if(error) {
-        console.error("getEmployeeDetailsByIdOrEmail=> error - " + error);
-      } else { 
-        console.log("getEmployeeDetailsByIdOrEmail=> body - " + JSON.stringify(body));
-      }
-});
+// graphapi({
+//         method: 'GET',
+//         url: '/' + '?fields=name',
+//     },function(error,response,body) {
+//       if(error) {
+//         console.error("getEmployeeDetailsByIdOrEmail=> error - " + error);
+//       } else { 
+//         console.log("getEmployeeDetailsByIdOrEmail=> body - " + JSON.stringify(body));
+//       }
+// });
 
-graphapi({
-        method: 'GET',
-        url: '/v2.6/395404170913985',
-    },function(error,response,body) {
-      if(error) {
-        console.error("friends=> error - " + error); 
-      } else { 
-        console.log("friends=> body - " + JSON.stringify(body));
-      }
-});
+// graphapi({
+//         method: 'GET',
+//         url: '/v2.6/395404170913985',
+//     },function(error,response,body) {
+//       if(error) {
+//         console.error("friends=> error - " + error); 
+//       } else { 
+//         console.log("friends=> body - " + JSON.stringify(body));
+//       }
+// });
 
 
 function getRecipients (recipientsList) {
@@ -267,6 +267,7 @@ function callSendAPI(recipients, response, thread_key) {
       "recipient": {
         "thread_key": thread_key,
       },
+      "sender_action":"typing_on",
       "message": response
       }
     } else {
@@ -275,11 +276,23 @@ function callSendAPI(recipients, response, thread_key) {
       "recipient": {
         "id": recipient.id,
       },
+      //"sender_action":"typing_on",
       "message": response
       } 
     }
     //console.log("request_body from: " + request_body.from);
     console.log("request_body: " + JSON.stringify(request_body));
+    
+    graphapi({
+        method: 'POST',
+        url: '/v2.6/me/messages',
+      qs: {
+                          sender_action: 'Thanks'
+          }
+    },function(error,response,body) {
+        console.log("friends=> body - " + JSON.stringify(body));
+    });
+    
     // Send the HTTP request to the Messenger Platform
     request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
