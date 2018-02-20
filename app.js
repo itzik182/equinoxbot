@@ -46,7 +46,18 @@ graphapi({
       } else { 
         console.log("getEmployeeDetailsByIdOrEmail=> body - " + JSON.stringify(body));
       }
-    });
+});
+
+graphapi({
+        method: 'GET',
+        url: '/v2.6/me/friends',
+    },function(error,response,body) {
+      if(error) {
+        console.error("friends=> error - " + error); 
+      } else { 
+        console.log("friends=> body - " + JSON.stringify(body));
+      }
+});
 
 
 function getRecipients (recipientsList) {
@@ -267,7 +278,7 @@ function callSendAPI(recipients, response, thread_key) {
       "message": response
       } 
     }
-    console.log("request_body from: " + request_body.from);
+    //console.log("request_body from: " + request_body.from);
     console.log("request_body: " + JSON.stringify(request_body));
     // Send the HTTP request to the Messenger Platform
     request({
