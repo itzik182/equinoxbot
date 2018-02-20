@@ -358,7 +358,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
             let message = value.message;
             
             if (body.object === 'user' && message !== '@join') {
-             return;   
+             return;
             }
             
             if (value.verb !== 'delete') {
