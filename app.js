@@ -449,6 +449,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
               //console.log("sender2 - " + sender_psid);
               console.log("message - " + message);
               if (message && !isEvent) {
+                console.log("message Itz - " + JSON.stringify(sender_psid));
                 handleMessage(sender_psid, message.trim());  
               }
             }
