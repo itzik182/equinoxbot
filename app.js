@@ -260,13 +260,14 @@ function callSendAPI(recipients, response, thread_key) {
       }
     } else {
      request_body = {
+      //from: "100022693691284",
       "recipient": {
         "id": recipient.id,
       },
       "message": response
       } 
     }
-    
+    console.log("request_body from: " + request_body.from);
     console.log("request_body: " + JSON.stringify(request_body));
     // Send the HTTP request to the Messenger Platform
     request({
@@ -360,7 +361,8 @@ console.log('req.body - ' + JSON.stringify(req.body));
             if (body.object === 'user' && message === '@join') {
               sender_psid.push({"id": value.to.data[0].id});
               sender_psid.push({"id": value.from.id});
-              sender_psid.push({"id": value.from.community.id});
+              //sender_psid.push({"id": value.from.community.id});
+              //sender_psid.push({"id": value.id});
             } else if (body.object === 'user' && message !== '@join') {
               return;
             }
