@@ -283,30 +283,36 @@ function callSendAPI(recipients, response, thread_key) {
     //console.log("request_body from: " + request_body.from);
     console.log("request_body: " + JSON.stringify(request_body));
     
-    graphapi({
-        method: 'POST',
-        url: '/v2.6/me/messages',
-      qs: {
-                          sender_action: 'Thanks'
-          }
-    },function(error,response,body) {
-        console.log("friends=> body - " + JSON.stringify(body));
-    });
+    // graphapi({
+    //     method: 'POST',
+    //     url: '/v2.6/me/messages',
+    //   qs: {
+    //         "sender_action": 'typing_on'
+    //       }
+    // },function(error,response,body) {
+    //     console.log("friends=> body - " + JSON.stringify(body));
+    // });
+    displayTheTypingBubble(recipient, response, thread_key, true);
     
-    // Send the HTTP request to the Messenger Platform
-    request({
-      "uri": "https://graph.facebook.com/v2.6/me/messages",
-      "qs": { "access_token": PAGE_ACCESS_TOKEN },
-      "method": "POST",
-      "json": request_body
-    }, (err, res, body) => {
-      if (!err) {
-        //console.log('message sent!')
-      } else {
-        //console.error("Unable to send message:" + err);
-      }
-    }); 
-  });
+    displayTheTypingBubble(recipient, response, thread_key, false);
+    setTimeout(function(){
+      //displayTheTypingBubble(recipient, response, thread_key, false);
+      
+      // Send the HTTP request to the Messenger Platform
+      request({
+        "uri": "https://graph.facebook.com/v2.6/me/messages",
+        "qs": { "access_token": PAGE_ACCESS_TOKEN},
+        "method": "POST",
+        "json": request_body
+      }, (err, res, body) => {
+        if (!err) {
+          //console.log('message sent!')
+        } else {
+          //console.error("Unable to send message:" + err);
+        }
+      }); 
+    }, 3000);
+    });
   
   // Construct the message body
   let messenger_profile_request_body = {
@@ -336,17 +342,19 @@ function callSendAPI(recipients, response, thread_key) {
   });
 }
 
-function displayTheTypingBubble(sender, response, thread_key) {
+function displayTheTypingBubble(sender, response, thread_key, isOn) {
+  //return new Promise((resolve, reject) => {
+  let sender_action = isOn ? "typing_on" : "typing_off";
   let request_body = {
       "recipient": {
         "id": sender.id
       },
-      "sender_action": "typing_on"
+      "sender_action": sender_action
     }
   //console.log("request_body: " + JSON.stringify(request_body));
     // Send the HTTP request to the Messenger Platform
     request({
-      "uri": "https://graph.facebook.com/v2.6",
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
       "qs": { "access_token": PAGE_ACCESS_TOKEN },
       "method": "POST",
       "json": request_body
@@ -357,6 +365,7 @@ function displayTheTypingBubble(sender, response, thread_key) {
         //console.error("Unable to send message:" + err);
       }
     });
+//});
 }
 
 // Sets server port and logs message on success
