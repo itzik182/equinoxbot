@@ -276,7 +276,7 @@ function callSendAPI(recipients, response, thread_key) {
       "recipient": {
         "id": recipient.id,
       },
-      //"sender_action":"typing_on",
+      //"sender_action":"typing_off",
       "message": response
       } 
     }
@@ -293,8 +293,10 @@ function callSendAPI(recipients, response, thread_key) {
     //     console.log("friends=> body - " + JSON.stringify(body));
     // });
     displayTheTypingBubble(recipient, response, thread_key, true);
+    setTimeout(function(){
+      //displayTheTypingBubble(recipient, response, thread_key, false);
+    }, 2800);
     
-    displayTheTypingBubble(recipient, response, thread_key, false);
     setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
       
