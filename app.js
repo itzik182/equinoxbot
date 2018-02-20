@@ -343,8 +343,11 @@ console.log('req.body - ' + JSON.stringify(req.body));
   // Parse the request body from the POST
   let body = req.body;
   let sender_psid = new Array();
+  
+  console.log("body.object: " + body.object);
+  
   // Check the webhook event is from a Page subscription
-  if (body.object === 'page' || body.object === 'group') {
+  if (body.object === 'page' || body.object === 'group' || body.object === 'user') {
 
     // Iterate over each entry - there may be multiple if batched
     body.entry.forEach(function(entry) {
@@ -352,13 +355,19 @@ console.log('req.body - ' + JSON.stringify(req.body));
           entry.changes.forEach(function(change) {
             console.log("change: " + JSON.stringify(change));
             let value = change.value;
+            let message = value.message;
+            
+            if (body.object === 'user' && message !== '@join') {
+             return;   
+            }
+            
             if (value.verb !== 'delete') {
               if (body.object === 'group' && value.from) {
                 sender_psid.push({"id": value.from.id});
               } else {
                 sender_psid.push({"id": value.sender_id});
               }
-              let message = value.message;
+              
               if (value.message_tags) {
                 value.message_tags.forEach(function(tag) {
                   if (tag.type === "user")
