@@ -397,19 +397,6 @@ function displayMessageMarkSeen(sender, thread_key) {
     });
 }
 
-function send(webhook_event, sender_psid, thread_key) {
- if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
-    console.log('handleMessage: ' + JSON.stringify(webhook_event.message));
-    handleMessage(sender_psid, webhook_event.message.text, thread_key);        
-  } else if (webhook_event.postback) {
-    console.log('handlePostback: ' + JSON.stringify(webhook_event.postback));
-    handlePostback(sender_psid, webhook_event.postback);
-  } else if (webhook_event.message && webhook_event.message.quick_reply) {
-    console.log('handlePostback: ' + JSON.stringify(webhook_event.message));
-    handlePostback(sender_psid, webhook_event.message);
-  } 
-}
-
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 
@@ -431,12 +418,6 @@ console.log('req.body - ' + JSON.stringify(req.body));
           entry.changes.forEach(function(change) {
             console.log("change: " + JSON.stringify(change));
             let value = change.value;
-            let message = value.message;
-            
-            console.log("message Itz1 - " + JSON.stringify(sender_psid));
-            if (body.object === 'user' && message !== '@join') {
-              //return;
-            }
             
             console.log("message Itz2 - " + JSON.stringify(sender_psid));
             if (value.verb !== 'delete') {
@@ -445,7 +426,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
               } else {
                 sender_psid.push({"id": value.sender_id});
               }
-              
+              let message = value.message;
               if (value.message_tags) {
                 value.message_tags.forEach(function(tag) {
                   if (tag.type === "user")
@@ -558,14 +539,16 @@ console.log('req.body - ' + JSON.stringify(req.body));
              thread_key = webhook_event.thread.id;
           }
           //displayMessageMarkSeen(sender_psid, thread_key);
-          
-          //console.log('Sender PSID: ' + sender_psid);
-          //console.log('webhook_event: ' + webhook_event);
-
-          // Check if the event is a message or postback and
-          // pass the event to the appropriate handler function
-          //console.log(webhook_event.message.quick_reply);
-          send(webhook_event, sender_psid, thread_key);
+          if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
+            console.log('handleMessage: ' + JSON.stringify(webhook_event.message));
+            handleMessage(sender_psid, webhook_event.message.text, thread_key);        
+          } else if (webhook_event.postback) {
+            console.log('handlePostback: ' + JSON.stringify(webhook_event.postback));
+            handlePostback(sender_psid, webhook_event.postback);
+          } else if (webhook_event.message && webhook_event.message.quick_reply) {
+            console.log('handlePostback: ' + JSON.stringify(webhook_event.message));
+            handlePostback(sender_psid, webhook_event.message);
+          } 
         }
     });
 
@@ -574,6 +557,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
 
   } else {
     // Return a '404 Not Found' if event is not from a page subscription
+    console.log("sendStatus - 404");
     res.sendStatus(404);
   }
 });
