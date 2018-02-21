@@ -612,7 +612,7 @@ app.get('/webhook', (req, res) => {
   // Check if a token and mode were sent
   if (mode && token) {
   
-    // Check the mode and token sent are correct
+    // Check the mode and token sent are correct 
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
       
       // Respond with 200 OK and challenge token from the request
