@@ -392,7 +392,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
             console.log("change: " + JSON.stringify(change));
             let value = change.value;
             let message = value.message;
-            
+            console.log("message Itz1 - " + JSON.stringify(sender_psid));
             if (body.object === 'user' && message === '@join') {
               sender_psid.push({"id": value.to.data[0].id});
               sender_psid.push({"id": value.from.id});
@@ -401,7 +401,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
             } else if (body.object === 'user' && message !== '@join') {
               return;
             }
-            
+            console.log("message Itz2 - " + JSON.stringify(sender_psid));
             if (value.verb !== 'delete') {
               if (body.object === 'group' && value.from) {
                 sender_psid.push({"id": value.from.id});
