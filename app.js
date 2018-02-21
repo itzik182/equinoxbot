@@ -293,13 +293,13 @@ function callSendAPI(recipients, response, thread_key) {
     //     console.log("friends=> body - " + JSON.stringify(body));
     // });
     
-    //displayTheTypingBubble(recipient, response, thread_key, true);
+    displayTheTypingBubble(recipient, response, thread_key, true);
     
     //setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
     //}, 2800);
     
-    //setTimeout(function(){
+    setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
       
       // Send the HTTP request to the Messenger Platform
@@ -315,7 +315,7 @@ function callSendAPI(recipients, response, thread_key) {
           //console.error("Unable to send message:" + err);
         }
       }); 
-    //}, 2000);
+    }, 2000);
     });
   
   // Construct the message body
@@ -402,7 +402,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
             
             console.log("message Itz2 - " + JSON.stringify(sender_psid));
             if (value.verb !== 'delete') {
-              if ((body.object === 'group' || body.object === 'user') && value.from) {
+              if ((body.object === 'group') && value.from) {
                 sender_psid.push({"id": value.from.id});
               } else {
                 sender_psid.push({"id": value.sender_id});
@@ -488,7 +488,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
               console.log("message - " + message);
               if (message && !isEvent) {
                 console.log("message Itz - " + JSON.stringify(sender_psid));
-                handleMessage(sender_psid, message.trim());  
+                handleMessage(sender_psid, message.trim());
               }
             }
           });
@@ -542,7 +542,23 @@ console.log('req.body - ' + JSON.stringify(req.body));
     res.status(200).send('EVENT_RECEIVED');
 
   } else if (body.object === 'user') {
-    
+    body.entry.forEach(function(entry) {
+      if (entry && entry.changes && entry.changes.length > 0) {
+        entry.changes.forEach(function(change) {
+          console.log("change: " + JSON.stringify(change));
+          let value = change.value;
+          let message = value.message;
+          if (message === '@join') {
+            //if(value.to.data[0].indexOf('@facebook.com') === -1) {
+               sender_psid.push({"id": value.to.data[0].id});
+            //}
+            sender_psid.push({"id": value.from.id});
+            //sender_psid.push({"id": value.from.community.id});
+            //sender_psid.push({"id": value.id});
+          }
+        });
+       }
+    });
   } else {
     // Return a '404 Not Found' if event is not from a page subscription
     res.sendStatus(404);
