@@ -10,9 +10,10 @@
 
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN; 
-
-import config1  from "table.js";
-console.log(config1.test);
+//console.log("2");
+//import config1  from "table.js";
+//var config1 = require('config');
+//console.log(config1.test);
 
 // Imports dependencies and set up http server
 const
@@ -268,7 +269,6 @@ function callSendAPI(recipients, response, thread_key) {
       "recipient": {
         "thread_key": thread_key,
       },
-      "sender_action":"typing_on",
       "message": response
       }
     } else {
@@ -300,7 +300,7 @@ function callSendAPI(recipients, response, thread_key) {
       //displayTheTypingBubble(recipient, response, thread_key, false);
     //}, 2800);
     
-    setTimeout(function(){
+    //setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
       
       // Send the HTTP request to the Messenger Platform
@@ -316,7 +316,7 @@ function callSendAPI(recipients, response, thread_key) {
           //console.error("Unable to send message:" + err);
         }
       }); 
-    }, 2000);
+    //}, 2000);
     });
   
   // Construct the message body
@@ -420,9 +420,9 @@ console.log('req.body - ' + JSON.stringify(req.body));
             console.log("change: " + JSON.stringify(change));
             let value = change.value;
             
-            console.log("message Itz2 - " + JSON.stringify(sender_psid));
+            //console.log("message Itz2 - " + JSON.stringify(sender_psid));
             if (value.verb !== 'delete') {
-              if ((body.object === 'group') && value.from) {
+              if (body.object === 'group' && value.from) {
                 sender_psid.push({"id": value.from.id});
               } else {
                 sender_psid.push({"id": value.sender_id});
