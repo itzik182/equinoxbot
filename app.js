@@ -11,7 +11,8 @@
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN; 
 
-console.log(require('table'));
+import config1  from "table.js";
+console.log(config1.test);
 
 // Imports dependencies and set up http server
 const
