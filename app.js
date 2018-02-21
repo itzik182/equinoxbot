@@ -292,12 +292,14 @@ function callSendAPI(recipients, response, thread_key) {
     // },function(error,response,body) {
     //     console.log("friends=> body - " + JSON.stringify(body));
     // });
-    displayTheTypingBubble(recipient, response, thread_key, true);
+    
+    //displayTheTypingBubble(recipient, response, thread_key, true);
+    
     //setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
     //}, 2800);
     
-    setTimeout(function(){
+    //setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
       
       // Send the HTTP request to the Messenger Platform
@@ -313,7 +315,7 @@ function callSendAPI(recipients, response, thread_key) {
           //console.error("Unable to send message:" + err);
         }
       }); 
-    }, 2000);
+    //}, 2000);
     });
   
   // Construct the message body
@@ -383,7 +385,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
   console.log("body.object: " + body.object);
   
   // Check the webhook event is from a Page subscription
-  if (body.object === 'page' || body.object === 'group' || body.object === 'user') {
+  if (body.object === 'page' || body.object === 'group') {
 
     // Iterate over each entry - there may be multiple if batched
     body.entry.forEach(function(entry) {
@@ -395,7 +397,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
             
             console.log("message Itz1 - " + JSON.stringify(sender_psid));
             if (body.object === 'user' && message !== '@join') {
-              return;
+              //return;
             }
             
             console.log("message Itz2 - " + JSON.stringify(sender_psid));
@@ -539,11 +541,12 @@ console.log('req.body - ' + JSON.stringify(req.body));
     // Return a '200 OK' response to all events
     res.status(200).send('EVENT_RECEIVED');
 
-  }  else {
+  } else if (body.object === 'user') {
+    
+  } else {
     // Return a '404 Not Found' if event is not from a page subscription
     res.sendStatus(404);
   }
-
 });
 
 // Accepts GET requests at the /webhook endpoint
