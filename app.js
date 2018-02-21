@@ -293,7 +293,7 @@ function callSendAPI(recipients, response, thread_key) {
     //     console.log("friends=> body - " + JSON.stringify(body));
     // });
     
-    displayTheTypingBubble(recipient, thread_key, true);
+    //displayTheTypingBubble(recipient, thread_key, true);
     
     //setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
@@ -572,26 +572,6 @@ console.log('req.body - ' + JSON.stringify(req.body));
     // Return a '200 OK' response to all events
     res.status(200).send('EVENT_RECEIVED');
 
-  } else if (body.object === 'user') {
-    body.entry.forEach(function(entry) {
-      if (entry && entry.changes && entry.changes.length > 0) {
-        entry.changes.forEach(function(change) {
-          console.log("change: " + JSON.stringify(change));
-          let value = change.value;
-          let message = value.message;
-          if (message === '@join') {
-            //if(value.to.data[0].indexOf('@facebook.com') === -1) {
-               sender_psid.push({"id": value.to.data[0].id});
-            //}
-            sender_psid.push({"id": value.from.id});
-            //sender_psid.push({"id": value.from.community.id});
-            //sender_psid.push({"id": value.id});
-
-            handleMessage(sender_psid, message.trim());
-          }
-        });
-       }
-    });
   } else {
     // Return a '404 Not Found' if event is not from a page subscription
     res.sendStatus(404);
@@ -608,7 +588,6 @@ app.get('/webhook', (req, res) => {
   let mode = req.query['hub.mode'];
   let token = req.query['hub.verify_token'];
   let challenge = req.query['hub.challenge'];
-    
   // Check if a token and mode were sent
   if (mode && token) {
   
