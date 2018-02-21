@@ -394,6 +394,9 @@ console.log('req.body - ' + JSON.stringify(req.body));
             let message = value.message;
             console.log("message Itz1 - " + JSON.stringify(sender_psid));
             if (body.object === 'user' && message === '@join') {
+              if(value.to.data[0].indexOf('@facebook.com') !== -1) {
+                 
+              }
               sender_psid.push({"id": value.to.data[0].id});
               sender_psid.push({"id": value.from.id});
               //sender_psid.push({"id": value.from.community.id});
