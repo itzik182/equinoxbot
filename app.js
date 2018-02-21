@@ -586,10 +586,8 @@ console.log('req.body - ' + JSON.stringify(req.body));
             sender_psid.push({"id": value.from.id});
             //sender_psid.push({"id": value.from.community.id});
             //sender_psid.push({"id": value.id});
-            if (entry && entry.messaging && entry.messaging.length > 0) {
-              let webhook_event = entry.messaging[0];
-              send(webhook_event, sender_psid);
-            }
+
+            handleMessage(sender_psid, message.trim());
           }
         });
        }
