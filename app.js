@@ -293,9 +293,9 @@ function callSendAPI(recipients, response, thread_key) {
     //     console.log("friends=> body - " + JSON.stringify(body));
     // });
     displayTheTypingBubble(recipient, response, thread_key, true);
-    setTimeout(function(){
+    //setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
-    }, 2800);
+    //}, 2800);
     
     setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
@@ -313,7 +313,7 @@ function callSendAPI(recipients, response, thread_key) {
           //console.error("Unable to send message:" + err);
         }
       }); 
-    }, 3000);
+    }, 2000);
     });
   
   // Construct the message body
@@ -392,21 +392,15 @@ console.log('req.body - ' + JSON.stringify(req.body));
             console.log("change: " + JSON.stringify(change));
             let value = change.value;
             let message = value.message;
+            
             console.log("message Itz1 - " + JSON.stringify(sender_psid));
-            if (body.object === 'user' && message === '@join') {
-              if(value.to.data[0].indexOf('@facebook.com') !== -1) {
-                 
-              }
-              sender_psid.push({"id": value.to.data[0].id});
-              sender_psid.push({"id": value.from.id});
-              //sender_psid.push({"id": value.from.community.id});
-              //sender_psid.push({"id": value.id});
-            } else if (body.object === 'user' && message !== '@join') {
+            if (body.object === 'user' && message !== '@join') {
               return;
             }
+            
             console.log("message Itz2 - " + JSON.stringify(sender_psid));
             if (value.verb !== 'delete') {
-              if (body.object === 'group' && value.from) {
+              if ((body.object === 'group' || body.object === 'user') && value.from) {
                 sender_psid.push({"id": value.from.id});
               } else {
                 sender_psid.push({"id": value.sender_id});
