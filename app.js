@@ -293,7 +293,7 @@ function callSendAPI(recipients, response, thread_key) {
     //     console.log("friends=> body - " + JSON.stringify(body));
     // });
     
-    displayTheTypingBubble(recipient, response, thread_key, true);
+    displayTheTypingBubble(recipient, thread_key, true);
     
     //setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
@@ -346,7 +346,7 @@ function callSendAPI(recipients, response, thread_key) {
   });
 }
 
-function displayTheTypingBubble(sender, response, thread_key, isOn) {
+function displayTheTypingBubble(sender, thread_key, isOn) {
   //return new Promise((resolve, reject) => {
   let sender_action = isOn ? "typing_on" : "typing_off";
   let request_body = {
@@ -370,6 +370,29 @@ function displayTheTypingBubble(sender, response, thread_key, isOn) {
       }
     });
 //});
+}
+
+function displayMessageMarkSeen(sender, thread_key) {
+  console.log('displayMessageMarkSeen');
+  console.log('sender - ' + JSON.stringify(sender));
+  let request_body = {
+      "recipient": {
+        "id": sender.id
+      },
+      "sender_action": 'mark_seen'
+    }
+    request({
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
+      "qs": { "access_token": PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": request_body
+    }, (err, res, body) => {
+      if (!err) {
+        console.log('message sent!')
+      } else {
+        console.error("Unable to send message:" + err);
+      }
+    });
 }
 
 // Sets server port and logs message on success
@@ -419,6 +442,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
                   message = messages[i] + " ";
                 }
               }
+              
               var isEvent = false;
               if(value && value.type === 'event' && value.verb === 'add') {
                 isEvent = true;
@@ -518,7 +542,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
           if (webhook_event.thread && webhook_event.thread.id) {
              thread_key = webhook_event.thread.id;
           }
-
+          displayMessageMarkSeen(sender_psid, thread_key);
           //console.log('Sender PSID: ' + sender_psid);
           //console.log('webhook_event: ' + webhook_event);
 
