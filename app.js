@@ -374,13 +374,15 @@ function displayTheTypingBubble(sender, thread_key, isOn) {
 
 function displayMessageMarkSeen(sender, thread_key) {
   console.log('displayMessageMarkSeen');
-  console.log('sender - ' + JSON.stringify(sender));
+  
   let request_body = {
-      "recipient": {
-        "id": sender.id
-      },
-      "sender_action": 'mark_seen'
+      // "recipient": {
+      //   "id": sender[0].id
+      // },
+      "sender_action": "mark_seen",
+      "message_id": "m_mid.$cAAX523XTe1hn6TKSZFht-1IN1G90"
     }
+    console.log('sender - ' + JSON.stringify(request_body));
     request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
       "qs": { "access_token": PAGE_ACCESS_TOKEN },
