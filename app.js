@@ -376,11 +376,11 @@ function displayMessageMarkSeen(sender, thread_key) {
   console.log('displayMessageMarkSeen');
   
   let request_body = {
-      // "recipient": {
-      //   "id": sender[0].id
-      // },
-      "sender_action": "mark_seen",
-      "message_id": "m_mid.$cAAX523XTe1hn6TKSZFht-1IN1G90"
+      "recipient": {
+        "id": sender[0].id
+      },
+      "sender_action": "mark_seen"
+      //"message_id": "m_mid.$cAAX523XTe1hn6TKSZFht-1IN1G90"
     }
     console.log('sender - ' + JSON.stringify(request_body));
     request({
@@ -395,6 +395,19 @@ function displayMessageMarkSeen(sender, thread_key) {
         console.error("Unable to send message:" + err);
       }
     });
+}
+
+function send(webhook_event, sender_psid, thread_key) {
+ if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
+    console.log('handleMessage: ' + JSON.stringify(webhook_event.message));
+    handleMessage(sender_psid, webhook_event.message.text, thread_key);        
+  } else if (webhook_event.postback) {
+    console.log('handlePostback: ' + JSON.stringify(webhook_event.postback));
+    handlePostback(sender_psid, webhook_event.postback);
+  } else if (webhook_event.message && webhook_event.message.quick_reply) {
+    console.log('handlePostback: ' + JSON.stringify(webhook_event.message));
+    handlePostback(sender_psid, webhook_event.message);
+  } 
 }
 
 // Sets server port and logs message on success
@@ -544,23 +557,15 @@ console.log('req.body - ' + JSON.stringify(req.body));
           if (webhook_event.thread && webhook_event.thread.id) {
              thread_key = webhook_event.thread.id;
           }
-          displayMessageMarkSeen(sender_psid, thread_key);
+          //displayMessageMarkSeen(sender_psid, thread_key);
+          
           //console.log('Sender PSID: ' + sender_psid);
           //console.log('webhook_event: ' + webhook_event);
 
           // Check if the event is a message or postback and
           // pass the event to the appropriate handler function
           //console.log(webhook_event.message.quick_reply);
-          if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
-            console.log('handleMessage: ' + JSON.stringify(webhook_event.message));
-            handleMessage(sender_psid, webhook_event.message.text, thread_key);        
-          } else if (webhook_event.postback) {
-            console.log('handlePostback: ' + JSON.stringify(webhook_event.postback));
-            handlePostback(sender_psid, webhook_event.postback);
-          } else if (webhook_event.message && webhook_event.message.quick_reply) {
-            console.log('handlePostback: ' + JSON.stringify(webhook_event.message));
-            handlePostback(sender_psid, webhook_event.message);
-          }
+          send(webhook_event, sender_psid, thread_key);
         }
     });
 
@@ -581,6 +586,10 @@ console.log('req.body - ' + JSON.stringify(req.body));
             sender_psid.push({"id": value.from.id});
             //sender_psid.push({"id": value.from.community.id});
             //sender_psid.push({"id": value.id});
+            if (entry && entry.messaging && entry.messaging.length > 0) {
+              let webhook_event = entry.messaging[0];
+              send(webhook_event, sender_psid);
+            }
           }
         });
        }
