@@ -10,7 +10,7 @@
 
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
-var avayaEmployees = [{name:'itzik',email:'itzik182@gmail.com'},{name:'itzik',email:'ihason@avaya.com'},{name:'ronny',email:'ronnys@avaya.com'}];
+var avayaEmployees = require('table.js').avayaEmployees; //[{name:'itzik',email:'itzik182@gmail.com'},{name:'itzik',email:'ihason@avaya.com'},{name:'ronny',email:'ronnys@avaya.com'}];
 //avayaEmployees = JSON.parse(JSON.stringify(process.env.ITZIK));
 console.log(avayaEmployees);
 //import config1  from "table.js";
