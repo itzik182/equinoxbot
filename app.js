@@ -294,18 +294,18 @@ function callSendAPI(recipients, response, thread_key) {
     //     console.log("friends=> body - " + JSON.stringify(body));
     // });
     
-    //displayTheTypingBubble(recipient, thread_key, true);
+  displayTheTypingBubble(recipient, thread_key, true);
     
     //setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
     //}, 2800);
     
-    //setTimeout(function(){
+  setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
-      
+
       // Send the HTTP request to the Messenger Platform
       request({
-        "uri": "https://graph.facebook.com/v2.6/100022693691284/messages",
+        "uri": "https://graph.facebook.com/v2.6/me/messages",
         "qs": { "access_token": PAGE_ACCESS_TOKEN},
         "method": "POST",
         "json": request_body
@@ -316,8 +316,8 @@ function callSendAPI(recipients, response, thread_key) {
           //console.error("Unable to send message:" + err);
         }
       }); 
-    //}, 2000);
-    });
+    }, 2000);
+  });
   
   // Construct the message body
   let messenger_profile_request_body = {
