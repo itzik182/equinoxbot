@@ -10,8 +10,8 @@
 
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN; 
-const avayaEmployees = process.env.avayaEmployees;
-//console.log("2");
+const avayaEmployees = process.env.ITZIK;
+console.log(avayaEmployees);
 //import config1  from "table.js";
 //var config1 = require('config');
 //console.log(config1.test);
@@ -75,7 +75,7 @@ function getRecipients (recipientsList) {
       if (recipientsList.indexOf("@") === -1) {
         //recipientsList = recipientsList + '@avaya.com';
         var currentEmployees = avayaEmployees.filter(avayaEmployee => avayaEmployee.name === 'itzik');
-        
+        console.log("currentEmployees: " + currentEmployees);
       } 
       inviteEmails.push(recipientsList);
     } 
