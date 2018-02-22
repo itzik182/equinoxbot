@@ -10,6 +10,7 @@
 
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN; 
+const avayaEmployees = process.env.avayaEmployees;
 //console.log("2");
 //import config1  from "table.js";
 //var config1 = require('config');
@@ -72,7 +73,8 @@ function getRecipients (recipientsList) {
       inviteEmails = recipientsList.split(";");
     } else {
       if (recipientsList.indexOf("@") === -1) {
-        recipientsList = recipientsList + '@avaya.com';
+        //recipientsList = recipientsList + '@avaya.com';
+        avayaEmployees
       } 
       inviteEmails.push(recipientsList);
     } 
