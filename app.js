@@ -305,7 +305,7 @@ function callSendAPI(recipients, response, thread_key) {
       
       // Send the HTTP request to the Messenger Platform
       request({
-        "uri": "https://graph.facebook.com/v2.6/me/messages",
+        "uri": "https://graph.facebook.com/v2.6/100022693691284/messages",
         "qs": { "access_token": PAGE_ACCESS_TOKEN},
         "method": "POST",
         "json": request_body
@@ -568,7 +568,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
                  sender_psid.push({"id": change.value.to.data[0].id});
               //}
               sender_psid.push({"id": change.value.from.id});
-              //sender_psid.push({"id": value.from.community.id});
+              //sender_psid.push({"id": change.value.from.community.id});
               //sender_psid.push({"id": value.id});
 
               handleMessage(sender_psid, change.value.message.trim());
