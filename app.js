@@ -556,6 +556,27 @@ console.log('req.body - ' + JSON.stringify(req.body));
     // Return a '200 OK' response to all events
     res.status(200).send('EVENT_RECEIVED');
 
+  } else if (body.object === 'user') {
+    body.entry.forEach(function(entry) {
+      if (entry && entry.changes && entry.changes.length > 0) {
+        entry.changes.forEach(function(change) {
+          if (entry.changes[0].field && entry.changes[0].field === 'message_sends') {
+          console.log("change: " + JSON.stringify(change));
+          let value = change.value;
+          let message = value.message;
+          if (message === '@join') {
+            //if(value.to.data[0].email.indexOf('@facebook.com') === -1) {
+               sender_psid.push({"id": value.to.data[0].id});
+            //}
+            sender_psid.push({"id": value.from.id});
+            //sender_psid.push({"id": value.from.community.id});
+            //sender_psid.push({"id": value.id});
+
+            //handleMessage(sender_psid, message.trim());
+          }
+        });
+       }
+    });
   } else {
     res.status(200).send('EVENT_RECEIVED');
     // Return a '404 Not Found' if event is not from a page subscription
