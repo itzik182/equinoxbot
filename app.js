@@ -11,35 +11,14 @@
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
 var fs = require('fs'); 
-fs.writeFileSync('./table.json', 'buildVersion: 11');  
 
-// var Iconv = require('iconv').Iconv;
+var avayaEmployees = require('./table.json').avayaEmployees;
 
-// function readFileSync_encoding(filename, encoding) {
-//     var content = fs.readFileSync(filename);
-//     var iconv = new Iconv(encoding, 'UTF-8');
-//     var buffer = iconv.convert(content);
-//     return buffer.toString('utf8'); 
-// }
-// var avayaEmployees = JSON.stringify(readFileSync_encoding('properties.txt', 'utf8'));
+//avayaEmployees.push({"name": "tamar222", "email": "tamarb222@avaya.com"});
 
-var avayaEmployees = require('./table.json').avayaEmployees; 
+//fs.writeFileSync('./table.json', JSON.stringify(avayaEmployees)); 
 
-//var a = fs.readFile('properties.txt', 'utf8');
-// fs.readFile('properties.txt', function read(err, data) {
-//     if (err) {
-//         console.log("err");
-//     } 
- 
-//     console.log(data);   // Put all of the code here (not the best solution)
-// });
-console.log(avayaEmployees);
-//var avayaEmployees = require('table.js').avayaEmployees; //[{name:'itzik',email:'itzik182@gmail.com'},{name:'itzik',email:'ihason@avaya.com'},{name:'ronny',email:'ronnys@avaya.com'}];
-//avayaEmployees = JSON.parse(JSON.stringify(process.env.ITZIK));
 //console.log(avayaEmployees);
-//import config1  from "table.js";
-//var config1 = require('config');
-//console.log(config1.test);
 
 // Imports dependencies and set up http server
 const
@@ -99,9 +78,10 @@ function getRecipients (recipientsList) {
     } else {
       if (recipientsList.indexOf("@") === -1) {
         //recipientsList = recipientsList + '@avaya.com';
-        var currentEmployees = avayaEmployees.filter(avayaEmployee => avayaEmployee.name === 'itzik');
-        console.log("currentEmployees: " + JSON.stringify(currentEmployees));
-      } 
+        console.log("recipientsList: " + JSON.stringify(recipientsList));
+      }
+      var currentEmployees = avayaEmployees.filter(avayaEmployee => avayaEmployee.name === 'itzik');
+      console.log("currentEmployees: " + JSON.stringify(currentEmployees));
       inviteEmails.push(recipientsList);
     } 
     console.log("inviteEmails: " + JSON.stringify(inviteEmails));
