@@ -13,15 +13,18 @@ const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
 var fs = require('fs'); 
 //fs.writeFileSync('table.js', 'buildVersion: 11');
 
-var Iconv = require('iconv').Iconv;
+// var Iconv = require('iconv').Iconv;
 
-function readFileSync_encoding(filename, encoding) {
-    var content = fs.readFileSync(filename);
-    var iconv = new Iconv(encoding, 'UTF-8');
-    var buffer = iconv.convert(content);
-    return buffer.toString('utf8'); 
-}
-var avayaEmployees = JSON.parse(JSON.stringify(readFileSync_encoding('properties.txt', 'utf8')));
+// function readFileSync_encoding(filename, encoding) {
+//     var content = fs.readFileSync(filename);
+//     var iconv = new Iconv(encoding, 'UTF-8');
+//     var buffer = iconv.convert(content);
+//     return buffer.toString('utf8'); 
+// }
+// var avayaEmployees = JSON.stringify(readFileSync_encoding('properties.txt', 'utf8'));
+
+var version = require('./table.json').avayaEmployees; 
+
 //var a = fs.readFile('properties.txt', 'utf8');
 // fs.readFile('properties.txt', function read(err, data) {
 //     if (err) {
@@ -30,7 +33,7 @@ var avayaEmployees = JSON.parse(JSON.stringify(readFileSync_encoding('properties
  
 //     console.log(data);   // Put all of the code here (not the best solution)
 // });
-console.log(avayaEmployees);  
+console.log(version);
 //var avayaEmployees = require('table.js').avayaEmployees; //[{name:'itzik',email:'itzik182@gmail.com'},{name:'itzik',email:'ihason@avaya.com'},{name:'ronny',email:'ronnys@avaya.com'}];
 //avayaEmployees = JSON.parse(JSON.stringify(process.env.ITZIK));
 //console.log(avayaEmployees);
