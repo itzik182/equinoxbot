@@ -10,9 +10,20 @@
 
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
-var avayaEmployees = require('table.js').avayaEmployees; //[{name:'itzik',email:'itzik182@gmail.com'},{name:'itzik',email:'ihason@avaya.com'},{name:'ronny',email:'ronnys@avaya.com'}];
+var fs = require('fs'); 
+//fs.writeFileSync('table.js', 'buildVersion: 11');
+
+fs.readFile('properties.txt', function read(err, data) {
+    if (err) { 
+        console.log("err");
+    }
+ 
+    console.log(data);   // Put all of the code here (not the best solution)
+});
+
+//var avayaEmployees = require('table.js').avayaEmployees; //[{name:'itzik',email:'itzik182@gmail.com'},{name:'itzik',email:'ihason@avaya.com'},{name:'ronny',email:'ronnys@avaya.com'}];
 //avayaEmployees = JSON.parse(JSON.stringify(process.env.ITZIK));
-console.log(avayaEmployees);
+//console.log(avayaEmployees);
 //import config1  from "table.js";
 //var config1 = require('config');
 //console.log(config1.test);
