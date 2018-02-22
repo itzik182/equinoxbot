@@ -9,10 +9,11 @@
  */
 
 'use strict';
-const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
-
-
-
+const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN; 
+//console.log("2");
+//import config1  from "table.js";
+//var config1 = require('config');
+//console.log(config1.test);
 
 // Imports dependencies and set up http server
 const
@@ -20,165 +21,118 @@ const
   request = require('request'),
   express = require('express'),
   body_parser = require('body-parser'),
+  FB = require('fb'),
   app = express().use(body_parser.json()); // creates express http server
 
-var graphapi = request.defaults({
+  FB.setAccessToken(PAGE_ACCESS_TOKEN); 
+
+// GET event fields:
+FB.api('/583221065350500?fields=description,name,owner,parent_group,place,start_time,attending,maybe,interested,noreply,comments' , 'GET', function (response) {
+      //console.log("events response4 - " + JSON.stringify(response)); 
+ });
+ 
+var graphapi = request.defaults({ 
     baseUrl: 'https://graph.facebook.com',
-    json: true,
+    json: true, 
     auth: {
         'bearer' : PAGE_ACCESS_TOKEN
     }
 });
 
-var graphapi2 = request.defaults({
-    baseUrl: 'https://www.facebook.com',
-    json: true,
-    auth: {
-        'bearer' : PAGE_ACCESS_TOKEN 
-    }
-});
+// graphapi({
+//         method: 'GET',
+//         url: '/' + '?fields=name',
+//     },function(error,response,body) {
+//       if(error) {
+//         console.error("getEmployeeDetailsByIdOrEmail=> error - " + error);
+//       } else { 
+//         console.log("getEmployeeDetailsByIdOrEmail=> body - " + JSON.stringify(body));
+//       }
+// });
 
-//Post into a group: itzik gmail 100022693691284, itzik avaya - 100022742164286
-//graphapi({
-//    method: 'POST',
-//    url: '/395404170913985/feed?message=This+**@[100022742164286]**+@[100022693691284]+is+a+**formatted**+*post*&formatting=MARKDOWN',
-//},function(error,response,body) {
-//    if(error) { 
-//        console.error(error);
-//    } else {
-//        console.log('Published post: ' + body.id);
-//    }
-//});
-
-//graphapi({
-//    method: 'POST',
-//    url: '/395404170913985/feed',
-//    qs: {
-//        'message': 'Itzik111',
-//        'link': 'https:www.walla.co.il'
-//    }
-//},function(error,response,body) {
-//    if(error) {
-//        console.error(error);
-//    } else {
-//        var post_id = JSON.stringify(body).id;
-//        console.log('Published itzik111: ' + post_id);
-//    }
-//});
+// graphapi({
+//         method: 'GET',
+//         url: '/v2.6/395404170913985',
+//     },function(error,response,body) {
+//       if(error) {
+//         console.error("friends=> error - " + error); 
+//       } else { 
+//         console.log("friends=> body - " + JSON.stringify(body));
+//       }
+// });
 
 
-function getRecipients (received_message) {
-  return new Promise(function(resolve, reject) {
-    console.log('1111111111111111111111111');
+function getRecipients (recipientsList) {
+  console.log("getRecipients - recipientsList: " + recipientsList);
+  return new Promise((resolve, reject) => {
     var inviteEmails = [];
-    var recipients = [];
-    var substring_message = received_message.substring(received_message.indexOf("#") + 1, received_message.length);
-    if (substring_message.indexOf(";") !== -1) {
-      inviteEmails = substring_message.split(";");
-      //inviteEmails = inviteEmails.split(",");
+    var recipients = []; 
+    
+    if (recipientsList.indexOf(";") !== -1) {
+      inviteEmails = recipientsList.split(";");
     } else {
-      inviteEmails.push(substring_message);
-    }
+      if (recipientsList.indexOf("@") === -1) {
+        recipientsList = recipientsList + '@avaya.com';
+      } 
+      inviteEmails.push(recipientsList);
+    } 
     console.log("inviteEmails: " + JSON.stringify(inviteEmails));
     if (inviteEmails.length > 0) {
-      //inviteEmails.forEach(function(inviteEmail) {
-      for (var i = 0; i < inviteEmails.length; i++) { 
-        graphapi({
-          method: 'GET',
-          //url: '/ihason@avaya.com?fields=id,email,name,primary_phone,department',
-          url: '/' + inviteEmails[i] + '?fields=id,email,name,primary_phone,department',
-        },function(error,response,body) {
-          if(error) {
-            console.error(error);
-            reject(error);
-          } else { 
-            console.log("body.id1117-" + body.id);
-            if (body && body.id) {
-              console.log("body.id1116-" + body.id);
-              recipients.push({"id": body.id });
-              if (i === inviteEmails.length) {
-                resolve(recipients);
-              }
-            }
+      let batch = [];
+      inviteEmails.forEach(function(inviteEmail) {
+        if (inviteEmail.indexOf("@") === -1) {
+          inviteEmail = inviteEmail + '@avaya.com';
+        }
+        batch.push({ method: 'GET', relative_url: inviteEmail + '?fields=id,email,name,primary_phone,department'});
+      });
+
+      FB.api('/', 'POST', {
+         include_headers: false,
+         batch: batch
+       }, function (response) {
+          if (response.length > 0) {
+            response.forEach(function(recipient) {
+              recipients.push(JSON.parse(recipient.body));
+            });
+            resolve(recipients);
           }
-        });
-      };
+       });
     }
   });
 }
 
-function sendMessage(recipients, received_message, thread_key, text) {
-  let quick_replies;
-  var primary_phone;
-  var VR;
-  var defaultVR = '9200167';
-  graphapi({
-      method: 'GET',
-      url: '/' + recipients[0].id + '?fields=email,name,primary_phone,department',
-  },function(error,response,body) {
-    if(error) {
-        console.error(error);
-    } else {
-      VR = body.department ? body.department : defaultVR;
-      if (body.primary_phone) {
-        primary_phone = body.primary_phone.replace('+', '');
+function getEmployeeDetailsByIdOrEmail(userIdentify, fields) {
+  return new Promise((resolve, reject) => {
+    graphapi({
+        method: 'GET',
+        url: '/' + userIdentify + '?fields=' + fields,
+    },function(error,response,body) {
+      if(error) {
+        console.error("getEmployeeDetailsByIdOrEmail=> error - " + error);
+        reject(error);
+      } else {
+        resolve(body);
+        console.log("getEmployeeDetailsByIdOrEmail=> body - " + JSON.stringify(body));
       }
-      console.log("body - " + JSON.stringify(body));
-      //console.log("response - " + JSON.stringify(response));
-    }
+    });
+  });
+}
 
-    switch(received_message.toLowerCase()) {
-    case 'lets meet': case 'meet': case 'discuss': case 'brainstorm':
-        text = 'May I suggest you enter your virtual room: https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
+function getTextMessageResponse(received_message, user) {
+  let primary_phone;
+  let VR = user.department ? user.department : '9200167';
+  
+    if (user.primary_phone) {
+      primary_phone = user.primary_phone.replace('+', '');
+    }
+  
+  var text = '';
+  switch(received_message.toLowerCase()) {
+    case '@join': case 'link to my virtual room': case 'Lets have a meeting':
+        text = 'May I suggest you enter your virtual room: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         break;
-    case 'link to my virtual room':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case 'tamar': case 'link to tamar':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case 'guy': case 'link to guy':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case "Let's have a meeting": case 'Lets have a meeting':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        break;
-    case 'buttons':
-        text = 'https://avayaequinoxmeetings.com/scopia/mt/9022?ID=' + VR;
-        buttons:[
-          {
-            "type":"web_url",
-            "url":"https://avayaequinoxmeetings.com/scopia/mt/9022?ID=" + VR,
-            "title":"Link to guy vr",
-            "webview_height_ratio": "full",
-            "messenger_extensions": true,  
-            "fallback_url": "https://petersfancyapparel.com/fallback"
-          }
-        ]
-        break;
-    case '_letsa meet':
-        text = 'Which virtual room?';
-        quick_replies = [
-            {
-              //"type": "postback",
-              "content_type":"text",
-              "title":"Itzik",
-              //"image_url":"http://example.com/img/red.png",
-              "payload":"yes"
-            },
-              {
-              "content_type":"text",
-              "title":"Ronny",
-              //"image_url":"http://example.com/img/red.png",
-              "payload":"<lets meet ronny room>"
-            },
-              {
-              "content_type":"text",
-              "title":"Anna",
-              //"image_url":"http://example.com/img/red.png",
-              "payload":"<lets meet anna room>"
-            }
-        ]
+    case '@invite':
+        text = user.name + ' suggest you meet at: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
@@ -189,46 +143,29 @@ function sendMessage(recipients, received_message, thread_key, text) {
     case 'thank you': case 'thanks':
         text = 'You are welcome';
         break;
-    case 'lets meet anna room':
-        text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=' + VR;
-        break;
-    case 'location':
-        text = "location";
-        quick_replies = [
-          {
-            "content_type":"location"
-          }
-        ];
-        break;
-    //default:
-    //    text = `You sent the message: "${received_message.text}".`;
     }
+  
+    return text;
+}
 
-    if(received_message.includes("meet") || received_message.includes("discuss") || received_message.includes("brainstorm") || received_message.includes("meeting")){
-      text = 'May I suggest you enter your virtual room: https://alphaconfportal.avaya.com:8443/portal/tenants/default/?ID=' + VR;
-    }
-
-    //if (received_message.text === 'lets meet') {    
-    //  text = 'https://rnd-10-134-86-27.holonlab.avaya.com:8443/portal/tenants/default/?ID=661236';
-    //}
-    //else {
-    //  text = 'You sent the message: "${received_message.text}". Now send me an image111!';
-    //}
-    //console.log("text556 - " + text);
-    // Create the payload for a basic text message
-    response = {
+function sendMessage(recipients, received_message, thread_key, text) {
+  console.log('sendMessage - received_message- ' + received_message);
+  let quick_replies;
+  
+  getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
+    console.log("response - " + JSON.stringify(response));
+    text = getTextMessageResponse(received_message, response);
+    var responseObj = {
       "text": text,
       //"buttons": buttons,
       "quick_replies": quick_replies
     }
 
-    //console.log("response - " + JSON.stringify(response));
-
-
-
-
-    // Sends the response message
-    callSendAPI(recipients, response, thread_key);  
+    // Sends the responseObj message
+    callSendAPI(recipients, responseObj, thread_key);
+    
+  },function(error) {
+      console.error(error);
   }); 
 }
 
@@ -239,27 +176,55 @@ function handleMessage(recipients, received_message, thread_key) {
   let buttons;
   // Check if the message contains text
   if (received_message) {
-    console.log('received_message- ' + received_message);
-    //console.log(par);
-    if (received_message.indexOf("virtual room") !== -1 && received_message.indexOf("#") !== -1) {
-      var par = getRecipients(received_message);
-      console.log('par =' + par);
-      text = 'The virtual room of' + par.name + 'is' + par.department;
-      response = {
-          "text": text,
-        }
-        // Sends the response message
-      callSendAPI(recipients, response, thread_key);  
-    } else if (received_message.indexOf("equinox meeting") !== -1 && received_message.indexOf("#") !== -1) {
-      console.log("equinox meeting # recipients1-" + JSON.stringify(recipients));
-      getRecipients(received_message).then(
+    console.log('handleMessage - received_message- ' + received_message);
+    var recipientsList;
+    if (received_message.indexOf("@where") !== -1) {
+      recipientsList = received_message.substring(received_message.indexOf(" ") + 1, received_message.length);
+      console.log("recipientsList - " + recipientsList);
+      
+      getRecipients(recipientsList).then(
+        function (response) {
+          if (response && response.length > 0) {
+            let user = response[0];
+            console.log("Success!", response);
+            if (user && user.department) {
+              text = 'The virtual room of ' + user.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
+            } else {
+              text = 'The user ' + user.name + ' does not have a virtual room';
+            }
+            // Sends the response message
+            callSendAPI(recipients, { "text": text }, thread_key);
+          } else {
+            console.error("error failed!");
+          }
+      });
+    } else if (received_message.indexOf("@invite") !== -1) {
+      console.log("equinox meeting # recipients1- " + JSON.stringify(recipients));
+      
+      recipientsList = received_message.substring(received_message.indexOf(" ") + 1, received_message.length);
+      console.log("recipientsList - " + recipientsList);
+      
+      getRecipients(recipientsList).then(
       function (response) {
         console.log("Success!", response);
         console.log("equinox meeting # a1- " + JSON.stringify(response));
         if (response !== undefined && response !== null) {
           console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
-          recipients = recipients.concat(response);
-          sendMessage(recipients, received_message, thread_key, text);
+          //recipients = recipients.concat(response);
+          let isRecipients = false;
+          response.forEach(function(recipient) {
+            if (!recipient.error) {
+              recipients.push(recipient);
+              isRecipients = true;
+            }
+          });
+          if (isRecipients) {
+            var substring_message = received_message.substring(0, received_message.indexOf(" "));
+            sendMessage(recipients, substring_message, thread_key, text);
+          } else {
+            console.log('recipients222222 - ' + recipients);
+            callSendAPI(recipients, { "text": 'This user does not exist' }, thread_key);
+          }          
         }
         console.log("equinox meeting # recipients4-" + JSON.stringify(recipients));
       }, function (error) {
@@ -308,28 +273,51 @@ function callSendAPI(recipients, response, thread_key) {
       }
     } else {
      request_body = {
+      //from: "100022693691284",
       "recipient": {
         "id": recipient.id,
       },
+      //"sender_action":"typing_off",
       "message": response
       } 
     }
-    
+    //console.log("request_body from: " + request_body.from);
     console.log("request_body: " + JSON.stringify(request_body));
-    // Send the HTTP request to the Messenger Platform
-    request({
-      "uri": "https://graph.facebook.com/v2.6/me/messages",
-      "qs": { "access_token": PAGE_ACCESS_TOKEN },
-      "method": "POST",
-      "json": request_body
-    }, (err, res, body) => {
-      if (!err) {
-        //console.log('message sent!')
-      } else {
-        //console.error("Unable to send message:" + err);
-      }
-    }); 
-  });
+    
+    // graphapi({
+    //     method: 'POST',
+    //     url: '/v2.6/me/messages',
+    //   qs: {
+    //         "sender_action": 'typing_on'
+    //       }
+    // },function(error,response,body) {
+    //     console.log("friends=> body - " + JSON.stringify(body));
+    // });
+    
+    //displayTheTypingBubble(recipient, thread_key, true);
+    
+    //setTimeout(function(){
+      //displayTheTypingBubble(recipient, response, thread_key, false);
+    //}, 2800);
+    
+    //setTimeout(function(){
+      //displayTheTypingBubble(recipient, response, thread_key, false);
+      
+      // Send the HTTP request to the Messenger Platform
+      request({
+        "uri": "https://graph.facebook.com/v2.6/me/messages",
+        "qs": { "access_token": PAGE_ACCESS_TOKEN},
+        "method": "POST",
+        "json": request_body
+      }, (err, res, body) => {
+        if (!err) {
+          //console.log('message sent!')
+        } else {
+          //console.error("Unable to send message:" + err);
+        }
+      }); 
+    //}, 2000);
+    });
   
   // Construct the message body
   let messenger_profile_request_body = {
@@ -359,17 +347,19 @@ function callSendAPI(recipients, response, thread_key) {
   });
 }
 
-function displayTheTypingBubble(sender, response, thread_key) {
+function displayTheTypingBubble(sender, thread_key, isOn) {
+  //return new Promise((resolve, reject) => {
+  let sender_action = isOn ? "typing_on" : "typing_off";
   let request_body = {
       "recipient": {
         "id": sender.id
       },
-      "sender_action": "typing_on"
+      "sender_action": sender_action
     }
   //console.log("request_body: " + JSON.stringify(request_body));
     // Send the HTTP request to the Messenger Platform
     request({
-      "uri": "https://graph.facebook.com/v2.6",
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
       "qs": { "access_token": PAGE_ACCESS_TOKEN },
       "method": "POST",
       "json": request_body
@@ -378,6 +368,32 @@ function displayTheTypingBubble(sender, response, thread_key) {
         //console.log('message sent!')
       } else {
         //console.error("Unable to send message:" + err);
+      }
+    });
+//});
+}
+
+function displayMessageMarkSeen(sender, thread_key) {
+  console.log('displayMessageMarkSeen');
+  
+  let request_body = {
+      "recipient": {
+        "id": sender[0].id
+      },
+      "sender_action": "mark_seen"
+      //"message_id": "m_mid.$cAAX523XTe1hn6TKSZFht-1IN1G90"
+    }
+    console.log('sender - ' + JSON.stringify(request_body));
+    request({
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
+      "qs": { "access_token": PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": request_body
+    }, (err, res, body) => {
+      if (!err) {
+        console.log('message sent!')
+      } else {
+        console.error("Unable to send message:" + err);
       }
     });
 }
@@ -391,6 +407,9 @@ console.log('req.body - ' + JSON.stringify(req.body));
   // Parse the request body from the POST
   let body = req.body;
   let sender_psid = new Array();
+  
+  console.log("body.object: " + body.object);
+  
   // Check the webhook event is from a Page subscription
   if (body.object === 'page' || body.object === 'group') {
 
@@ -400,12 +419,14 @@ console.log('req.body - ' + JSON.stringify(req.body));
           entry.changes.forEach(function(change) {
             console.log("change: " + JSON.stringify(change));
             let value = change.value;
+            
+            //console.log("message Itz2 - " + JSON.stringify(sender_psid));
             if (value.verb !== 'delete') {
               if (body.object === 'group' && value.from) {
                 sender_psid.push({"id": value.from.id});
               } else {
                 sender_psid.push({"id": value.sender_id});
-              } 
+              }
               let message = value.message;
               if (value.message_tags) {
                 value.message_tags.forEach(function(tag) {
@@ -419,37 +440,76 @@ console.log('req.body - ' + JSON.stringify(req.body));
                 }
               }
               
-              let mention_id = (change.field === 'comments') ?
-                            value.comment_id : value.post_id;
-              
-              
-              if(value.from.category === undefined || (value.from.category !== undefined && value.from.category !== 'Bot')) {
-                // Comment reply
-                graphapi({ 
-                    url: '/' + mention_id + '/comments',
-                    method: 'POST',
-                    qs: {
-                        message: 'Thanks'
-                    }
-                }, function(error,res,body) {
-                    console.log('Comment reply', mention_id);
-                });
+              var isEvent = false;
+              if(value && value.type === 'event' && value.verb === 'add') {
+                isEvent = true;
+                if(value.message.indexOf('@live') !== -1) {
+                  getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
+                   var meetingUrl = response.department ? 
+                       'https://meetings.avaya.com/portal/tenants/9022/?ID=' + response.department : 'https://meetings.avaya.com/portal/tenants/9022/?ID=90397237679607';
+                    //if(VR !== null) {
+                    let eventUrl = value.attachments.data[0].url;
+                    var eventId = eventUrl.substring(eventUrl.indexOf("events/") + 7, eventUrl.length -1);
+                    console.log('eventId', eventId);
+                     graphapi({
+                       url: '/' + eventId + '/feed',
+                      //url: '/' + value.post_id + '/comments',
+                      //url: '/142481733216767/feed',
+                      method: 'POST',
+                      qs: {
+                          message: 'The meeting url is: ' + meetingUrl,
+                          //timeline_visibility: 'starred'
+                      }
+                     }, function(error,res,body) {
+                        console.log('event feed', response.department);
+                     });
+                     graphapi({
+                      url: '/' + value.post_id + '/comments',
+                      method: 'POST',
+                      qs: {
+                          message: 'The meeting url is: ' + meetingUrl
+                      }
+                     }, function(error,res,body) {
+                        console.log('event comments', response.department);
+                     });
+                    //}
+                  }, function (error) {
+                    console.error("Failed!", error);
+                  });
+                }
+              } else {
+                let mention_id = (change.field === 'comments') ?
+                              value.comment_id : value.post_id;
 
-                if(message.toLowerCase() === 'thanks') {
-                  // Like the post or comment to indicate acknowledgement
-                  graphapi({
-                      url: '/' + mention_id + '/likes',
-                      method: 'POST'
+                console.log('Comment reply', mention_id);
+                if(value.from.category === undefined || (value.from.category !== undefined && value.from.category !== 'Bot')) {
+                  // Comment reply
+                  graphapi({ 
+                      url: '/' + mention_id + '/comments',
+                      method: 'POST',
+                      qs: {
+                          message: 'Thanks'
+                      }
                   }, function(error,res,body) {
-                      console.log('Like', mention_id);
-                  });   
+                      console.log('Comment reply', mention_id);
+                  });
+
+                  if(message.toLowerCase() === 'thanks') {
+                    // Like the post or comment to indicate acknowledgement
+                    graphapi({
+                        url: '/' + mention_id + '/likes',
+                        method: 'POST'
+                    }, function(error,res,body) {
+                        console.log('Like', mention_id);
+                    });   
+                  }
                 }
               }
-
               //console.log("sender2 - " + sender_psid);
               console.log("message - " + message);
-              if (message) {
-                handleMessage(sender_psid, message.trim());  
+              if (message && !isEvent) {
+                console.log("message Itz - " + JSON.stringify(sender_psid));
+                handleMessage(sender_psid, message.trim());
               }
             }
           });
@@ -479,13 +539,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
           if (webhook_event.thread && webhook_event.thread.id) {
              thread_key = webhook_event.thread.id;
           }
-
-          //console.log('Sender PSID: ' + sender_psid);
-          //console.log('webhook_event: ' + webhook_event);
-
-          // Check if the event is a message or postback and
-          // pass the event to the appropriate handler function
-          //console.log(webhook_event.message.quick_reply);
+          //displayMessageMarkSeen(sender_psid, thread_key);
           if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
             console.log('handleMessage: ' + JSON.stringify(webhook_event.message));
             handleMessage(sender_psid, webhook_event.message.text, thread_key);        
@@ -495,18 +549,19 @@ console.log('req.body - ' + JSON.stringify(req.body));
           } else if (webhook_event.message && webhook_event.message.quick_reply) {
             console.log('handlePostback: ' + JSON.stringify(webhook_event.message));
             handlePostback(sender_psid, webhook_event.message);
-          }
+          } 
         }
     });
 
     // Return a '200 OK' response to all events
     res.status(200).send('EVENT_RECEIVED');
 
-  }  else {
+  } else {
+    res.status(200).send('EVENT_RECEIVED');
     // Return a '404 Not Found' if event is not from a page subscription
-    res.sendStatus(404);
+    console.log("sendStatus - 404");
+    //res.sendStatus(404);
   }
-
 });
 
 // Accepts GET requests at the /webhook endpoint
@@ -519,11 +574,10 @@ app.get('/webhook', (req, res) => {
   let mode = req.query['hub.mode'];
   let token = req.query['hub.verify_token'];
   let challenge = req.query['hub.challenge'];
-    
   // Check if a token and mode were sent
   if (mode && token) {
   
-    // Check the mode and token sent are correct
+    // Check the mode and token sent are correct 
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
       
       // Respond with 200 OK and challenge token from the request
