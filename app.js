@@ -80,14 +80,15 @@ function getRecipients (recipientsList) {
         //recipientsList = recipientsList + '@avaya.com';
         console.log("recipientsList: " + JSON.stringify(recipientsList));
       }
-      var currentEmployees = avayaEmployees.filter(avayaEmployee => avayaEmployee.name === 'itzik');
-      console.log("currentEmployees: " + JSON.stringify(currentEmployees));
       inviteEmails.push(recipientsList);
     } 
     console.log("inviteEmails: " + JSON.stringify(inviteEmails));
     if (inviteEmails.length > 0) {
       let batch = [];
       inviteEmails.forEach(function(inviteEmail) {
+        var currentEmployees = avayaEmployees.filter(avayaEmployee => avayaEmployee.name === inviteEmail);
+        console.log("currentEmployees: " + JSON.stringify(currentEmployees));
+        
         if (inviteEmail.indexOf("@") === -1) {
           inviteEmail = inviteEmail + '@avaya.com';
         }
