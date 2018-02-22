@@ -74,7 +74,8 @@ function getRecipients (recipientsList) {
     } else {
       if (recipientsList.indexOf("@") === -1) {
         //recipientsList = recipientsList + '@avaya.com';
-        avayaEmployees
+        var currentEmployees = avayaEmployees.filter(avayaEmployee => avayaEmployee.name === 'itzik');
+        
       } 
       inviteEmails.push(recipientsList);
     } 
