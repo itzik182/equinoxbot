@@ -167,31 +167,39 @@ function getTextMessageResponse(received_message, user) {
     return text;
 }
 
-function sendMessage(recipients, received_message, thread_key, text) {
+function sendMessage(recipients, received_message, thread_key, text, buttons) {
   console.log('sendMessage - received_message- ' + received_message);
   let quick_replies;
   
   getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
     console.log("response - " + JSON.stringify(response));
     text = getTextMessageResponse(received_message, response);
-    var buttons = [
-          {
-            "type":"web_url",
-            "url":"https://www.messenger.com",
-            "title":"Visit Messenger"
+    
+    var responseObj;
+    
+    // var buttons = [
+    //       {
+    //         "type":"web_url",
+    //         "url":"https://www.messenger.com",
+    //         "title":"Visit Messenger"
+    //       }
+    //     ];    
+    
+    if (buttons && buttons  && buttons !== null) {    
+      responseObj = {
+        "attachment":{
+          "type":"template",
+          "payload":{
+            "template_type":"button",
+            "text":"What do you want to do next?",
+            "buttons": buttons,
           }
-        ];
-    
-    var responseObj = {
-      "text": text,
-      //"buttons": buttons,
-      //"quick_replies": quick_replies
-    }
-    
-    var responseObj = {
-      "text": text,
-      //"buttons": buttons,
-      //"quick_replies": quick_replies
+        }
+      };
+    } else {
+       responseObj = {
+        "text": text
+      } 
     }
 
     // Sends the responseObj message
