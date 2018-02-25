@@ -158,7 +158,7 @@ function getButtons (text, url) {
   }; 
 }
 
-function getTextMessageResponse(received_message, user) {
+function getTextMessageResponse(received_message, user, isThread) {
   let primary_phone;
   let VR = user.department ? user.department : '9200167';
   
@@ -171,14 +171,22 @@ function getTextMessageResponse(received_message, user) {
   var url = '';
   switch(received_message.toLowerCase()) {
     case '@join': case 'link to my virtual room': case 'Lets have a meeting':
-        text = 'May I suggest you enter to virtual room:';
-        url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
-        responseObj = getButtons(text, url);
+        if(isThread) {
+          text = 'May I suggest you enter to virtual room: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+        } else {
+          text = 'May I suggest you enter to virtual room:';
+          url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+          responseObj = getButtons(text, url);
+        }
         break;
     case '@invite':
-        text = user.name + ' invite you a meeting';// https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
-        url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
-        responseObj = getButtons(text, url);
+        if(isThread) {
+          text = user.name + ' invite you a meeting at https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+        } else {
+          text = user.name + ' invite you a meeting';// https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+          url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+          responseObj = getButtons(text, url);
+        }
         break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
