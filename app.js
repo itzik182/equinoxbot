@@ -342,7 +342,7 @@ function callSendAPI(recipients, response, thread_key) {
     //     console.log("friends=> body - " + JSON.stringify(body));
     // });
     
-  displayTheTypingBubble(recipient, thread_key, true);
+  displayTheTypingBubble(recipient.id, thread_key, true);
     
     //setTimeout(function(){
       //displayTheTypingBubble(recipient, response, thread_key, false);
@@ -395,7 +395,7 @@ function callSendAPI(recipients, response, thread_key) {
   });
 }
 
-function displayTheTypingBubble(senderId, isOn) {
+function displayTheTypingBubble(senderId, thread_key,isOn) {
   //return new Promise((resolve, reject) => {
   let sender_action = isOn ? "typing_on" : "typing_off";
   let request_body;
@@ -404,14 +404,14 @@ function displayTheTypingBubble(senderId, isOn) {
   if (thread_key && thread_key !== undefined && thread_key !== null) {
     request_body = {
       "recipient": {
-        "id": sender.id
+        "thread_key": thread_key
       },
       "sender_action": sender_action
     }
   } else {
     request_body = {
       "recipient": {
-        "id": sender.id
+        "id": senderId
       },
       "sender_action": sender_action
     }
