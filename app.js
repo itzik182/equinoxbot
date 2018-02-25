@@ -154,23 +154,23 @@ function getTextMessageResponse(received_message, user) {
         text = 'May I suggest you enter your virtual room: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         break;
     case '@invite':
-        text = user.name + ' suggest you meet at';// https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
-      responseObj = {
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"button",
-            "text":text,
-            "buttons": [
-              {
-                "type":"web_url",
-                "url": 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR,
-                "title":"Join to meeting"
-              }
-            ]
+        text = user.name + ' invite you a meeting';// https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+        responseObj = {
+          "attachment":{
+            "type":"template",
+            "payload":{
+              "template_type":"button",
+              "text":text,
+              "buttons": [
+                {
+                  "type":"web_url",
+                  "url": 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR,
+                  "title":"Join meeting"
+                }
+              ]
+            }
           }
-        }
-      };
+        };
         break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
