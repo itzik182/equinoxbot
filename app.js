@@ -209,10 +209,11 @@ function getTextMessageResponse(received_message, user, isThread) {
 function sendMessage(recipients, received_message, thread_key) {
   console.log('sendMessage - received_message- ' + received_message);
   let quick_replies;
+  var isThread = thread_key ? true : false;
   
   getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
     console.log("response - " + JSON.stringify(response));
-    var responseObj = getTextMessageResponse(received_message, response);
+    var responseObj = getTextMessageResponse(received_message, response, isThread);
     
     //responseObj = responseObj;
 
