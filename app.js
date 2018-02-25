@@ -145,14 +145,15 @@ function getTextMessageResponse(received_message, user) {
       primary_phone = user.primary_phone.replace('+', '');
     }
   var buttons = null;
+  var responseObj = null;
   var text = '';
   switch(received_message.toLowerCase()) {
     case '@join': case 'link to my virtual room': case 'Lets have a meeting':
         text = 'May I suggest you enter your virtual room: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         break;
     case '@invite':
-        text = user.name + ' suggest you meet at;
-      {
+        text = user.name + ' suggest you meet at';// https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+      responseObj = {
         "attachment":{
           "type":"template",
           "payload":{
@@ -161,8 +162,8 @@ function getTextMessageResponse(received_message, user) {
             "buttons": [
               {
                 "type":"web_url",
-                "url":"https://www.messenger.com",
-                "title":"Visit Messenger"
+                "url": 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR,
+                "title":"Join to meeting"
               }
             ]
           }
@@ -180,35 +181,22 @@ function getTextMessageResponse(received_message, user) {
         break;
     }
   
-    return text;
+    if (responseObj === null) {
+     responseObj = {"text": text};
+    }
+  
+    return responseObj;
 }
 
-function sendMessage(recipients, received_message, thread_key, text, buttons) {
+function sendMessage(recipients, received_message, thread_key) {
   console.log('sendMessage - received_message- ' + received_message);
   let quick_replies;
   
   getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
     console.log("response - " + JSON.stringify(response));
-    text = getTextMessageResponse(received_message, response);
+    var responseObj = getTextMessageResponse(received_message, response);
     
-    var responseObj;
-    
-    if (buttons && buttons !== undefined && buttons !== null) {    
-      responseObj = {
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"button",
-            "text":text,
-            "buttons": buttons,
-          }
-        }
-      };
-    } else {
-       responseObj = {
-        "text": text
-      } 
-    }
+    //responseObj = responseObj;
 
     // Sends the responseObj message
     callSendAPI(recipients, responseObj, thread_key);
@@ -270,7 +258,7 @@ function handleMessage(recipients, received_message, thread_key) {
           if (isRecipients) {
             var substring_message = received_message.substring(0, received_message.indexOf(" "));
             
-            sendMessage(recipients, substring_message, thread_key, text);
+            sendMessage(recipients, substring_message, thread_key);
           } else {
             console.log('recipients222222 - ' + recipients);
             callSendAPI(recipients, { "text": 'This user does not exist' }, thread_key);
@@ -281,7 +269,7 @@ function handleMessage(recipients, received_message, thread_key) {
           console.error("Failed!", error);
       });
     } else {
-       sendMessage(recipients, received_message, thread_key, text); 
+       sendMessage(recipients, received_message, thread_key); 
     }
   };  
 }
