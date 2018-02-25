@@ -144,14 +144,30 @@ function getTextMessageResponse(received_message, user) {
     if (user.primary_phone) {
       primary_phone = user.primary_phone.replace('+', '');
     }
-  
+  var buttons = null;
   var text = '';
   switch(received_message.toLowerCase()) {
     case '@join': case 'link to my virtual room': case 'Lets have a meeting':
         text = 'May I suggest you enter your virtual room: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         break;
     case '@invite':
-        text = user.name + ' suggest you meet at: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+        text = user.name + ' suggest you meet at;
+      {
+        "attachment":{
+          "type":"template",
+          "payload":{
+            "template_type":"button",
+            "text":text,
+            "buttons": [
+              {
+                "type":"web_url",
+                "url":"https://www.messenger.com",
+                "title":"Visit Messenger"
+              }
+            ]
+          }
+        }
+      };
         break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
@@ -177,21 +193,13 @@ function sendMessage(recipients, received_message, thread_key, text, buttons) {
     
     var responseObj;
     
-    // var buttons = [
-    //       {
-    //         "type":"web_url",
-    //         "url":"https://www.messenger.com",
-    //         "title":"Visit Messenger"
-    //       }
-    //     ];    
-    
-    if (buttons && buttons  && buttons !== null) {    
+    if (buttons && buttons !== undefined && buttons !== null) {    
       responseObj = {
         "attachment":{
           "type":"template",
           "payload":{
             "template_type":"button",
-            "text":"What do you want to do next?",
+            "text":text,
             "buttons": buttons,
           }
         }
@@ -261,6 +269,7 @@ function handleMessage(recipients, received_message, thread_key) {
           });
           if (isRecipients) {
             var substring_message = received_message.substring(0, received_message.indexOf(" "));
+            
             sendMessage(recipients, substring_message, thread_key, text);
           } else {
             console.log('recipients222222 - ' + recipients);
