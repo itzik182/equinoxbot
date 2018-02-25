@@ -570,7 +570,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
     body.entry.forEach(function(entry) {
       if (entry && entry.changes && entry.changes.length > 0) {
         entry.changes.forEach(function(change) {
-          if (change.field && change.field === 'message_sends' && change.value.to.data[0].email.indexOf('@facebook.com') === -1) {
+          if (change.field && change.field === 'message_sends' && change.value.to.data[0].email.indexOf('@facebook.com') === -1 && change.value.to.data.length <) {
             console.log("change: " + JSON.stringify(change));
             if (change.value.message === '@join') {
               //if(value.to.data[0].email.indexOf('@facebook.com') === -1) {
