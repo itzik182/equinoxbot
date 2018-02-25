@@ -86,11 +86,17 @@ function getRecipients (recipientsList) {
     if (inviteEmails.length > 0) {
       let batch = [];
       inviteEmails.forEach(function(inviteEmail) {
-        var currentEmployees = avayaEmployees.filter(avayaEmployee => avayaEmployee.name === inviteEmail);
+        var currentEmployees = avayaEmployees.filter(avayaEmployee => avayaEmployee.name.indexOf(inviteEmail) !== -1);
         console.log("currentEmployees: " + JSON.stringify(currentEmployees));
         
         if (currentEmployees && currentEmployees.length > 0) {
-          inviteEmail = currentEmployees[0].email;
+          if (currentEmployees && currentEmployees.length < 1) {
+            inviteEmail = currentEmployees[0].email;
+          } else {
+           //Ask which one? 
+          }
+        } else {
+          // Ask for full email and insert it into the table
         }
         
         // if (inviteEmail.indexOf("@") === -1) {
