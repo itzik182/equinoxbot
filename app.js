@@ -395,16 +395,28 @@ function callSendAPI(recipients, response, thread_key) {
   });
 }
 
-function displayTheTypingBubble(sender, thread_key, isOn) {
+function displayTheTypingBubble(senderId, isOn) {
   //return new Promise((resolve, reject) => {
   let sender_action = isOn ? "typing_on" : "typing_off";
-  let request_body = {
+  let request_body;
+  //console.log("request_body: " + JSON.stringify(request_body));
+  
+  if (thread_key && thread_key !== undefined && thread_key !== null) {
+    request_body = {
       "recipient": {
         "id": sender.id
       },
       "sender_action": sender_action
     }
-  //console.log("request_body: " + JSON.stringify(request_body));
+  } else {
+    request_body = {
+      "recipient": {
+        "id": sender.id
+      },
+      "sender_action": sender_action
+    }
+  }
+  
     // Send the HTTP request to the Messenger Platform
     request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
