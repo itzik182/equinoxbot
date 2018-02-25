@@ -93,10 +93,12 @@ function getRecipients (recipientsList) {
           if (currentEmployees && currentEmployees.length < 1) {
             inviteEmail = currentEmployees[0].email;
           } else {
-           //Ask which one? 
+           //Ask which one?
+            inviteEmail = currentEmployees[0].email;
           }
         } else {
           // Ask for full email and insert it into the table
+          inviteEmail = currentEmployees[0].email;
         }
         
         // if (inviteEmail.indexOf("@") === -1) {
