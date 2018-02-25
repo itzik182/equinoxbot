@@ -89,9 +89,13 @@ function getRecipients (recipientsList) {
         var currentEmployees = avayaEmployees.filter(avayaEmployee => avayaEmployee.name === inviteEmail);
         console.log("currentEmployees: " + JSON.stringify(currentEmployees));
         
-        if (inviteEmail.indexOf("@") === -1) {
-          inviteEmail = inviteEmail + '@avaya.com';
+        if (currentEmployees && currentEmployees.length > 0) {
+          inviteEmail = currentEmployees[0].email;
         }
+        
+        // if (inviteEmail.indexOf("@") === -1) {
+        //   inviteEmail = inviteEmail + '@avaya.com';
+        // }
         batch.push({ method: 'GET', relative_url: inviteEmail + '?fields=id,email,name,primary_phone,department'});
       });
 
