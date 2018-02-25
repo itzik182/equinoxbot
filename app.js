@@ -174,10 +174,24 @@ function sendMessage(recipients, received_message, thread_key, text) {
   getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
     console.log("response - " + JSON.stringify(response));
     text = getTextMessageResponse(received_message, response);
+    var buttons = [
+          {
+            "type":"web_url",
+            "url":"https://www.messenger.com",
+            "title":"Visit Messenger"
+          }
+        ];
+    
     var responseObj = {
       "text": text,
       //"buttons": buttons,
-      "quick_replies": quick_replies
+      //"quick_replies": quick_replies
+    }
+    
+    var responseObj = {
+      "text": text,
+      //"buttons": buttons,
+      //"quick_replies": quick_replies
     }
 
     // Sends the responseObj message
