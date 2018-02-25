@@ -570,7 +570,10 @@ console.log('req.body - ' + JSON.stringify(req.body));
     body.entry.forEach(function(entry) {
       if (entry && entry.changes && entry.changes.length > 0) {
         entry.changes.forEach(function(change) {
-          if (change.field && change.field === 'message_sends' && change.value.to.data[0].email.indexOf('@facebook.com') === -1 && change.value.to.data.length <) {
+          console.log("change.value.to.data.length - " + change.value.to.data.length);
+          if (change.field && change.field === 'message_sends' && 
+              change.value.to.data[0].email.indexOf('@facebook.com') === -1 && 
+              change.value.to.data.length < 2) {
             console.log("change: " + JSON.stringify(change));
             if (change.value.message === '@join') {
               //if(value.to.data[0].email.indexOf('@facebook.com') === -1) {
@@ -587,9 +590,9 @@ console.log('req.body - ' + JSON.stringify(req.body));
        }
     });
   } else {
-    //res.status(200).send('EVENT_RECEIVED');
+    res.status(200).send('EVENT_RECEIVED');
     // Return a '404 Not Found' if event is not from a page subscription
-    console.log("sendStatus - 404");
+    console.log("sendStatus - 200");
     //res.sendStatus(404);
   }
 });
