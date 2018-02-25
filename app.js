@@ -139,6 +139,25 @@ function getEmployeeDetailsByIdOrEmail(userIdentify, fields) {
   });
 }
 
+function getButtons (text, url) {
+ return {
+    "attachment":{
+      "type":"template",
+      "payload":{
+        "template_type":"button",
+        "text":text,
+        "buttons": [
+          {
+            "type":"web_url",
+            "url": url,
+            "title":"Join meeting"
+          }
+        ]
+      }
+    }
+  }; 
+}
+
 function getTextMessageResponse(received_message, user) {
   let primary_phone;
   let VR = user.department ? user.department : '9200167';
@@ -149,28 +168,17 @@ function getTextMessageResponse(received_message, user) {
   var buttons = null;
   var responseObj = null;
   var text = '';
+  var url = '';
   switch(received_message.toLowerCase()) {
     case '@join': case 'link to my virtual room': case 'Lets have a meeting':
-        text = 'May I suggest you enter your virtual room: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+        text = 'May I suggest you enter to virtual room:';
+        url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+        responseObj = getButtons(text, url);
         break;
     case '@invite':
         text = user.name + ' invite you a meeting';// https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
-        responseObj = {
-          "attachment":{
-            "type":"template",
-            "payload":{
-              "template_type":"button",
-              "text":text,
-              "buttons": [
-                {
-                  "type":"web_url",
-                  "url": 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR,
-                  "title":"Join meeting"
-                }
-              ]
-            }
-          }
-        };
+        url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+        responseObj = getButtons(text, url);
         break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
