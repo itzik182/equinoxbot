@@ -85,7 +85,10 @@ function getRecipients (recipientsList) {
     if (inviteEmails.length > 0) {
       let batch = [];
       inviteEmails.forEach(function(inviteEmail) {
-        var currentEmployees = avayaEmployees.filter(avayaEmployee => avayaEmployee.name.indexOf(inviteEmail) !== -1);
+        var currentEmployees = avayaEmployees.filter(
+          avayaEmployee => avayaEmployee.name.indexOf(inviteEmail) !== -1 || 
+          avayaEmployee.email.indexOf(inviteEmail) !== -1
+        );
         console.log("currentEmployees: " + JSON.stringify(currentEmployees));
         
         if (currentEmployees && currentEmployees.length > 0) {
@@ -104,7 +107,7 @@ function getRecipients (recipientsList) {
         // if (inviteEmail.indexOf("@") === -1) {
         //   inviteEmail = inviteEmail + '@avaya.com';
         // }
-        batch.push({ method: 'GET', relative_url: inviteEmail + '?fields=id,email,name,primary_phone,department'});
+        batch.push({ method: 'GET', relative_url: inviteEmail + '?fields=id,email,name, first_name,primary_phone,department'});
       });
 
       FB.api('/', 'POST', {
@@ -117,6 +120,9 @@ function getRecipients (recipientsList) {
           if (response.length > 0) {
             response.forEach(function(recipient) {
               recipients.push(JSON.parse(recipient.body));
+              let currentEmployees = avayaEmployees.filter(
+                avayaEmployee => avayaEmployee.email.indexOf(recipient.email) !== -1
+              );
             });
             resolve(recipients);
           }
