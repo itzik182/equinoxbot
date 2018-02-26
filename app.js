@@ -111,12 +111,16 @@ function getRecipients (recipientsList) {
          include_headers: false,
          batch: batch
        }, function (response) {
+        if (!response || response.error) {
+          reject(response.error);
+        } else {
           if (response.length > 0) {
             response.forEach(function(recipient) {
               recipients.push(JSON.parse(recipient.body));
             });
             resolve(recipients);
           }
+        }
        });
     }
   });
@@ -241,22 +245,28 @@ function handleMessage(recipients, received_message, thread_key) {
       getRecipients(recipientsList).then(
         function (response) {
           console.log("@where - response - " + JSON.stringify(response));
-          if(response === false) {
-             text = 'I did not find a user named ' + user.name + ', please send his email';
-          }
+          // if(response === false) {
+          //    text = 'I did not find a user named ' + recipientsList[0] + ', please send his email';
+          // }
           if (response && response.length > 0) {
-            let user = response[0];
-            console.log("Success!", response);
-            if (user && user.department) {
-              text = 'The virtual room of ' + recipientsList.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
+            if(response[0].error) {
+              text = 'I did not find a user named ' + recipientsList + ', please send his email';
             } else {
-              text = 'The user ' + user.name + ' does not have a virtual room';
+              let user = response[0];
+              //console.log("Success!", response);
+              if (user && user.department) {
+                text = 'The virtual room of ' + recipientsList.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
+              } else {
+                text = 'The user ' + user.name + ' does not have a virtual room';
+              }
+              // Sends the response message
+              callSendAPI(recipients, { "text": text }, thread_key);
             }
-            // Sends the response message
-            callSendAPI(recipients, { "text": text }, thread_key);
           } else {
             console.error("error failed!");
           }
+      }, function(reason) {
+        console.error("error failed! - " + reason);
       });
     } else if (received_message.indexOf("@invite") !== -1) {
       console.log("equinox meeting # recipients1- " + JSON.stringify(recipients));
@@ -266,7 +276,7 @@ function handleMessage(recipients, received_message, thread_key) {
       
       getRecipients(recipientsList).then(
       function (response) {
-        console.log("Success!", response);
+        //console.log("Success!", response);
         console.log("equinox meeting # a1- " + JSON.stringify(response));
         if (response !== undefined && response !== null) {
           console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
