@@ -293,9 +293,8 @@ function handleMessage(recipients, received_message, thread_key) {
             response.forEach(function(recipient) {
               if (!recipient.error) {
                 if(recipients[0] && recipients[0].id !== recipient.id) {
-                   
+                   recipients.push(recipient);
                 }
-                recipients.push(recipient);
                 var substring_message = received_message.substring(0, received_message.indexOf(" "));
                 sendMessage(recipients, substring_message, thread_key);
               } else {
@@ -360,7 +359,7 @@ function callSendAPI(recipients, response, thread_key) {
       },
       //"sender_action":"typing_off",
       "message": response
-      } 
+      }
     }
     //console.log("request_body from: " + request_body.from);
     console.log("request_body: " + JSON.stringify(request_body));
