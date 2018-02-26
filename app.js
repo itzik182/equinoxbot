@@ -97,8 +97,8 @@ function getRecipients (recipientsList) {
           }
         } else {
           // Ask for full email and insert it into the table
-          resolve(false);
-          inviteEmail = currentEmployees[0].email;
+          //resolve(false);
+          //inviteEmail = currentEmployees[0].email;
         }
         
         // if (inviteEmail.indexOf("@") === -1) {
@@ -240,6 +240,7 @@ function handleMessage(recipients, received_message, thread_key) {
       
       getRecipients(recipientsList).then(
         function (response) {
+          console.log("@where - response - " + JSON.stringify(response));
           if(response === false) {
              text = 'I did not find a user named ' + user.name + ', please send his email';
           }
@@ -247,7 +248,7 @@ function handleMessage(recipients, received_message, thread_key) {
             let user = response[0];
             console.log("Success!", response);
             if (user && user.department) {
-              text = 'The virtual room of ' + user.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
+              text = 'The virtual room of ' + recipientsList.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
             } else {
               text = 'The user ' + user.name + ' does not have a virtual room';
             }
