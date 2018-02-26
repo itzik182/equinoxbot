@@ -284,8 +284,9 @@ function handleMessage(recipients, received_message, thread_key) {
                 recipients.push(recipient);
                 isRecipients = true;
               } else {
-                var r = recipient.error.message.substring(recipient.error.message.indexOf("exist: ") + 1, recipient.error.message.indexOf("exist: "));
-                text = 'I did not find a user named "' + recipient + '", please send "@invite + email"';
+                var r = recipient.error.message.indexOf('exist:'); //recipient.error.message.substring(recipient.error.message.indexOf(","), 5);
+                console.log('rrrrrrr - ' + JSON.stringify(r));
+                text = 'I did not find a user named "' + r + '", please send "@invite + email"';
                 callSendAPI(recipients, { "text": text }, thread_key); 
               }
             });
