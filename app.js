@@ -97,6 +97,7 @@ function getRecipients (recipientsList) {
           }
         } else {
           // Ask for full email and insert it into the table
+          resolve(false);
           inviteEmail = currentEmployees[0].email;
         }
         
@@ -239,6 +240,9 @@ function handleMessage(recipients, received_message, thread_key) {
       
       getRecipients(recipientsList).then(
         function (response) {
+          if(response === false) {
+             text = 'I did not find a user named ' + user.name + ', please send his email';
+          }
           if (response && response.length > 0) {
             let user = response[0];
             console.log("Success!", response);
