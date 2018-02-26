@@ -292,14 +292,17 @@ function handleMessage(recipients, received_message, thread_key) {
             //recipients = recipients.concat(response);
             response.forEach(function(recipient) {
               if (!recipient.error) {
+                if(recipients[0] && recipients[0].id !== recipient.id) {
+                   
+                }
                 recipients.push(recipient);
                 var substring_message = received_message.substring(0, received_message.indexOf(" "));
                 sendMessage(recipients, substring_message, thread_key);
               } else {
                 var indexStart = recipient.error.message.indexOf('exist:') + 7 ;
-                var r = recipient.error.message.substr(indexStart, recipient.error.message.length);
-                console.log('rrrrrrr - ' + JSON.stringify(r));
-                text = 'I did not find a user named "' + r + '", please send "@invite + email"';
+                var errorName = recipient.error.message.substr(indexStart, recipient.error.message.length);
+                console.log('rrrrrrr - ' + JSON.stringify(errorName));
+                text = 'I did not find a user named "' + errorName + '", please send "@invite + email"';
                 callSendAPI(recipients, { "text": text }, thread_key); 
               }
             });
