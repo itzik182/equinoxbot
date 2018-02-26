@@ -354,9 +354,9 @@ function callSendAPI(recipients, response, thread_key) {
     } else {
       console.log('index: ' + index);
       var res;
-      if(index === 1) {
-        res = response;
-        res.attachment.payload.text = 'hi';
+      if(index === 0) {
+        res = JSON.parse(JSON.stringify(response));
+        res.attachment.payload.text = 'Please:';
       }
      request_body = {
       //from: "100022693691284",
@@ -364,7 +364,7 @@ function callSendAPI(recipients, response, thread_key) {
         "id": recipient.id,
       },
       //"sender_action":"typing_off",
-      "message": index === 1 ? res : response
+      "message": index === 0 ? res : response
       }
     }
     //console.log("request_body from: " + request_body.from);
