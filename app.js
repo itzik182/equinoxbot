@@ -268,7 +268,7 @@ function handleMessage(recipients, received_message, thread_key) {
               let user = response[0];
               //console.log("Success!", response);
               if (user && user.department) {
-                text = 'The virtual room of ' + recipientsList.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
+                text = 'The virtual room of ' + user.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
               } else {
                 text = 'The user ' + user.name + ' does not have a virtual room';
               }
