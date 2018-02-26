@@ -203,7 +203,7 @@ function getTextMessageResponse(received_message, user, isThread) {
         if(isThread) {
           text = user.name + ' invite you a meeting at https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         } else {
-          text = user.name + ' invite you a meeting';// https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+          text = user.name + ' is inviting you to a live meeting';
           url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
           responseObj = getButtons(text, url);
         }
