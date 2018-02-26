@@ -7,7 +7,7 @@
  * https://developers.facebook.com/docs/messenger-platform/getting-started/quick-start/
  * group
  */
-
+ 
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
 var fs = require('fs'); 
@@ -120,15 +120,17 @@ function getRecipients (recipientsList) {
         } else {
           if (response.length > 0) {
             response.forEach(function(recipient) {
-              recipients.push(JSON.parse(recipient.body));
+              recipient = JSON.parse(recipient.body);
+              recipients.push(recipient);
               let currentEmployees = avayaEmployees.filter(
                 avayaEmployee => avayaEmployee.email.indexOf(recipient.email) !== -1
               );
-              console.log("avayaEmployees123: " + JSON.stringify(currentEmployees));
+              console.log("avayaEmployees123: " + JSON.stringify(currentEmployees.length));
+              console.log("avayaEmployees12344: " + JSON.stringify(recipient));
               if (currentEmployees.length <= 0 && (recipient && recipient.first_name && recipient.email)) {
-                //avayaEmployee.name.indexOf(recipient.first_name) !== -1 ||
-                avayaEmployees.push({"name": recipient.first_name.toLowerCase(), "email": recipient.email.toLowerCase()});
                 console.log("avayaEmployees456: " + JSON.stringify(avayaEmployees));
+                avayaEmployees.push({"name": recipient.first_name.toLowerCase(), "email": recipient.email.toLowerCase()});
+                console.log("avayaEmployees789: " + JSON.stringify(avayaEmployees));
                 fs.writeFileSync('./table.json', JSON.stringify(avayaEmployees)); 
               }
             });
