@@ -12,12 +12,12 @@
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
 var fs = require('fs'); 
 
-var avayaEmployees = require('./table.json').avayaEmployees;
+var avayaEmployees = require('./table.json');
 
 //avayaEmployees.push({"name": "tamar222", "email": "tamarb222@avaya.com"});
 //fs.writeFileSync('./table.json', JSON.stringify(avayaEmployees)); 
 
-//console.log(avayaEmployees);
+console.log(avayaEmployees);
 
 // Imports dependencies and set up http server
 const
@@ -85,25 +85,26 @@ function getRecipients (recipientsList) {
     if (inviteEmails.length > 0) {
       let batch = [];
       inviteEmails.forEach(function(inviteEmail) {
-        var currentEmployees = avayaEmployees.filter(
-          avayaEmployee => (avayaEmployee.name && avayaEmployee.name.indexOf(inviteEmail) !== -1) || 
-          (avayaEmployee.email &&avayaEmployee.email.indexOf(inviteEmail) !== -1)
-        );
-        console.log("currentEmployees: " + JSON.stringify(currentEmployees));
+        if(avayaEmployees) {
+          var currentEmployees = avayaEmployees.filter(
+            avayaEmployee => avayaEmployee && (avayaEmployee.name && avayaEmployee.name.toLowerCase().indexOf(inviteEmail.toLowerCase()) !== -1) || 
+            (avayaEmployee.email && avayaEmployee.email.toLowerCase().indexOf(inviteEmail.toLowerCase()) !== -1)
+          );
+          console.log("currentEmployees: " + JSON.stringify(currentEmployees));
         
-        if (currentEmployees && currentEmployees.length > 0) {
-          if (currentEmployees && currentEmployees.length < 1) {
-            inviteEmail = currentEmployees[0].email;
+          if (currentEmployees && currentEmployees.length > 0) {
+            if (currentEmployees && currentEmployees.length < 1) {
+              inviteEmail = currentEmployees[0].email;
+            } else {
+             //Ask which one?
+              inviteEmail = currentEmployees[0].email;
+            }
           } else {
-           //Ask which one?
-            inviteEmail = currentEmployees[0].email;
+            // Ask for full email and insert it into the table
+            //resolve(false);
+            //inviteEmail = currentEmployees[0].email;
           }
-        } else {
-          // Ask for full email and insert it into the table
-          //resolve(false);
-          //inviteEmail = currentEmployees[0].email;
         }
-        
         // if (inviteEmail.indexOf("@") === -1) {
         //   inviteEmail = inviteEmail + '@avaya.com';
         // }
@@ -123,10 +124,11 @@ function getRecipients (recipientsList) {
               let currentEmployees = avayaEmployees.filter(
                 avayaEmployee => avayaEmployee.email.indexOf(recipient.email) !== -1
               );
-              if (!currentEmployees || currentEmployees.length <= 0 && (recipient && recipient.first_name && recipient.email)) {
+              console.log("avayaEmployees123: " + JSON.stringify(currentEmployees));
+              if (currentEmployees.length <= 0 && (recipient && recipient.first_name && recipient.email)) {
                 //avayaEmployee.name.indexOf(recipient.first_name) !== -1 ||
-                avayaEmployees.push({"name": recipient.first_name, "email": recipient.email});
-                console.log("avayaEmployees123: " + JSON.stringify(avayaEmployees));
+                avayaEmployees.push({"name": recipient.first_name.toLowerCase(), "email": recipient.email.toLowerCase()});
+                console.log("avayaEmployees456: " + JSON.stringify(avayaEmployees));
                 fs.writeFileSync('./table.json', JSON.stringify(avayaEmployees)); 
               }
             });
