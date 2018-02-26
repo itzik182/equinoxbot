@@ -86,8 +86,8 @@ function getRecipients (recipientsList) {
       let batch = [];
       inviteEmails.forEach(function(inviteEmail) {
         var currentEmployees = avayaEmployees.filter(
-          avayaEmployee => avayaEmployee.name.indexOf(inviteEmail) !== -1 || 
-          avayaEmployee.email.indexOf(inviteEmail) !== -1
+          avayaEmployee => (avayaEmployee.name && avayaEmployee.name.indexOf(inviteEmail) !== -1) || 
+          (avayaEmployee.email &&avayaEmployee.email.indexOf(inviteEmail) !== -1)
         );
         console.log("currentEmployees: " + JSON.stringify(currentEmployees));
         
@@ -123,6 +123,12 @@ function getRecipients (recipientsList) {
               let currentEmployees = avayaEmployees.filter(
                 avayaEmployee => avayaEmployee.email.indexOf(recipient.email) !== -1
               );
+              if (!currentEmployees || currentEmployees.length <= 0 && (recipient && recipient.first_name && recipient.email)) {
+                //avayaEmployee.name.indexOf(recipient.first_name) !== -1 ||
+                avayaEmployees.push({"name": recipient.first_name, "email": recipient.email});
+                console.log("avayaEmployees123: " + JSON.stringify(avayaEmployees));
+                fs.writeFileSync('./table.json', JSON.stringify(avayaEmployees)); 
+              }
             });
             resolve(recipients);
           }
