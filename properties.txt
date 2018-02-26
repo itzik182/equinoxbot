@@ -7,3 +7,7 @@
     {"name": "tamar", "email": "tamarb@avaya.com"}
   ]
 }
+
+git add .
+git commit -m "added a new feature some files changed"
+git push
