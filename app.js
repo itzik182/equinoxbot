@@ -408,7 +408,7 @@ function callSendAPI(recipients, response, thread_key) {
     {
       "locale":"default",
       "text":"Hello {{user_full_name}}!",
-      //"image_url":"https://rnd-10-134-https://rnd-10-134-86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg",
+      //"image_url":"https://rnd-10-134-86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg",
       //"get_started": "hi"
     },
   ]
