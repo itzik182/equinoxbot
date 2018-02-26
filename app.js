@@ -338,7 +338,7 @@ function handlePostback(sender_psid, received_postback) {
 // Sends response messages via the Send API
 function callSendAPI(recipients, response, thread_key) {
   console.log("recipients - : " + JSON.stringify(recipients));
-  recipients.forEach(function(recipient) {
+  recipients.forEach(function(recipient, index) {
   //displayTheTypingBubble(sender, response, thread_key);
   let request_body;
   //for(var sender in sender_psid) {
@@ -352,13 +352,19 @@ function callSendAPI(recipients, response, thread_key) {
       "message": response
       }
     } else {
+      console.log('index: ' + index);
+      var res;
+      if(index === 1) {
+        res = response;
+        res.attachment.payload.text = 'hi';
+      }
      request_body = {
       //from: "100022693691284",
       "recipient": {
         "id": recipient.id,
       },
       //"sender_action":"typing_off",
-      "message": response
+      "message": index === 1 ? res : response
       }
     }
     //console.log("request_body from: " + request_body.from);
