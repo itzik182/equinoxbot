@@ -15,7 +15,6 @@ var fs = require('fs');
 var avayaEmployees = require('./table.json').avayaEmployees;
 
 //avayaEmployees.push({"name": "tamar222", "email": "tamarb222@avaya.com"});
-
 //fs.writeFileSync('./table.json', JSON.stringify(avayaEmployees)); 
 
 //console.log(avayaEmployees);
