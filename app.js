@@ -75,13 +75,12 @@ function getRecipients (recipientsList) {
     if (recipientsList.indexOf(";") !== -1) {
       inviteEmails = recipientsList.split(";");
     } else {
-      if (recipientsList.indexOf("@") === -1) {
-        //recipientsList = recipientsList + '@avaya.com';
-        console.log("recipientsList: " + JSON.stringify(recipientsList));
-      }
+      // if (recipientsList.indexOf("@") === -1) {
+      //   recipientsList = recipientsList + '@avaya.com';
+      // }
       inviteEmails.push(recipientsList);
     } 
-    console.log("inviteEmails: " + JSON.stringify(inviteEmails));
+    console.log("inviteEmails: " + JSON.stringify(inviteEmails)); 
     if (inviteEmails.length > 0) {
       let batch = [];
       inviteEmails.forEach(function(inviteEmail) {
@@ -100,14 +99,11 @@ function getRecipients (recipientsList) {
               inviteEmail = currentEmployees[0].email;
             }
           } else {
-            // Ask for full email and insert it into the table
-            //resolve(false);
-            //inviteEmail = currentEmployees[0].email;
+            if (inviteEmail.indexOf("@") === -1) {
+              inviteEmail = inviteEmail + '@avaya.com';
+            }
           }
         }
-        // if (inviteEmail.indexOf("@") === -1) {
-        //   inviteEmail = inviteEmail + '@avaya.com';
-        // }
         batch.push({ method: 'GET', relative_url: inviteEmail + '?fields=id,email,name, first_name,primary_phone,department'});
       });
 
