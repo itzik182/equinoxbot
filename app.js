@@ -276,10 +276,6 @@ function handleMessage(recipients, received_message, thread_key) {
         //console.log("Success!", response);
         console.log("equinox meeting # a1- " + JSON.stringify(response));
         if (response !== undefined && response !== null) {
-          if(response[0].error) {
-            text = 'I did not find a user named "' + recipientsList + '", please send "@invite + email"';
-            callSendAPI(recipients, { "text": text }, thread_key);
-          } else {
             console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
             //recipients = recipients.concat(response);
             let isRecipients = false;
@@ -287,6 +283,10 @@ function handleMessage(recipients, received_message, thread_key) {
               if (!recipient.error) {
                 recipients.push(recipient);
                 isRecipients = true;
+              } else {
+                var r = recipient.error.message.substring(recipient.error.message.indexOf("exist: ") + 1, recipient.error.message.indexOf("exist: "));
+                text = 'I did not find a user named "' + recipient + '", please send "@invite + email"';
+                callSendAPI(recipients, { "text": text }, thread_key); 
               }
             });
             if (isRecipients) {
@@ -297,7 +297,6 @@ function handleMessage(recipients, received_message, thread_key) {
               console.log('recipients222222 - ' + recipients);
               callSendAPI(recipients, { "text": 'This user does not exist' }, thread_key);
             }
-          }
         }
         console.log("equinox meeting # recipients4-" + JSON.stringify(recipients));
       }, function (error) {
