@@ -319,7 +319,9 @@ function handleMessage(recipients, received_message, thread_key) {
                    recipients.push(recipient);
                 }
                 substring_message = received_message.substring(0, received_message.indexOf(" "));
-                sendMessage(recipients, substring_message, thread_key, response);
+                //sendMessage(recipients, substring_message, thread_key, response);
+                responseObj = getTextMessageResponse(substring_message, response, isThread);
+                callSendAPI(recipients, responseObj, thread_key);
               } else {
                 var indexStart = recipient.error.message.indexOf('exist:') + 7 ;
                 var errorName = recipient.error.message.substr(indexStart, recipient.error.message.length);
@@ -361,6 +363,7 @@ function handlePostback(sender_psid, received_postback) {
 // Sends response messages via the Send API
 function callSendAPI(recipients, response, thread_key) {
   console.log("recipients - : " + JSON.stringify(recipients));
+  var originalText = response.attachment ? JSON.parse(JSON.stringify(response.attachment.payload.text)) : "";
   recipients.forEach(function(recipient, index) {
   //displayTheTypingBubble(sender, response, thread_key);
   let request_body;
@@ -378,9 +381,13 @@ function callSendAPI(recipients, response, thread_key) {
       console.log("callSendAPI - response: " + JSON.stringify(response));
       console.log('index: ' + index);
       //var res;
-      if(index === 0 && response.attachment && recipients.length > 1) {
+      if(response.attachment && recipients.length > 1) {
+        if(index === 0) {
+          response.attachment.payload.text = 'Please:';
+        } else if(response.attachment.payload.text !== originalText) {
+          response.attachment.payload.text = originalText;
+        }
         //res = JSON.parse(JSON.stringify(response));
-        response.attachment.payload.text = 'Please:';
       }
      request_body = {
       //from: "100022693691284",
