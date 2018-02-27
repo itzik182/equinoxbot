@@ -373,7 +373,7 @@ function callSendAPI(recipients, response, thread_key) {
     } else {
       console.log('index: ' + index);
       var res;
-      if(index === 0 && response.attachment) {
+      if(index === 0 && response.attachment && recipients.length > 1) {
         res = JSON.parse(JSON.stringify(response));
         res.attachment.payload.text = 'Please:';
       }
