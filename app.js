@@ -441,13 +441,26 @@ function callSendAPI(recipients, response, thread_key) {
 function displayMessengerProfile() {
  // Construct the message body
   let messenger_profile_request_body = {
-    //"get_started": "hi",
-    "greeting": [
+    "data": [
       {
-        "locale":"default",
-        "text":"Hello {{user_full_name}}! \ I am ExuinoxBot, How can I help you?",
-        //"image_url":"https://rnd-10-134-86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg",
-        //"get_started": "hi"
+        //"get_started": "hi",
+        "whitelisted_domains": [
+                "https://www.avaya.com/en/"
+              ],
+        "greeting": [
+          {
+            "locale":"default",
+            "text":"Hello {{user_full_name}}! I am ExuinoxBot, How can I help you?",
+            //"image_url":"https://rnd-10-134-86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg86-27.holonlab.avaya.com/portal/custom-               styles/999/custom_logo.svg",
+            //"get_started": "hi"
+          }
+        ],
+        "home_url" : {
+           "url": "https://www.avaya.com/en/",
+           "webview_height_ratio": "tall",
+           "webview_share_button": "show",
+           "in_test":true
+        }
       }
     ]
   }
