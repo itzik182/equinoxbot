@@ -191,24 +191,26 @@ function getTextMessageResponse(received_message, user, isThread) {
         if(isThread) {
           text = 'May I suggest you enter to virtual room: https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         } else {
+          title = 'Join meeting';
           text = 'May I suggest you enter to virtual room:';
           url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
-          responseObj = getButtons("Join meeting", text, url);
+          responseObj = getButtons(title, text, url);
         }
         break;
     case '@invite':
         if(isThread) {
           text = user.name + ' invite you a meeting at https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
         } else {
+          title = 'Join meeting';
           text = user.name + ' is inviting you to a live meeting';
           url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
-          responseObj = getButtons("Join meeting", text, url);
+          responseObj = getButtons(title, text, url);
         }
         break;
     case '@where':
         if (user && user.department) {
-          text: 'Please:';
-          title = 'Link to virtual room of ' + user.name;
+          text = 'Link to virtual room of ' + user.name;
+          title = 'Enter to virtual room';
           url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
           responseObj = getButtons(title, text, url);
         } else {
@@ -229,7 +231,7 @@ function getTextMessageResponse(received_message, user, isThread) {
     if (responseObj === null) {
      responseObj = {"text": text};
     }
-  
+    console.log("getTextMessageResponse - responseObj - " + JSON.stringify(responseObj));
     return responseObj;
 }
 
@@ -239,7 +241,7 @@ function sendMessage(recipients, received_message, thread_key, response) {
   var isThread = thread_key ? true : false;
   //TODO: check way recipients[0]?
   //getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
-    console.log("response - " + JSON.stringify(response));
+    console.log("sendMessage - response - " + JSON.stringify(response));
     var responseObj = getTextMessageResponse(received_message, response, isThread);
     
     //responseObj = responseObj;
