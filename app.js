@@ -204,6 +204,15 @@ function getTextMessageResponse(received_message, user, isThread) {
           responseObj = getButtons(text, url);
         }
         break;
+    case '@where':
+        if (user && user.department) {
+          text = 'Link to virtual room of ' + user.name;
+          url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
+          responseObj = getButtons(text, url);
+        } else {
+          text = 'The user ' + user.name + ' does not have a virtual room';
+        }
+      break;
     case 'hi':
         text = 'Hello, Im EquinoxBot, How i can help you?';
         break;
@@ -226,7 +235,7 @@ function sendMessage(recipients, received_message, thread_key) {
   console.log('sendMessage - received_message- ' + received_message);
   let quick_replies;
   var isThread = thread_key ? true : false;
-  
+  //TODO: check way recipients[0]?
   getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
     console.log("response - " + JSON.stringify(response));
     var responseObj = getTextMessageResponse(received_message, response, isThread);
@@ -246,6 +255,7 @@ function handleMessage(recipients, received_message, thread_key) {
   let response;
   let text;
   let url;
+  var substring_message;
   var isThread = thread_key ? true : false;
   let buttons;
   // Check if the message contains text
@@ -264,8 +274,10 @@ function handleMessage(recipients, received_message, thread_key) {
           } else {
             if (response && response.length > 0) {
               let user = response[0];
+              substring_message = received_message.substring(0, received_message.indexOf(" "));
+              sendMessage(recipients, substring_message, thread_key);
               //console.log("Success!", response);
-              var responseObj = getTextMessageResponse(received_message, user, isThread);
+              //var responseObj = getTextMessageResponse(received_message, user, isThread);
               // if (user && user.department) {
               //   text = 'The virtual room of ' + user.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
               //   url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
@@ -300,7 +312,7 @@ function handleMessage(recipients, received_message, thread_key) {
                 if(recipients[0] && recipients[0].id !== recipient.id) {
                    recipients.push(recipient);
                 }
-                var substring_message = received_message.substring(0, received_message.indexOf(" "));
+                substring_message = received_message.substring(0, received_message.indexOf(" "));
                 sendMessage(recipients, substring_message, thread_key);
               } else {
                 var indexStart = recipient.error.message.indexOf('exist:') + 7 ;
