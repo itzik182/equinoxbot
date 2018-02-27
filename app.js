@@ -65,7 +65,7 @@ var graphapi = request.defaults({
 //       }
 // });
 
-//displayMessengerProfile();
+displayMessengerProfile();
 
 function getRecipients (recipientsList) {
   console.log("getRecipients - recipientsList: " + recipientsList);
@@ -309,7 +309,7 @@ function handleMessage(recipients, received_message, thread_key) {
       
       getRecipients(recipientsList).then(
       function (response) {
-        //console.log("Success!", response);
+        console.log("@invite - getRecipients - response", response);
         console.log("equinox meeting # a1- " + JSON.stringify(response));
         if (response !== undefined && response !== null) {
             console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
@@ -321,7 +321,7 @@ function handleMessage(recipients, received_message, thread_key) {
                 }
                 substring_message = received_message.substring(0, received_message.indexOf(" "));
                 //sendMessage(recipients, substring_message, thread_key, response);
-                responseObj = getTextMessageResponse(substring_message, response, isThread);
+                responseObj = getTextMessageResponse(substring_message, response[0], isThread);
                 callSendAPI(recipients, responseObj, thread_key);
               } else {
                 var indexStart = recipient.error.message.indexOf('exist:') + 7 ;
