@@ -245,6 +245,8 @@ function sendMessage(recipients, received_message, thread_key) {
 function handleMessage(recipients, received_message, thread_key) {  
   let response;
   let text;
+  let url;
+  var isThread = thread_key ? true : false;
   let buttons;
   // Check if the message contains text
   if (received_message) {
@@ -263,18 +265,20 @@ function handleMessage(recipients, received_message, thread_key) {
             if (response && response.length > 0) {
               let user = response[0];
               //console.log("Success!", response);
-              if (user && user.department) {
-                text = 'The virtual room of ' + user.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
-                responseObj = getButtons(text, url);
-              } else {
-                text = 'The user ' + user.name + ' does not have a virtual room';
-              }
+              var responseObj = getTextMessageResponse(received_message, user, isThread);
+              // if (user && user.department) {
+              //   text = 'The virtual room of ' + user.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
+              //   url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
+              //   responseObj = getButtons(text, url);
+              // } else {
+              //   text = 'The user ' + user.name + ' does not have a virtual room';
+              // }
             } else {
               console.error("error failed!");
             }
           }
           // Sends the response message
-          callSendAPI(recipients, { "text": text }, thread_key);
+          callSendAPI(recipients, responseObj, thread_key);
       }, function(reason) {
         console.error("error failed! - " + reason);
       });
