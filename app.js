@@ -265,6 +265,7 @@ function handleMessage(recipients, received_message, thread_key) {
               //console.log("Success!", response);
               if (user && user.department) {
                 text = 'The virtual room of ' + user.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
+                responseObj = getButtons(text, url);
               } else {
                 text = 'The user ' + user.name + ' does not have a virtual room';
               }
@@ -354,7 +355,7 @@ function callSendAPI(recipients, response, thread_key) {
     } else {
       console.log('index: ' + index);
       var res;
-      if(index === 0) {
+      if(index === 0 && response.attachment) {
         res = JSON.parse(JSON.stringify(response));
         res.attachment.payload.text = 'Please:';
       }
@@ -364,7 +365,7 @@ function callSendAPI(recipients, response, thread_key) {
         "id": recipient.id,
       },
       //"sender_action":"typing_off",
-      "message": index === 0 ? res : response
+      "message": index === 0 && response.attachment ? res : response
       }
     }
     //console.log("request_body from: " + request_body.from);
