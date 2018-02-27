@@ -231,12 +231,12 @@ function getTextMessageResponse(received_message, user, isThread) {
     return responseObj;
 }
 
-function sendMessage(recipients, received_message, thread_key) {
+function sendMessage(recipients, received_message, thread_key, response) {
   console.log('sendMessage - received_message- ' + received_message);
   let quick_replies;
   var isThread = thread_key ? true : false;
   //TODO: check way recipients[0]?
-  getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
+  //getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
     console.log("response - " + JSON.stringify(response));
     var responseObj = getTextMessageResponse(received_message, response, isThread);
     
@@ -245,9 +245,9 @@ function sendMessage(recipients, received_message, thread_key) {
     // Sends the responseObj message
     callSendAPI(recipients, responseObj, thread_key);
     
-  },function(error) {
-      console.error(error);
-  }); 
+  // },function(error) {
+  //     console.error(error);
+  // }); 
 }
 
 // Handles messages events
@@ -256,6 +256,7 @@ function handleMessage(recipients, received_message, thread_key) {
   let text;
   let url;
   var substring_message;
+  var responseObj 
   var isThread = thread_key ? true : false;
   let buttons;
   // Check if the message contains text
@@ -275,7 +276,8 @@ function handleMessage(recipients, received_message, thread_key) {
             if (response && response.length > 0) {
               let user = response[0];
               substring_message = received_message.substring(0, received_message.indexOf(" "));
-              sendMessage(recipients, substring_message, thread_key);
+              responseObj = getTextMessageResponse(received_message, response, isThread);
+              //sendMessage(recipients, substring_message, thread_key);
               //console.log("Success!", response);
               //var responseObj = getTextMessageResponse(received_message, user, isThread);
               // if (user && user.department) {
@@ -313,7 +315,7 @@ function handleMessage(recipients, received_message, thread_key) {
                    recipients.push(recipient);
                 }
                 substring_message = received_message.substring(0, received_message.indexOf(" "));
-                sendMessage(recipients, substring_message, thread_key);
+                sendMessage(recipients, substring_message, thread_key, response);
               } else {
                 var indexStart = recipient.error.message.indexOf('exist:') + 7 ;
                 var errorName = recipient.error.message.substr(indexStart, recipient.error.message.length);
