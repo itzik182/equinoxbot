@@ -307,7 +307,7 @@ function handleMessage(recipients, received_message, thread_key) {
             //recipients = recipients.concat(response);
             response.forEach(function(recipient, index) {
               if (!recipient.error) {
-                if(recipients[0] && recipients[0].id !== recipient.id) {
+                if(recipients[0] && recipients[0].id !== recipient.id && index === 0) {
                    recipients.push(recipient);
                 }
                 substring_message = received_message.substring(0, received_message.indexOf(" "));
@@ -317,9 +317,9 @@ function handleMessage(recipients, received_message, thread_key) {
               } else {
                 // var indexStart = recipient.error.message.indexOf('exist:') + 7 ;
                 // var errorName = recipient.error.message.substr(indexStart, recipient.error.message.length);
-                // console.log('rrrrrrr - ' + JSON.stringify(errorName));
+                 console.log('recipients[0] - ' + JSON.stringify(recipients[0]));
                 text = 'I did not find a user named "' + recipient.searchName + '", please send "@invite + email"';
-                callSendAPI(recipients, { "text": text }, thread_key); 
+                callSendAPI([recipients[0]], { "text": text }, thread_key); 
               }
             });
         }
