@@ -65,6 +65,7 @@ var graphapi = request.defaults({
 //       }
 // });
 
+displayMessengerProfile();
 
 function getRecipients (recipientsList) {
   console.log("getRecipients - recipientsList: " + recipientsList);
@@ -435,18 +436,20 @@ function callSendAPI(recipients, response, thread_key) {
       }); 
     }, 2000);
   });
-  
-  // Construct the message body
+}
+
+function displayMessengerProfile() {
+ // Construct the message body
   let messenger_profile_request_body = {
     //"get_started": "hi",
     "greeting": [
-    {
-      "locale":"default",
-      "text":"Hello {{user_full_name}}!",
-      //"image_url":"https://rnd-10-134-86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg",
-      //"get_started": "hi"
-    },
-  ]
+      {
+        "locale":"default",
+        "text":"Hello {{user_full_name}}! <BR/> I am ExuinoxBot, How can I help you?",
+        //"image_url":"https://rnd-10-134-86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg",
+        //"get_started": "hi"
+      }
+    ]
   }
   
   // Send the HTTP request to the messenger profile Platform
@@ -461,7 +464,7 @@ function callSendAPI(recipients, response, thread_key) {
     } else {
       //console.error("Unable to send message:" + err);
     }
-  });
+  }); 
 }
 
 function displayTheTypingBubble(senderId, thread_key,isOn) {
