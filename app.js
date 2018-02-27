@@ -236,12 +236,12 @@ function getTextMessageResponse(received_message, user, isThread) {
     return responseObj;
 }
 
-function sendMessage(recipients, received_message, thread_key, response) {
+function sendMessage(recipients, received_message, thread_key) {
   console.log('sendMessage - received_message- ' + received_message);
   let quick_replies;
   var isThread = thread_key ? true : false;
   //TODO: check way recipients[0]?
-  //getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
+  getEmployeeDetailsByIdOrEmail(recipients[0].id, 'email,name,primary_phone,department').then(function (response) {
     console.log("sendMessage - response - " + JSON.stringify(response));
     var responseObj = getTextMessageResponse(received_message, response, isThread);
     
@@ -250,9 +250,9 @@ function sendMessage(recipients, received_message, thread_key, response) {
     // Sends the responseObj message
     callSendAPI(recipients, responseObj, thread_key);
     
-  // },function(error) {
-  //     console.error(error);
-  // }); 
+  },function(error) {
+      console.error(error);
+  }); 
 }
 
 // Handles messages events
@@ -320,7 +320,7 @@ function handleMessage(recipients, received_message, thread_key) {
                    recipients.push(recipient);
                 }
                 substring_message = received_message.substring(0, received_message.indexOf(" "));
-                sendMessage(recipients, substring_message, thread_key, response);
+                sendMessage(recipients, substring_message, thread_key);
                 //responseObj = getTextMessageResponse(substring_message, response[0], isThread);
                 //callSendAPI(recipients, responseObj, thread_key);
               } else {
@@ -366,8 +366,7 @@ function callSendAPI(recipients, response, thread_key) {
   console.log("recipients - : " + JSON.stringify(recipients));
   var originalText = response.attachment ? JSON.parse(JSON.stringify(response.attachment.payload.text)) : "";
   recipients.forEach(function(recipient, index) {
-  //displayTheTypingBubble(sender, response, thread_key);
-  let request_body;
+    let request_body;
   //for(var sender in sender_psid) {
     console.log('thread_key: ' + thread_key);
     // Construct the message body
@@ -381,46 +380,26 @@ function callSendAPI(recipients, response, thread_key) {
     } else {
       console.log("callSendAPI - response: " + JSON.stringify(response));
       console.log('index: ' + index);
-      //var res;
-      if(response.attachment && recipients.length > 1) {
-        if(index === 0) {
-          response.attachment.payload.text = 'Please:';
-        } else if(response.attachment.payload.text !== originalText) {
-          response.attachment.payload.text = originalText;
-        }
-        //res = JSON.parse(JSON.stringify(response));
+      var res;
+      var isNeedChangeText = index === 0 && response.attachment && recipients.length > 1;
+      if(isNeedChangeText) {
+        res = JSON.parse(JSON.stringify(response));
+        res.attachment.payload.text = 'Please:';
       }
-     request_body = {
+      request_body = {
       //from: "100022693691284",
-      "recipient": {
-        "id": recipient.id,
-      },
-      //"sender_action":"typing_off",
-      "message": response
+        "recipient": {
+          "id": recipient.id,
+        },
+        //"sender_action":"typing_off",
+        "message": isNeedChangeText ? res : response
       }
-    }
-    //console.log("request_body from: " + request_body.from);
-    console.log("request_body: " + JSON.stringify(request_body));
-    
-    // graphapi({
-    //     method: 'POST',
-    //     url: '/v2.6/me/messages',
-    //   qs: {
-    //         "sender_action": 'typing_on'
-    //       }
-    // },function(error,response,body) {
-    //     console.log("friends=> body - " + JSON.stringify(body));
-    // });
+  }
+  console.log("request_body: " + JSON.stringify(request_body));
     
   displayTheTypingBubble(recipient.id, thread_key, true);
     
-    //setTimeout(function(){
-      //displayTheTypingBubble(recipient, response, thread_key, false);
-    //}, 2800);
-    
   setTimeout(function(){
-      //displayTheTypingBubble(recipient, response, thread_key, false);
-
       // Send the HTTP request to the Messenger Platform
       request({
         "uri": "https://graph.facebook.com/v2.6/me/messages",
