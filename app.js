@@ -373,6 +373,7 @@ function callSendAPI(recipients, response, thread_key) {
       "message": response
       }
     } else {
+      console.log("callSendAPI - response: " + JSON.stringify(response));
       console.log('index: ' + index);
       //var res;
       if(index === 0 && response.attachment && recipients.length > 1) {
