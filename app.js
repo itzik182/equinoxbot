@@ -276,22 +276,13 @@ function handleMessage(recipients, received_message, thread_key) {
         function (response) {
           console.log("@where - response - " + JSON.stringify(response));
           if(response[0].error) {
-            text = 'I did not find a user named "' + recipientsList + '", please send "@where + email"';
+            text = 'I did not find user named "' + recipientsList + '", please send "@where + email"';
+            responseObj = {"text": text};
           } else {
             if (response && response.length > 0) {
               //let user = response[0];
               substring_message = received_message.substring(0, received_message.indexOf(" "));
               responseObj = getTextMessageResponse(substring_message, response[0], isThread);
-              //sendMessage(recipients, substring_message, thread_key);
-              //console.log("Success!", response);
-              //var responseObj = getTextMessageResponse(received_message, user, isThread);
-              // if (user && user.department) {
-              //   text = 'The virtual room of ' + user.name + ' is https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
-              //   url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
-              //   responseObj = getButtons(text, url);
-              // } else {
-              //   text = 'The user ' + user.name + ' does not have a virtual room';
-              // }
             } else {
               console.error("error failed!");
             }
