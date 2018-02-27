@@ -320,9 +320,9 @@ function handleMessage(recipients, received_message, thread_key) {
                    recipients.push(recipient);
                 }
                 substring_message = received_message.substring(0, received_message.indexOf(" "));
-                //sendMessage(recipients, substring_message, thread_key, response);
-                responseObj = getTextMessageResponse(substring_message, response[0], isThread);
-                callSendAPI(recipients, responseObj, thread_key);
+                sendMessage(recipients, substring_message, thread_key, response);
+                //responseObj = getTextMessageResponse(substring_message, response[0], isThread);
+                //callSendAPI(recipients, responseObj, thread_key);
               } else {
                 var indexStart = recipient.error.message.indexOf('exist:') + 7 ;
                 var errorName = recipient.error.message.substr(indexStart, recipient.error.message.length);
