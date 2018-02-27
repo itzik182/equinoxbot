@@ -113,10 +113,10 @@ function getRecipients (recipientsList) {
          batch: batch
        }, function (response) {
         if (!response || response.error) {
-          reject(response.error);
+          reject(response.error, inviteEmails);
         } else {
           if (response.length > 0) {
-            response.forEach(function(recipient) {
+            response.forEach(function(recipient, index) {
               recipient = JSON.parse(recipient.body);
               recipients.push(recipient);
               let currentEmployees = avayaEmployees.filter(
@@ -131,7 +131,7 @@ function getRecipients (recipientsList) {
                 fs.writeFileSync('./table.json', JSON.stringify(avayaEmployees)); 
               }
             });
-            resolve(recipients);
+            resolve(recipients, inviteEmails);
           }
         }
        });
@@ -299,13 +299,12 @@ function handleMessage(recipients, received_message, thread_key) {
       console.log("recipientsList - " + recipientsList);
       
       getRecipients(recipientsList).then(
-      function (response) {
-        console.log("@invite - getRecipients - response", response);
+      function (response, inviteEmails) {
         console.log("equinox meeting # a1- " + JSON.stringify(response));
         if (response !== undefined && response !== null) {
             console.log("equinox meeting # recipients2-" + JSON.stringify(recipients));
             //recipients = recipients.concat(response);
-            response.forEach(function(recipient) {
+            response.forEach(function(recipient, index) {
               if (!recipient.error) {
                 if(recipients[0] && recipients[0].id !== recipient.id) {
                    recipients.push(recipient);
@@ -318,7 +317,7 @@ function handleMessage(recipients, received_message, thread_key) {
                 var indexStart = recipient.error.message.indexOf('exist:') + 7 ;
                 var errorName = recipient.error.message.substr(indexStart, recipient.error.message.length);
                 console.log('rrrrrrr - ' + JSON.stringify(errorName));
-                text = 'I did not find a user named "' + errorName + '", please send "@invite + email"';
+                text = 'I did not find a user named "' + inviteEmails[index] + '", please send "@invite + email"';
                 callSendAPI(recipients, { "text": text }, thread_key); 
               }
             });
