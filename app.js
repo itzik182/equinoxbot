@@ -65,7 +65,7 @@ var graphapi = request.defaults({
 //       }
 // });
 
-displayMessengerProfile();
+//displayMessengerProfile();
 
 function getRecipients (recipientsList) {
   console.log("getRecipients - recipientsList: " + recipientsList);
@@ -179,7 +179,7 @@ function getTextMessageResponse(received_message, user, isThread) {
   let primary_phone;
   let VR = user && user.department ? user.department : '9200167';
   
-    if (user.primary_phone) {
+    if (user && user.primary_phone) { 
       primary_phone = user.primary_phone.replace('+', '');
     }
   var buttons = null,
@@ -441,12 +441,9 @@ function callSendAPI(recipients, response, thread_key) {
 function displayMessengerProfile() {
  // Construct the message body
   let messenger_profile_request_body = {
-    "data": [
-      {
-        //"get_started": "hi",
-        "whitelisted_domains": [
-                "https://www.avaya.com/en/"
-              ],
+    //"data": [
+      //{
+        //"get_started": "hi",    
         "greeting": [
           {
             "locale":"default",
@@ -454,15 +451,10 @@ function displayMessengerProfile() {
             //"image_url":"https://rnd-10-134-86-27.holonlab.avaya.com/portal/custom-styles/999/custom_logo.svg86-27.holonlab.avaya.com/portal/custom-               styles/999/custom_logo.svg",
             //"get_started": "hi"
           }
-        ],
-        "home_url" : {
-           "url": "https://www.avaya.com/en/",
-           "webview_height_ratio": "tall",
-           "webview_share_button": "show",
-           "in_test":true
-        }
-      }
-    ]
+        ]
+    
+      //}
+    //]
   }
   
   // Send the HTTP request to the messenger profile Platform
@@ -472,11 +464,7 @@ function displayMessengerProfile() {
     "method": "POST",
     "json": messenger_profile_request_body
   }, (err, res, body) => {
-    if (!err) {
-      //console.log('message sent!')
-    } else {
-      //console.error("Unable to send message:" + err);
-    }
+
   }); 
 }
 
@@ -506,7 +494,7 @@ function displayTheTypingBubble(senderId, thread_key,isOn) {
     request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
       "qs": { "access_token": PAGE_ACCESS_TOKEN },
-      "method": "POST",
+      "method": "POST", 
       "json": request_body
     }, (err, res, body) => {
       if (!err) {
