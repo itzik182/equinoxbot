@@ -176,7 +176,7 @@ function getButtons (text, url) {
 
 function getTextMessageResponse(received_message, user, isThread) {
   let primary_phone;
-  let VR = user.department ? user.department : '9200167';
+  let VR = user && user.department ? user.department : '9200167';
   
     if (user.primary_phone) {
       primary_phone = user.primary_phone.replace('+', '');
@@ -274,9 +274,9 @@ function handleMessage(recipients, received_message, thread_key) {
             text = 'I did not find a user named "' + recipientsList + '", please send "@where + email"';
           } else {
             if (response && response.length > 0) {
-              let user = response[0];
+              //let user = response[0];
               substring_message = received_message.substring(0, received_message.indexOf(" "));
-              responseObj = getTextMessageResponse(received_message, response, isThread);
+              responseObj = getTextMessageResponse(substring_message, response[0], isThread);
               //sendMessage(recipients, substring_message, thread_key);
               //console.log("Success!", response);
               //var responseObj = getTextMessageResponse(received_message, user, isThread);
