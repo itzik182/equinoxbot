@@ -155,7 +155,7 @@ function getEmployeeDetailsByIdOrEmail(userIdentify, fields) {
   });
 }
 
-function getButtons (text, url) {
+function getButtons (title, text, url) {
  return {
     "attachment":{
       "type":"template",
@@ -166,7 +166,7 @@ function getButtons (text, url) {
           {
             "type":"web_url",
             "url": url,
-            "title":"Join meeting"
+            "title": title
           }
         ]
       }
@@ -181,10 +181,11 @@ function getTextMessageResponse(received_message, user, isThread) {
     if (user.primary_phone) {
       primary_phone = user.primary_phone.replace('+', '');
     }
-  var buttons = null;
-  var responseObj = null;
-  var text = '';
-  var url = '';
+  var buttons = null,
+      responseObj = null,
+      title, 
+      text, 
+      url;
   switch(received_message.toLowerCase()) {
     case '@join': case 'link to my virtual room': case 'Lets have a meeting':
         if(isThread) {
@@ -192,7 +193,7 @@ function getTextMessageResponse(received_message, user, isThread) {
         } else {
           text = 'May I suggest you enter to virtual room:';
           url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
-          responseObj = getButtons(text, url);
+          responseObj = getButtons("Join meeting", text, url);
         }
         break;
     case '@invite':
@@ -201,14 +202,15 @@ function getTextMessageResponse(received_message, user, isThread) {
         } else {
           text = user.name + ' is inviting you to a live meeting';
           url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
-          responseObj = getButtons(text, url);
+          responseObj = getButtons("Join meeting", text, url);
         }
         break;
     case '@where':
         if (user && user.department) {
-          text = 'Link to virtual room of ' + user.name;
+          text: 'Please:';
+          title = 'Link to virtual room of ' + user.name;
           url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
-          responseObj = getButtons(text, url);
+          responseObj = getButtons(title, text, url);
         } else {
           text = 'The user ' + user.name + ' does not have a virtual room';
         }
@@ -372,10 +374,10 @@ function callSendAPI(recipients, response, thread_key) {
       }
     } else {
       console.log('index: ' + index);
-      var res;
+      //var res;
       if(index === 0 && response.attachment && recipients.length > 1) {
-        res = JSON.parse(JSON.stringify(response));
-        res.attachment.payload.text = 'Please:';
+        //res = JSON.parse(JSON.stringify(response));
+        response.attachment.payload.text = 'Please:';
       }
      request_body = {
       //from: "100022693691284",
@@ -383,7 +385,7 @@ function callSendAPI(recipients, response, thread_key) {
         "id": recipient.id,
       },
       //"sender_action":"typing_off",
-      "message": index === 0 && response.attachment ? res : response
+      "message": response
       }
     }
     //console.log("request_body from: " + request_body.from);
