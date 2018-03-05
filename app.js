@@ -10,7 +10,11 @@
  
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
-var fs = require('fs'); 
+var fs = require('fs');
+
+var client = require('./public/client.js');
+
+console.log(client.getHello());
 
 var avayaEmployees = require('./table.json');
 
