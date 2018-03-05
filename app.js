@@ -703,6 +703,8 @@ app.get('/webhook', (req, res) => {
   
   var verifyTokenList = VERIFY_TOKEN.split(';');
   
+  console.log(verifyTokenList); 
+  
   // Parse params from the webhook verification request
   let mode = req.query['hub.mode'];
   let token = req.query['hub.verify_token'];
@@ -711,14 +713,16 @@ app.get('/webhook', (req, res) => {
   if (mode && token) {
   
     // Check the mode and token sent are correct 
-    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+    //if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+    if (mode === 'subscribe' && verifyTokenList.indexOf(token) !== -1) {
       
       // Respond with 200 OK and challenge token from the request
-      //console.log('WEBHOOK_VERIFIED');
+      console.log('WEBHOOK_VERIFIED');
       res.status(200).send(challenge);
     
     } else {
       // Responds with '403 Forbidden' if verify tokens do not match
+      console.log('Responds with "403 Forbidden" if verify tokens do not match');
       res.sendStatus(403);      
     }
   }
