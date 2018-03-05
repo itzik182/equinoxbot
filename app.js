@@ -722,17 +722,17 @@ app.get('/webhook', (req, res) => {
   }
 });
 
-function get_sender_profile(id) {
-  request({
-    "uri": "https://graph.facebook.com/v2.6/#{'+id+'}",
-    "qs": { "access_token": PAGE_ACCESS_TOKEN },
-    "method": "GET",
-    "fields": 'first_name,last_name,gender,profile_pic'
-  }, (err, res, body) => {
-    if (!err) {
-      console.log(res)
-    } else {
-      //console.error("Unable to send message:" + err);
-    }
-  }); 
-}
+// function get_sender_profile(id) {
+//   request({
+//     "uri": "https://graph.facebook.com/v2.6/#{'+id+'}",
+//     "qs": { "access_token": PAGE_ACCESS_TOKEN },
+//     "method": "GET",
+//     "fields": 'first_name,last_name,gender,profile_pic'
+//   }, (err, res, body) => {
+//     if (!err) {
+//       console.log(res)
+//     } else {
+//       //console.error("Unable to send message:" + err);
+//     }
+//   }); 
+// }
