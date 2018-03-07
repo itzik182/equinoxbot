@@ -30,7 +30,10 @@ const
   express = require('express'),
   body_parser = require('body-parser'),
   FB = require('fb'),
+  pageId = 0,
   app = express().use(body_parser.json()); // creates express http server
+
+const accessTokens = {},
 
   FB.setAccessToken(PAGE_ACCESS_TOKEN); 
 
@@ -521,144 +524,145 @@ console.log('req.body - ' + JSON.stringify(req.body));
 
     // Iterate over each entry - there may be multiple if batched
     body.entry.forEach(function(entry) {
+      if (body.object === 'page' || body.object === 'group') {
+        pageId = entry.id;
+      }
       
-      
-        if (entry && entry.changes && entry.changes.length > 0) {
-          entry.changes.forEach(function(change) {
-            console.log("change: " + JSON.stringify(change));
-            let value = change.value;
-            
-            //console.log("message Itz2 - " + JSON.stringify(sender_psid));
-            if (value.verb !== 'delete') {
-              if (body.object === 'group' && value.from) {
-                sender_psid.push({"id": value.from.id});
-              } else {
-                sender_psid.push({"id": value.sender_id});
-              }
-              let message = value.message;
-              if (value.message_tags) {
-                value.message_tags.forEach(function(tag) {
-                  if (tag.type === "user")
-                  sender_psid.push({"id": tag.id});
-                });
-                let messages = message.split(' ');
+      if (entry && entry.changes && entry.changes.length > 0) {
+        entry.changes.forEach(function(change) {
+          console.log("change: " + JSON.stringify(change));
+          let value = change.value;
 
-                for(var i = value.message_tags.length; i < messages.length; i++) {
-                  message = messages[i] + " ";
-                }
-              }
-              
-              var isEvent = false;
-              if(value && value.type === 'event' && value.verb === 'add') {
-                isEvent = true;
-                if(value.message.indexOf('@live') !== -1) {
-                  getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
-                   var meetingUrl = response.department ? 
-                       'https://meetings.avaya.com/portal/tenants/9022/?ID=' + response.department : 'https://meetings.avaya.com/portal/tenants/9022/?ID=90397237679607';
-                    //if(VR !== null) {
-                    let eventUrl = value.attachments.data[0].url;
-                    var eventId = eventUrl.substring(eventUrl.indexOf("events/") + 7, eventUrl.length -1);
-                    console.log('eventId', eventId);
-                     graphapi({
-                       url: '/' + eventId + '/feed',
-                      //url: '/' + value.post_id + '/comments',
-                      //url: '/142481733216767/feed',
-                      method: 'POST',
-                      qs: {
-                          message: 'The meeting url is: ' + meetingUrl,
-                          //timeline_visibility: 'starred'
-                      }
-                     }, function(error,res,body) {
-                        console.log('event feed', response.department);
-                     });
-                     graphapi({
-                      url: '/' + value.post_id + '/comments',
-                      method: 'POST',
-                      qs: {
-                          message: 'The meeting url is: ' + meetingUrl
-                      }
-                     }, function(error,res,body) {
-                        console.log('event comments', response.department);
-                     });
-                    //}
-                  }, function (error) {
-                    console.error("Failed!", error);
-                  });
-                }
-              } else {
-                let mention_id = (change.field === 'comments') ?
-                              value.comment_id : value.post_id;
+          //console.log("message Itz2 - " + JSON.stringify(sender_psid));
+          if (value.verb !== 'delete') {
+            if (body.object === 'group' && value.from) {
+              sender_psid.push({"id": value.from.id});
+            } else {
+              sender_psid.push({"id": value.sender_id});
+            }
+            let message = value.message;
+            if (value.message_tags) {
+              value.message_tags.forEach(function(tag) {
+                if (tag.type === "user")
+                sender_psid.push({"id": tag.id});
+              });
+              let messages = message.split(' ');
 
-                console.log('Comment reply', mention_id);
-                if(value.from.category === undefined || (value.from.category !== undefined && value.from.category !== 'Bot')) {
-                  // Comment reply
-                  graphapi({ 
-                      url: '/' + mention_id + '/comments',
-                      method: 'POST',
-                      qs: {
-                          message: 'Thanks'
-                      }
-                  }, function(error,res,body) {
-                      console.log('Comment reply', mention_id);
-                  });
-
-                  if(message.toLowerCase() === 'thanks') {
-                    // Like the post or comment to indicate acknowledgement
-                    graphapi({
-                        url: '/' + mention_id + '/likes',
-                        method: 'POST'
-                    }, function(error,res,body) {
-                        console.log('Like', mention_id);
-                    });   
-                  }
-                }
-              }
-              //console.log("sender2 - " + sender_psid);
-              console.log("message - " + message);
-              if (message && !isEvent) {
-                console.log("message Itz - " + JSON.stringify(sender_psid));
-                handleMessage(sender_psid, message.trim());
+              for(var i = value.message_tags.length; i < messages.length; i++) {
+                message = messages[i] + " ";
               }
             }
-          });
-        }
 
-        //return;
-        // Get the webhook event. entry.messaging is an array, but 
-        // will only ever contain one event, so we get index 0
-        if (entry && entry.messaging && entry.messaging.length > 0) {
+            var isEvent = false;
+            if(value && value.type === 'event' && value.verb === 'add') {
+              isEvent = true;
+              if(value.message.indexOf('@live') !== -1) {
+                getEmployeeDetailsByIdOrEmail(value.from.id, 'department').then(function (response) {
+                 var meetingUrl = response.department ? 
+                     'https://meetings.avaya.com/portal/tenants/9022/?ID=' + response.department : 'https://meetings.avaya.com/portal/tenants/9022/?ID=90397237679607';
+                  //if(VR !== null) {
+                  let eventUrl = value.attachments.data[0].url;
+                  var eventId = eventUrl.substring(eventUrl.indexOf("events/") + 7, eventUrl.length -1);
+                  console.log('eventId', eventId);
+                   graphapi({
+                     url: '/' + eventId + '/feed',
+                    //url: '/' + value.post_id + '/comments',
+                    //url: '/142481733216767/feed',
+                    method: 'POST',
+                    qs: {
+                        message: 'The meeting url is: ' + meetingUrl,
+                        //timeline_visibility: 'starred'
+                    }
+                   }, function(error,res,body) {
+                      console.log('event feed', response.department);
+                   });
+                   graphapi({
+                    url: '/' + value.post_id + '/comments',
+                    method: 'POST',
+                    qs: {
+                        message: 'The meeting url is: ' + meetingUrl
+                    }
+                   }, function(error,res,body) {
+                      console.log('event comments', response.department);
+                   });
+                  //}
+                }, function (error) {
+                  console.error("Failed!", error);
+                });
+              }
+            } else {
+              let mention_id = (change.field === 'comments') ?
+                            value.comment_id : value.post_id;
 
-          let webhook_event = entry.messaging[0];
-          console.log("entry.messaging: " + JSON.stringify(webhook_event));
-          // Get the sender PSID
-          
-          
-          /*24/12/17*/
-          sender_psid.push({"id": webhook_event.sender.id});
-          //console.log("community id: " + entry.messaging[0].sender.community.id);
-          //sender_psid.push({"id": entry.messaging[0].sender.community.id});
-          
-          //sender_psid.push({"id": entry.id});
-          let thread_key;
+              console.log('Comment reply', mention_id);
+              if(value.from.category === undefined || (value.from.category !== undefined && value.from.category !== 'Bot')) {
+                // Comment reply
+                graphapi({ 
+                    url: '/' + mention_id + '/comments',
+                    method: 'POST',
+                    qs: {
+                        message: 'Thanks'
+                    }
+                }, function(error,res,body) {
+                    console.log('Comment reply', mention_id);
+                });
 
-          //let sender = get_sender_profile(sender_psid);
-          console.log("sender - " + JSON.stringify(sender_psid));
-
-          if (webhook_event.thread && webhook_event.thread.id) {
-             thread_key = webhook_event.thread.id;
+                if(message.toLowerCase() === 'thanks') {
+                  // Like the post or comment to indicate acknowledgement
+                  graphapi({
+                      url: '/' + mention_id + '/likes',
+                      method: 'POST'
+                  }, function(error,res,body) {
+                      console.log('Like', mention_id);
+                  });   
+                }
+              }
+            }
+            //console.log("sender2 - " + sender_psid);
+            console.log("message - " + message);
+            if (message && !isEvent) {
+              console.log("message Itz - " + JSON.stringify(sender_psid));
+              handleMessage(sender_psid, message.trim());
+            }
           }
-          //displayMessageMarkSeen(sender_psid, thread_key);
-          if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
-            console.log('handleMessage: ' + JSON.stringify(webhook_event.message));
-            handleMessage(sender_psid, webhook_event.message.text, thread_key);        
-          } else if (webhook_event.postback) {
-            console.log('handlePostback: ' + JSON.stringify(webhook_event.postback));
-            handlePostback(sender_psid, webhook_event.postback);
-          } else if (webhook_event.message && webhook_event.message.quick_reply) {
-            console.log('handlePostback: ' + JSON.stringify(webhook_event.message));
-            handlePostback(sender_psid, webhook_event.message);
-          } 
+        });
+      }
+      
+      // Get the webhook event. entry.messaging is an array, but 
+      // will only ever contain one event, so we get index 0
+      if (entry && entry.messaging && entry.messaging.length > 0) {
+
+        let webhook_event = entry.messaging[0];
+        console.log("entry.messaging: " + JSON.stringify(webhook_event));
+        // Get the sender PSID
+
+
+        /*24/12/17*/
+        sender_psid.push({"id": webhook_event.sender.id});
+        //console.log("community id: " + entry.messaging[0].sender.community.id);
+        //sender_psid.push({"id": entry.messaging[0].sender.community.id});
+
+        //sender_psid.push({"id": entry.id});
+        let thread_key;
+
+        //let sender = get_sender_profile(sender_psid);
+        console.log("sender - " + JSON.stringify(sender_psid));
+
+        if (webhook_event.thread && webhook_event.thread.id) {
+           thread_key = webhook_event.thread.id;
         }
+        //displayMessageMarkSeen(sender_psid, thread_key);
+        if (webhook_event.message && webhook_event.message.text && webhook_event.message.quick_reply === undefined) {
+          console.log('handleMessage: ' + JSON.stringify(webhook_event.message));
+          handleMessage(sender_psid, webhook_event.message.text, thread_key);        
+        } else if (webhook_event.postback) {
+          console.log('handlePostback: ' + JSON.stringify(webhook_event.postback));
+          handlePostback(sender_psid, webhook_event.postback);
+        } else if (webhook_event.message && webhook_event.message.quick_reply) {
+          console.log('handlePostback: ' + JSON.stringify(webhook_event.message));
+          handlePostback(sender_psid, webhook_event.message);
+        } 
+      }
     });
 
     // Return a '200 OK' response to all events
