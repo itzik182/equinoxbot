@@ -12,16 +12,16 @@
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
 var fs = require('fs');
 
-var client = require('./public/client.js');
+var table = require('./table.js');
 
-console.log(client.getHello());
+console.log(table.getHello());
 
 var avayaEmployees = require('./table.json');
 
 //avayaEmployees.push({"name": "tamar222", "email": "tamarb222@avaya.com"});
 //fs.writeFileSync('./table.json', JSON.stringify(avayaEmployees)); 
 
-console.log(avayaEmployees);
+//console.log(avayaEmployees);
 
 // Imports dependencies and set up http server
 const

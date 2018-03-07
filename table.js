@@ -1,1 +1,5 @@
-buildVersion: 11
+this.getHello = getHello;
+
+function getHello() {
+ return "Hello"; 
+}
