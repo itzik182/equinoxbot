@@ -250,8 +250,6 @@ function sendMessage(recipients, received_message, thread_key) {
     console.log("sendMessage - response - " + JSON.stringify(response));
     var responseObj = getTextMessageResponse(received_message, response, isThread);
     
-    //responseObj = responseObj;
-
     // Sends the responseObj message
     callSendAPI(recipients, responseObj, thread_key);
     
@@ -672,7 +670,7 @@ console.log('req.body - ' + JSON.stringify(req.body));
           if (change.field && change.field === 'message_sends' && 
               change.value.to.data[0].email.indexOf('@facebook.com') === -1 && 
               change.value.to.data.length < 2) {
-            console.log("change: " + JSON.stringify(change));
+            console.log("change 1: " + JSON.stringify(change));
             if (change.value.message === '@join') {
               //if(value.to.data[0].email.indexOf('@facebook.com') === -1) {
                  sender_psid.push({"id": change.value.to.data[0].id});
