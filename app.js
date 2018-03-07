@@ -521,6 +521,8 @@ console.log('req.body - ' + JSON.stringify(req.body));
 
     // Iterate over each entry - there may be multiple if batched
     body.entry.forEach(function(entry) {
+      
+      
         if (entry && entry.changes && entry.changes.length > 0) {
           entry.changes.forEach(function(change) {
             console.log("change: " + JSON.stringify(change));
