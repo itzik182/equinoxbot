@@ -723,8 +723,10 @@ console.log('req.body - ' + JSON.stringify(req.body));
 // Accepts GET requests at the /webhook endpoint
 app.get('/webhook', (req, res) => {
   console.log('Get:');
+  //var CircularJSON = require('circular-json');
+  //console.log(CircularJSON.stringify(res));
   //console.log('req: ' + JSON.stringify(req));
-  console.log('res: ' + JSON.stringify(res));
+  console.log('res: ' + JSON.stringify(req.body));
   /** UPDATE YOUR VERIFY TOKEN **/
   const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
   
@@ -740,6 +742,7 @@ app.get('/webhook', (req, res) => {
   if (mode && token) {
     console.log('mode: ' + mode);
     console.log('token: ' + token);
+    console.log('token: ' + challenge);
     // Check the mode and token sent are correct 
     //if (mode === 'subscribe' && token === VERIFY_TOKEN) {
     if (mode === 'subscribe' && verifyTokenList.indexOf(token) !== -1) {
