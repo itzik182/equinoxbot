@@ -723,10 +723,10 @@ console.log('req.body - ' + JSON.stringify(req.body));
 // Accepts GET requests at the /webhook endpoint
 app.get('/webhook', (req, res) => {
   console.log('Get:');
-  //var CircularJSON = require('circular-json');
+  var CircularJSON = require('circular-json');
   //console.log(CircularJSON.stringify(res));
-  //console.log('req: ' + JSON.stringify(req));
-  console.log('res: ' + JSON.stringify(req.body));
+  console.log('req: ' + CircularJSON.stringify(req));
+  console.log('res: ' + CircularJSON.stringify(res));
   /** UPDATE YOUR VERIFY TOKEN **/
   const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
   

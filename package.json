@@ -14,10 +14,11 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.15.0",
+    "circular-json": "^0.5.1",
     "express": "^4.13.4",
+    "fb": "^2.0.0",
     "feed-read": "0.0.1",
-    "request": "^2.72.0",
-    "fb": "^2.0.0"
+    "request": "^2.72.0"
   },
   "engines": {
     "node": "6.13.0"
