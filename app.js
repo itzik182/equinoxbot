@@ -10,7 +10,10 @@
  
 'use strict';
 const PAGE_ACCESS_TOKENS = process.env.PAGE_TOKENS;
-console.log("PAGE_ACCESS_TOKENS: " + JSON.parse(JSON.stringify(PAGE_ACCESS_TOKENS)).page1); 
+var a = JSON.parse(PAGE_ACCESS_TOKENS);
+console.log("a: " + JSON.stringify(a)); 
+console.log("a: " + a.page1); 
+console.log("a: " + a.page2); 
 
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
 const ItzikBot_ACCESS_TOKEN = process.env.ItzikBot_TOKEN;
