@@ -12,9 +12,10 @@
 const PAGE_ACCESS_TOKENS = process.env.PAGE_TOKENS;
 var a = JSON.parse(PAGE_ACCESS_TOKENS);
 console.log("a: " + JSON.stringify(a)); 
-console.log("a: " + a.page1); 
-console.log("a: " + a.page2);
-process.env.PAGE_TOKENS2 = "itzik";
+console.log("a.page1: " + a.page1); 
+console.log("a.page2: " + a.page2);
+process.env.PAGE_TOKENS2 = 'itzik';
+process.env.PAGE_TOKENS3 = 'itzik';
 
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
 const ItzikBot_ACCESS_TOKEN = process.env.ItzikBot_TOKEN;
