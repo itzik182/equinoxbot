@@ -10,6 +10,7 @@
  
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
+const ItzikBot_ACCESS_TOKEN = process.env.ItzikBot_TOKEN;
 var fs = require('fs');
 
 var table = require('./table.js');
@@ -33,7 +34,10 @@ const
   pageId = 0,
   app = express().use(body_parser.json()); // creates express http server
 
-const accessTokens = {},
+const accessTokens = {
+    myPageId1: PAGE_ACCESS_TOKEN,
+    myPageId2: ItzikBot_ACCESS_TOKEN,
+};
 
   FB.setAccessToken(PAGE_ACCESS_TOKEN); 
 
@@ -399,7 +403,8 @@ function callSendAPI(recipients, response, thread_key) {
       // Send the HTTP request to the Messenger Platform
       request({
         "uri": "https://graph.facebook.com/v2.6/me/messages",
-        "qs": { "access_token": PAGE_ACCESS_TOKEN},
+        //"qs": { "access_token": PAGE_ACCESS_TOKEN},
+        "qs": { "access_token": accessTokens[pageId]},
         "method": "POST",
         "json": request_body
       }, (err, res, body) => {
