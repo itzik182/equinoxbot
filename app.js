@@ -43,10 +43,11 @@ const
 
 var pageId = 0;
 
-const accessTokens = {
-    "1586746304714854": PAGE_ACCESS_TOKEN,
-    "1784078728564936": ItzikBot_ACCESS_TOKEN,
-};
+ const accessTokens = JSON.parse(PAGE_ACCESS_TOKENS);
+//{
+//     "1586746304714854": PAGE_ACCESS_TOKEN,
+//     "1784078728564936": ItzikBot_ACCESS_TOKEN,
+// };
 
   FB.setAccessToken(PAGE_ACCESS_TOKEN); 
 
