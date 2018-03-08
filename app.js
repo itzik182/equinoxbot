@@ -31,12 +31,13 @@ const
   express = require('express'),
   body_parser = require('body-parser'),
   FB = require('fb'),
-  pageId = 0,
   app = express().use(body_parser.json()); // creates express http server
 
+var pageId = 0;
+
 const accessTokens = {
-    myPageId1: PAGE_ACCESS_TOKEN,
-    myPageId2: ItzikBot_ACCESS_TOKEN,
+    "1586746304714854": PAGE_ACCESS_TOKEN,
+    "1784078728564936": ItzikBot_ACCESS_TOKEN,
 };
 
   FB.setAccessToken(PAGE_ACCESS_TOKEN); 
@@ -398,7 +399,8 @@ function callSendAPI(recipients, response, thread_key) {
   console.log("request_body: " + JSON.stringify(request_body));
     
   displayTheTypingBubble(recipient.id, thread_key, true);
-    
+  console.log("pageId: " + pageId);
+  console.log("accessTokens[pageId]: " + accessTokens[pageId]);
   setTimeout(function(){
       // Send the HTTP request to the Messenger Platform
       request({
@@ -440,7 +442,8 @@ function displayMessengerProfile() {
   // Send the HTTP request to the messenger profile Platform
   request({
     "uri": "https://graph.facebook.com/v2.6/me/messenger_profile",
-    "qs": { "access_token": PAGE_ACCESS_TOKEN },
+    //"qs": { "access_token": PAGE_ACCESS_TOKEN },
+    "qs": { "access_token": accessTokens[pageId]},
     "method": "POST",
     "json": messenger_profile_request_body
   }, (err, res, body) => {
@@ -473,7 +476,8 @@ function displayTheTypingBubble(senderId, thread_key,isOn) {
     // Send the HTTP request to the Messenger Platform
     request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
-      "qs": { "access_token": PAGE_ACCESS_TOKEN },
+      //"qs": { "access_token": PAGE_ACCESS_TOKEN },
+      "qs": { "access_token": accessTokens[pageId]},
       "method": "POST", 
       "json": request_body
     }, (err, res, body) => {
@@ -499,7 +503,8 @@ function displayMessageMarkSeen(sender, thread_key) {
     console.log('sender - ' + JSON.stringify(request_body));
     request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
-      "qs": { "access_token": PAGE_ACCESS_TOKEN },
+      //"qs": { "access_token": PAGE_ACCESS_TOKEN },
+      "qs": { "access_token": accessTokens[pageId]},
       "method": "POST",
       "json": request_body
     }, (err, res, body) => {
@@ -529,7 +534,9 @@ console.log('req.body - ' + JSON.stringify(req.body));
 
     // Iterate over each entry - there may be multiple if batched
     body.entry.forEach(function(entry) {
-      if (body.object === 'page' || body.object === 'group') {
+      if (body.object === 'page') {
+        console.log("entry.id: " + entry.id);
+        console.log("pageId: " + pageId);
         pageId = entry.id;
       }
       
