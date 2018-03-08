@@ -9,6 +9,9 @@
  */
  
 'use strict';
+const PAGE_ACCESS_TOKENS = process.env.PAGE_TOKENS;
+console.log("PAGE_ACCESS_TOKENS: " + JSON.parse(JSON.stringify(PAGE_ACCESS_TOKENS)).page1); 
+
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
 const ItzikBot_ACCESS_TOKEN = process.env.ItzikBot_TOKEN;
 var fs = require('fs');
