@@ -722,7 +722,9 @@ console.log('req.body - ' + JSON.stringify(req.body));
 
 // Accepts GET requests at the /webhook endpoint
 app.get('/webhook', (req, res) => {
-  //console.log('get');
+  console.log('Get:');
+  //console.log('req: ' + JSON.stringify(req));
+  console.log('res: ' + JSON.stringify(res));
   /** UPDATE YOUR VERIFY TOKEN **/
   const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
   
@@ -733,10 +735,11 @@ app.get('/webhook', (req, res) => {
   // Parse params from the webhook verification request
   let mode = req.query['hub.mode'];
   let token = req.query['hub.verify_token'];
-  let challenge = req.query['hub.challenge'];
+  let challenge = req.query['hub.challenge']; 
   // Check if a token and mode were sent
   if (mode && token) {
-  
+    console.log('mode: ' + mode);
+    console.log('token: ' + token);
     // Check the mode and token sent are correct 
     //if (mode === 'subscribe' && token === VERIFY_TOKEN) {
     if (mode === 'subscribe' && verifyTokenList.indexOf(token) !== -1) {
