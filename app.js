@@ -41,7 +41,7 @@ const
   express = require('express'),
   body_parser = require('body-parser'),
   FB = require('fb'),
-  accessTokens = JSON.parse(process.env.PAGE_TOKENS);
+  accessTokens = JSON.parse(process.env.PAGE_TOKENS),
   app = express().use(body_parser.json()); // creates express http server
 
 var pageId = 0;
@@ -234,10 +234,14 @@ function getTextMessageResponse(received_message, user, isThread) {
         break;
     case '@where':
         if (user && user.department) {
-          text = 'Link to virtual room of ' + user.name;
-          title = 'Enter to virtual room';
-          url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
-          responseObj = getButtons(title, text, url);
+          if(isThread) {
+            text = 'Link to virtual room of ' + user.name + ': https://meetings.avaya.com/portal/tenants/9022/?ID=' + VR;
+          } else {
+              text = 'Link to virtual room of ' + user.name;
+              title = 'Enter to virtual room';
+              url = 'https://meetings.avaya.com/portal/tenants/9022/?ID=' + user.department;
+              responseObj = getButtons(title, text, url);
+          }
         } else {
           text = 'The user ' + user.name + ' does not have a virtual room';
         }
