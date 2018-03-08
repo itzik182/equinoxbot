@@ -9,13 +9,15 @@
  */
  
 'use strict';
-const PAGE_ACCESS_TOKENS = process.env.PAGE_TOKENS;
-var a = JSON.parse(PAGE_ACCESS_TOKENS);
-console.log("a: " + JSON.stringify(a)); 
-console.log("a.page1: " + a.page1); 
-console.log("a.page2: " + a.page2);
-process.env.PAGE_TOKENS2 = 'itzik';
-process.env.PAGE_TOKENS3 = 'itzik';
+
+
+// const PAGE_ACCESS_TOKENS = process.env.PAGE_TOKENS;
+// var a = JSON.parse(PAGE_ACCESS_TOKENS);
+// console.log("a: " + JSON.stringify(a)); 
+// console.log("a.page1: " + a.page1); 
+// console.log("a.page2: " + a.page2);
+// process.env.PAGE_TOKENS2 = 'itzik';
+// process.env.PAGE_TOKENS3 = 'itzik';
 
 const PAGE_ACCESS_TOKEN = process.env.PAGE_TOKEN;
 const ItzikBot_ACCESS_TOKEN = process.env.ItzikBot_TOKEN;
@@ -39,11 +41,11 @@ const
   express = require('express'),
   body_parser = require('body-parser'),
   FB = require('fb'),
+  accessTokens = JSON.parse(process.env.PAGE_TOKENS);
   app = express().use(body_parser.json()); // creates express http server
 
 var pageId = 0;
 
- const accessTokens = JSON.parse(PAGE_ACCESS_TOKENS);
 //{
 //     "1586746304714854": PAGE_ACCESS_TOKEN,
 //     "1784078728564936": ItzikBot_ACCESS_TOKEN,
